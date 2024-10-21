@@ -106,9 +106,9 @@ class Mdl_Setup extends CI_Model
         $default_settings = array(
             'default_language' => $this->session->userdata('ip_lang'),
             'date_format' => 'm/d/Y',
-            'currency_symbol' => '$',
+            'currency_symbol' => '€',
             'currency_symbol_placement' => 'before',
-            'currency_code' => 'USD',
+            'currency_code' => 'EUR',
             'invoices_due_after' => 30,
             'quotes_expire_after' => 15,
             'default_invoice_group' => 3,

@@ -35,8 +35,9 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     $invoice = $CI->mdl_invoices->get_by_id($invoice_id);
     $invoice = $CI->mdl_invoices->get_payments($invoice);
 
+    //OSCARNET
     // Override system language with client language
-    set_language($invoice->client_language);
+    set_language('english');
 
     if (!$invoice_template) {
         $CI->load->helper('template');
@@ -220,7 +221,7 @@ function generate_quote_pdf($quote_id, $stream = true, $quote_template = null)
     $quote = $CI->mdl_quotes->get_by_id($quote_id);
 
     // Override language with system language
-    set_language($quote->client_language);
+    set_language('english');
 
     if (!$quote_template) {
         $quote_template = $CI->mdl_settings->setting('pdf_quote_template');
