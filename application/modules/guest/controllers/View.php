@@ -73,6 +73,8 @@ class View extends Base_Controller
             'custom_fields' => $custom_fields,
         );
 
+        //OSCARNET
+        set_language('english');
         $this->load->view('invoice_templates/public/' . get_setting('public_invoice_template') . '.php', $data);
     }
 
@@ -200,7 +202,8 @@ class View extends Base_Controller
             'attachments' => $attachments,
             'custom_fields' => $custom_fields,
         );
-
+        //OSCARNET
+        set_language('english');
         $this->load->view('quote_templates/public/' . get_setting('public_quote_template') . '.php', $data);
     }
 
