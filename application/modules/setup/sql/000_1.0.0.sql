@@ -155,6 +155,7 @@ CREATE TABLE `ip_invoice_tax_rates` (
   `invoice_id`              INT(11)        NOT NULL,
   `tax_rate_id`             INT(11)        NOT NULL,
   `include_item_tax`        INT(1)         NOT NULL DEFAULT '0',
+  `include_tax`             INT(1)         NOT NULL DEFAULT '0',
   `invoice_tax_rate_amount` DECIMAL(10, 2) NOT NULL,
   PRIMARY KEY (`invoice_tax_rate_id`),
   KEY `invoice_id` (`invoice_id`, `tax_rate_id`)
