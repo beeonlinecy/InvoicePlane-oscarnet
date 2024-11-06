@@ -182,6 +182,7 @@ class Mdl_Invoices extends Response_Model
                     'invoice_id' => $invoice_id,
                     'tax_rate_id' => get_setting('default_invoice_tax_rate'),
                     'include_item_tax' => get_setting('default_include_item_tax', 0),
+                    'include_tax' => get_setting('default_include_tax', 0),
                     'invoice_tax_rate_amount' => 0
                 );
 
@@ -248,6 +249,7 @@ class Mdl_Invoices extends Response_Model
                 'invoice_id' => $target_id,
                 'tax_rate_id' => $invoice_tax_rate->tax_rate_id,
                 'include_item_tax' => $invoice_tax_rate->include_item_tax,
+                'include_tax' => $invoice_tax_rate->include_tax,
                 'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
             );
 

@@ -174,7 +174,6 @@ class Mdl_Quotes extends Response_Model
                 'quote_id'              => $quote_id,
                 'tax_rate_id'           => get_setting('default_invoice_tax_rate'),
                 'include_item_tax'      => get_setting('default_include_item_tax'),
-                //OSCARNET
                 'include_tax'           => get_setting('default_include_tax'),
                 'quote_tax_rate_amount' => 0
             ];
@@ -222,7 +221,7 @@ class Mdl_Quotes extends Response_Model
                 'quote_id'              => $target_id,
                 'tax_rate_id'           => $quote_tax_rate->tax_rate_id,
                 'include_item_tax'      => $quote_tax_rate->include_item_tax,
-                'include_tax'           => $quote_tax_rate->include_tax, //OSCARNET
+                'include_tax'           => $quote_tax_rate->include_tax, 
                 'quote_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount
             ];
 
