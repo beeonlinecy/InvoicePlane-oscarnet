@@ -123,7 +123,6 @@ class Mdl_Quote_Amounts extends CI_Model
                     // The quote tax rate should include the applied item tax
                     $quote_tax_rate_amount = ($quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total) * ($quote_tax_rate->quote_tax_rate_percent / 100);
                 } else {
-                    //OSCARNET
                     // The quote tax rate is included in the total
                     if ($quote_tax_rate->include_tax) {
                         $quote_tax_rate_amount = $quote_amount->quote_item_subtotal / ($quote_tax_rate->quote_tax_rate_percent + 100) * $quote_tax_rate->quote_tax_rate_percent;
