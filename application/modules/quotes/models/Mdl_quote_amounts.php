@@ -156,7 +156,6 @@ class Mdl_Quote_Amounts extends CI_Model
             $quote_amount = $this->db->where('quote_id', $quote_id)->get('ip_quote_amounts')->row();
 
             // Recalculate the quote total
-            //OSCARNET
             if(!$quote_tax_rate->include_tax){
                 //The tax is not included and is added to totals
                 $quote_total = $quote_amount->quote_item_subtotal + $quote_amount->quote_item_tax_total + $quote_amount->quote_tax_total;

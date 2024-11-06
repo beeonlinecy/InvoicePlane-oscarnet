@@ -171,7 +171,7 @@ class Mdl_Invoice_Amounts extends CI_Model
                     // The invoice tax rate should not include the applied item tax
                     if($invoice_tax_rate->include_tax){
                     //But invoice tax is includedin total
-                        $invoice_tax_rate_amount->invoice_amount = $invoice_amount->quote_item_subtotal / ($invoice_tax_rate->invoic_tax_rate_percent + 100) * $invoice_tax_rate->invoice_tax_rate_percent;
+                        $invoice_tax_rate_amount = $invoice_amount->invoice_item_subtotal / ($invoice_tax_rate->invoice_tax_rate_percent + 100) * $invoice_tax_rate->invoice_tax_rate_percent;
                     } else {
                         $invoice_tax_rate_amount = $invoice_amount->invoice_item_subtotal * ($invoice_tax_rate->invoice_tax_rate_percent / 100);
                     }
@@ -198,7 +198,12 @@ class Mdl_Invoice_Amounts extends CI_Model
             $invoice_amount = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
             // Recalculate the invoice total and balance
-            $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
+            if(!$invoice_tax_rate->include_tax){
+                //If tax isnt incluseve keep default ip calculation
+                $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total + $invoice_amount->invoice_tax_total;
+            } else {
+                $invoice_total = $invoice_amount->invoice_item_subtotal + $invoice_amount->invoice_item_tax_total;
+            }
             $invoice_total = $this->calculate_discount($invoice_id, $invoice_total);
             $invoice_balance = $invoice_total - $invoice_amount->invoice_paid;
 
