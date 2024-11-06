@@ -74,7 +74,12 @@ class Mdl_Invoice_Tax_Rates extends Response_Model
                 'field' => 'include_item_tax',
                 'label' => trans('tax_rate_placement'),
                 'rules' => 'required'
-            )
+            ),
+            'include_tax' => array(
+                'field' => 'include_tax',
+                'label' => trans('tax_rate_included'),
+                'rules' => 'required'
+            )            
         );
     }
 
