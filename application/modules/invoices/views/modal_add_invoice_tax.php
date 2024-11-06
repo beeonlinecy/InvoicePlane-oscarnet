@@ -7,7 +7,8 @@
             $.post("<?php echo site_url('invoices/ajax/save_invoice_tax_rate'); ?>", {
                     invoice_id: <?php echo $invoice_id; ?>,
                     tax_rate_id: $('#tax_rate_id').val(),
-                    include_item_tax: $('#include_item_tax').val()
+                    include_item_tax: $('#include_item_tax').val(),
+                    include_tax: $('#include_tax').val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -48,6 +49,22 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label for="include_tax">
+                    <?php _trans('tax_rate_included'); ?>
+                </label>
+
+                <div class="controls">
+                    <select name="include_tax" id="include_tax" class="form-control simple-select" required>
+                        <option value="0">
+                            <?php _trans('no'); ?>
+                        </option>
+                        <option value="1">
+                            <?php _trans('yes'); ?>
+                        </option>
+                    </select>
+                </div>
+            </div>           
         </div>
 
         <div class="modal-footer">
