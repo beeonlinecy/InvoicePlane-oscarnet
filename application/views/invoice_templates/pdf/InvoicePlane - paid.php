@@ -208,6 +208,7 @@
                 </td>
             </tr>
         <?php endif; ?>
+
         <?php if ($invoice->invoice_discount_amount != '0.00') : ?>
             <tr>
                 <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
@@ -219,14 +220,17 @@
             </tr>
         <?php endif; ?>
 
+
+
         <tr>
             <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                 <b><?php _trans('total'); ?></b>
             </td>
-            <td class="text-right">
+            <td class="text-right">                
                 <b><?php echo format_currency($invoice->invoice_total); ?></b>
             </td>
         </tr>
+
         <tr>
             <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                 <?php _trans('paid'); ?>

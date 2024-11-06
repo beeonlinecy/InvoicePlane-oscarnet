@@ -24,6 +24,7 @@ $lang = array(
     'any_family'                                   => 'Any family',
     'apply_after_item_tax'                         => 'Apply After Item Tax',
     'apply_before_item_tax'                        => 'Apply Before Item Tax',
+    'tax_rate_included'                            => 'Tax is included in total',
     'approve'                                      => 'Approve',
     'approve_this_quote'                           => 'Approve This Quote',
     'approved'                                     => 'Approved',

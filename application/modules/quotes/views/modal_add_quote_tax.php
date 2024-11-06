@@ -5,6 +5,7 @@
                     quote_id: <?php echo $quote_id; ?>,
                     tax_rate_id: $('#tax_rate_id').val(),
                     include_item_tax: $('#include_item_tax').val()
+                    include_tax: $('#include-tax'),val()
                 },
                 function (data) {
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
@@ -54,6 +55,23 @@
                         </option>
                         <option value="1">
                             <?php _trans('apply_after_item_tax'); ?>
+                        </option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="include_tax">
+                    <?php _trans('tax_rate_included'); ?>
+                </label>
+
+                <div class="controls">
+                    <select name="include_tax" id="include_tax" class="form-control simple-select" required>
+                        <option value="0">
+                            <?php _trans('no'); ?>
+                        </option>
+                        <option value="1">
+                            <?php _trans('yes'); ?>
                         </option>
                     </select>
                 </div>

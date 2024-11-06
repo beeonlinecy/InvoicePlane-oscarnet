@@ -369,6 +369,8 @@ class Ajax extends Admin_Controller
                     'tax_rate_id' => $quote_tax_rate->tax_rate_id,
                     'include_item_tax' => $quote_tax_rate->include_item_tax,
                     'invoice_tax_rate_amount' => $quote_tax_rate->quote_tax_rate_amount,
+                    //OSCARNET
+                    'include_tax' => $quote_tax_rate->include_tax,
                 ];
 
                 $this->mdl_invoice_tax_rates->save(null, $db_array);
