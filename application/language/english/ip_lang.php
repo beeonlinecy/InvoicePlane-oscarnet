@@ -729,7 +729,7 @@ $lang = array(
     'sumex_veka'                                   => 'VEKA',
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
-
+    'include_tax'                                  => 'Tax is included in total',
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
