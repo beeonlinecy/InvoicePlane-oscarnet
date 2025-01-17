@@ -731,9 +731,7 @@ $lang = [
     'sumex_veka'                                   => 'VEKA',
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
-<<<<<<< HEAD
     'include_tax'                                  => 'Tax is included in total',
-=======
 
     // Clients/Enums/ClientTitleEnum
     'mr'                                           => 'mr',
@@ -742,7 +740,6 @@ $lang = [
     'professor'                                    => 'professor',
     'custom'                                       => 'custom',
 
->>>>>>> 853c2aedbe0048b7449f4b84e3d587c233c62f50
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
