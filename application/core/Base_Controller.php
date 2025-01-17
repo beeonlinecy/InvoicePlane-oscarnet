@@ -1,5 +1,6 @@
 <?php
-if (!defined('BASEPATH')) {
+
+if (! defined('BASEPATH')) {
     exit('No direct script access allowed');
 }
 
@@ -12,9 +13,7 @@ if (!defined('BASEPATH')) {
  * @link		https://invoiceplane.com
  */
 
-/**
- * Class Base_Controller
- */
+#[AllowDynamicProperties]
 class Base_Controller extends MX_Controller
 {
 
@@ -35,8 +34,9 @@ class Base_Controller extends MX_Controller
             exit;
         }
 
-        // Globally disallow GET requests to delete methods
         $this->load->helper('url');
+
+        // Globally disallow GET requests to delete methods
         if (strstr(current_url(), 'delete') && $this->input->method() !== 'post') {
             show_404();
         }
@@ -65,8 +65,8 @@ class Base_Controller extends MX_Controller
             $this->load->helper('client');
 
             // Load setting model and load settings
-	    $this->load->model('settings/mdl_settings');
-	    if ($this->mdl_settings != null)
+            $this->load->model('settings/mdl_settings');
+            if ($this->mdl_settings != null)
                 $this->mdl_settings->load_settings();
             $this->load->helper('settings');
 

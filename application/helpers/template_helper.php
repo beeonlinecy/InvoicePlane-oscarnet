@@ -1,5 +1,8 @@
 <?php
-if (!defined('BASEPATH')) exit('No direct script access allowed');
+
+if (! defined('BASEPATH')) {
+    exit('No direct script access allowed');
+}
 
 /*
  * InvoicePlane
@@ -46,6 +49,9 @@ function parse_template($object, $body)
                     break;
                 case 'invoice_balance':
                     $replace = format_currency($object->invoice_balance);
+                    break;
+                case 'invoice_status':
+                    $replace = get_invoice_status($object->invoice_status_id);
                     break;
                 case 'quote_item_subtotal':
                     $replace = format_currency($object->quote_item_subtotal);
@@ -98,6 +104,25 @@ function parse_template($object, $body)
     }
 
     return $body;
+}
+
+/**
+ * Returns the translated invoice status
+ *
+ * @param $invoice->invoice_status_id
+ * @return string
+ */
+function get_invoice_status($id)
+{
+    $CI =& get_instance();
+
+    if(empty($CI->mdl_invoices))
+    {
+        $CI->load->model('mdl_invoices');
+    }
+    $statuses = $CI->mdl_invoices->statuses();
+
+    return $statuses[$id]['label'];
 }
 
 /**

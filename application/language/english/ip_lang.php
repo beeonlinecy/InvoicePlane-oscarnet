@@ -1,5 +1,5 @@
 <?php
-$lang = array(
+$lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
     'active_client'                                => 'Active',
@@ -87,6 +87,7 @@ $lang = array(
     'client_access'                                => 'Client Access',
     'client_already_exists'                        => 'Client already exists!',
     'client_form'                                  => 'Client Form',
+    'client_title'                                 => 'Title',
     'client_name'                                  => 'Client Name',
     'client_surname'                               => 'Client Surname',
     'client_surname_optional'                      => 'Client Surname (Optional)',
@@ -143,6 +144,7 @@ $lang = array(
     'default_invoice_group'                        => 'Default Invoice Group',
     'default_invoice_tax_rate'                     => 'Default Invoice Tax Rate',
     'default_invoice_tax_rate_placement'           => 'Default Invoice Tax Rate Placement',
+    'default_item_decimals'                        => 'Default decimals for items',
     'default_item_tax_rate'                        => 'Default Item Tax Rate',
     'default_list_limit'                           => 'Number of Items in Lists',
     'default_notes'                                => 'Default Notes',
@@ -729,11 +731,22 @@ $lang = array(
     'sumex_veka'                                   => 'VEKA',
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
+<<<<<<< HEAD
     'include_tax'                                  => 'Tax is included in total',
+=======
+
+    // Clients/Enums/ClientTitleEnum
+    'mr'                                           => 'mr',
+    'mrs'                                          => 'mrs',
+    'doctor'                                       => 'doctor',
+    'professor'                                    => 'professor',
+    'custom'                                       => 'custom',
+
+>>>>>>> 853c2aedbe0048b7449f4b84e3d587c233c62f50
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
     // Types
     'true'                                         => 'True',
     'false'                                        => 'False'
-);
+];
