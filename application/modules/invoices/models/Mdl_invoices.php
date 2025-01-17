@@ -181,7 +181,6 @@ class Mdl_Invoices extends Response_Model
         if ($include_invoice_tax_rates) {
             // Create the default invoice tax record if applicable
             if (get_setting('default_invoice_tax_rate')) {
-<<<<<<< HEAD
                 $db_array = array(
                     'invoice_id' => $invoice_id,
                     'tax_rate_id' => get_setting('default_invoice_tax_rate'),
@@ -189,14 +188,6 @@ class Mdl_Invoices extends Response_Model
                     'include_tax' => get_setting('default_include_tax', 0),
                     'invoice_tax_rate_amount' => 0
                 );
-=======
-                $db_array = [
-                    'invoice_id'              => $invoice_id,
-                    'tax_rate_id'             => get_setting('default_invoice_tax_rate'),
-                    'include_item_tax'        => get_setting('default_include_item_tax', 0),
-                    'invoice_tax_rate_amount' => 0,
-                ];
->>>>>>> 853c2aedbe0048b7449f4b84e3d587c233c62f50
 
                 $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
@@ -258,7 +249,6 @@ class Mdl_Invoices extends Response_Model
         $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
 
         foreach ($invoice_tax_rates as $invoice_tax_rate) {
-<<<<<<< HEAD
             $db_array = array(
                 'invoice_id' => $target_id,
                 'tax_rate_id' => $invoice_tax_rate->tax_rate_id,
@@ -266,14 +256,6 @@ class Mdl_Invoices extends Response_Model
                 'include_tax' => $invoice_tax_rate->include_tax,
                 'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
             );
-=======
-            $db_array = [
-                'invoice_id'              => $target_id,
-                'tax_rate_id'             => $invoice_tax_rate->tax_rate_id,
-                'include_item_tax'        => $invoice_tax_rate->include_item_tax,
-                'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount,
-            ];
->>>>>>> 853c2aedbe0048b7449f4b84e3d587c233c62f50
 
             $this->mdl_invoice_tax_rates->save(null, $db_array);
         }
