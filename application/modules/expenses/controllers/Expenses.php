@@ -14,7 +14,7 @@ if (! defined('BASEPATH')) {
  */
 
 #[AllowDynamicProperties]
-class Invoices extends Admin_Controller
+class Expenses extends Admin_Controller
 {
 
     /**
@@ -24,13 +24,13 @@ class Invoices extends Admin_Controller
     {
         parent::__construct();
 
-        $this->load->model('mdl_invoices');
+        $this->load->model('mdl_expenses');
     }
 
     public function index()
     {
         // Display all invoices by default
-        redirect('invoices/status/all');
+        redirect('expenses/status/all');
     }
 
     /**
@@ -42,37 +42,37 @@ class Invoices extends Admin_Controller
         // Determine which group of invoices to load
         switch ($status) {
             case 'draft':
-                $this->mdl_invoices->is_draft();
+                $this->mdl_expenses->is_draft();
                 break;
             case 'sent':
-                $this->mdl_invoices->is_sent();
+                $this->mdl_expenses->is_sent();
                 break;
             case 'viewed':
-                $this->mdl_invoices->is_viewed();
+                $this->mdl_expenses->is_viewed();
                 break;
             case 'paid':
-                $this->mdl_invoices->is_paid();
+                $this->mdl_expenses->is_paid();
                 break;
             case 'overdue':
-                $this->mdl_invoices->is_overdue();
+                $this->mdl_expenses->is_overdue();
                 break;
         }
 
-        $this->mdl_invoices->paginate(site_url('invoices/status/' . $status), $page);
-        $invoices = $this->mdl_invoices->result();
+        $this->mdl_expenses->paginate(site_url('expenses/status/' . $status), $page);
+        $expenses = $this->mdl_expenses->result();
 
         $this->layout->set(
             [
-                'invoices' => $invoices,
+                'expenses' => $expenses,
                 'status' => $status,
                 'filter_display' => true,
-                'filter_placeholder' => trans('filter_invoices'),
-                'filter_method' => 'filter_invoices',
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'filter_placeholder' => trans('filter_expenses'),
+                'filter_method' => 'filter_expenses',
+                'expense_statuses' => $this->mdl_expenses->statuses(),
             ]
         );
 
-        $this->layout->buffer('content', 'invoices/index');
+        $this->layout->buffer('content', 'expenses/index');
         $this->layout->render();
     }
 
@@ -267,7 +267,7 @@ public function download($invoice)
         }
 
         // Redirect to invoice index
-        redirect('invoices/index');
+        redirect('expenses/index');
     }
 
     /**

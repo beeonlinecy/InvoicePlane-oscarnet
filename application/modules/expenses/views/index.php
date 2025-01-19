@@ -1,6 +1,6 @@
 <div id="headerbar">
 
-    <h1 class="headerbar-title"><?php _trans('invoices'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('expenses'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
@@ -13,7 +13,7 @@
     </div>
 
     <div class="headerbar-item pull-right visible-lg">
-        <?php echo pager(site_url('invoices/status/' . $this->uri->segment(3)), 'mdl_invoices'); ?>
+        <?php echo pager(site_url('expenses/status/' . $this->uri->segment(3)), 'mdl_expenses'); ?>
     </div>
 
     <div class="headerbar-item pull-right visible-lg">
@@ -51,7 +51,7 @@
     <div class="collapse clearfix" id="ip-submenu-collapse">
 
         <div class="submenu-row">
-            <?php echo pager(site_url('invoices/status/' . $this->uri->segment(3)), 'mdl_invoices'); ?>
+            <?php echo pager(site_url('expenses/status/' . $this->uri->segment(3)), 'mdl_expenses'); ?>
         </div>
 
         <div class="submenu-row">
@@ -88,6 +88,6 @@
 
 <div id="content" class="table-content">
     <div id="filter_results">
-        <?php $this->layout->load_view('invoices/partial_invoice_table', array('invoices' => $invoices)); ?>
+        <?php $this->layout->load_view('expenses/partial_expense_table', array('expenses' => $expenses)); ?>
     </div>
 </div>

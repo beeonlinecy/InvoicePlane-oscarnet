@@ -14,7 +14,7 @@ if (! defined('BASEPATH')) {
  */
 
 #[AllowDynamicProperties]
-class Mdl_Invoices extends Response_Model
+class Mdl_Expenses extends Response_Model
 {
     public $table = 'ip_invoices';
 
@@ -31,22 +31,22 @@ class Mdl_Invoices extends Response_Model
             '1' => [
                 'label' => trans('draft'),
                 'class' => 'draft',
-                'href'  => 'invoices/status/draft',
+                'href'  => 'expenses/status/draft',
             ],
             '2' => [
                 'label' => trans('sent'),
                 'class' => 'sent',
-                'href'  => 'invoices/status/sent',
+                'href'  => 'expenses/status/sent',
             ],
             '3' => [
                 'label' => trans('viewed'),
                 'class' => 'viewed',
-                'href'  => 'invoices/status/viewed',
+                'href'  => 'expenses/status/viewed',
             ],
             '4' => [
                 'label' => trans('paid'),
                 'class' => 'paid',
-                'href'  => 'invoices/status/paid',
+                'href'  => 'expenses/status/paid',
             ],
         ];
     }
