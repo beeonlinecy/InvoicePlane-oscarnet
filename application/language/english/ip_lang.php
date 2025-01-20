@@ -1,4 +1,5 @@
 <?php
+
 $lang = [
     'account_information'                          => 'Account Information',
     'active'                                       => 'Active',
@@ -336,7 +337,7 @@ $lang = [
     'no_overdue_invoices'                          => 'No overdue Invoices',
     'no_quotes_requiring_approval'                 => 'There are no quotes requiring approval.',
     'no_updates_available'                         => 'No updates available.',
-		'no_update_invoice_due_date_mail'							 => 'Disable the change of invoice date and due date before emailing',
+    'no_update_invoice_due_date_mail'              => 'Disable the change of invoice date and due date before emailing',
     'none'                                         => 'None',
     'note'                                         => 'Note',
     'notes'                                        => 'Notes',
@@ -572,7 +573,7 @@ $lang = [
     'text'                                         => 'Text',
     'theme'                                        => 'Theme',
     'this_month'                                   => 'This Month',
-    'past_month'                              	   => 'Past Month',
+    'past_month'                                   => 'Past Month',
     'this_quarter'                                 => 'This Quarter',
     'past_quarter'                                 => 'Past Quarter',
     'this_year'                                    => 'This Year',
@@ -637,35 +638,36 @@ $lang = [
     'zip_code'                                     => 'Zip Code',
 
     //Time Management
-    'default_hourly_rate'                          => 'Default hourly rate',
-    'add_task'                                     => 'Add task',
-    'tasks'                                        => 'Tasks',
-    'project'                                      => 'Project',
-    'projects'                                     => 'Projects',
-    'projects_form'                                => 'Projects',
-    'create_project'                               => 'Create Project',
-    'create_task'                                  => 'Create Task',
-    'view_projects'                                => 'View Projects',
-    'view_tasks'                                   => 'View Tasks',
-    'project_name'                                 => 'Project name',
-    'task_name'                                    => 'Task name',
-    'task_description'                             => 'Task description',
-    'task_price'                                   => 'Task price',
-    'tasks_form'                                   => 'Task form',
-    'new_task'                                     => 'New task',
-    'select_project'                               => 'Select project',
-    'task_finish_date'                             => 'Finish date',
-    'no_client'                                    => 'No client',
-    'alert_no_client_assigned'                     => 'No client assigned to this project.',
-    'not_started'                                  => 'Not started',
-    'in_progress'                                  => 'In progress',
-    'complete'                                     => 'Complete',
-    'alert_no_tasks_found'                         => 'No tasks found for this project.',
-    'alert_task_delete'                            => 'Caution! You want to delete a task that was used to generate an invoice.',
-    'info_task_readonly'                           => 'This task cannot be altered anymore because it is already invoiced.',
-    'enable_projects'                              => 'Enable the Projects module',
+    'default_hourly_rate'      => 'Default hourly rate',
+    'add_task'                 => 'Add task',
+    'tasks'                    => 'Tasks',
+    'project'                  => 'Project',
+    'projects'                 => 'Projects',
+    'projects_form'            => 'Projects',
+    'create_project'           => 'Create Project',
+    'create_task'              => 'Create Task',
+    'view_projects'            => 'View Projects',
+    'view_tasks'               => 'View Tasks',
+    'project_name'             => 'Project name',
+    'task_name'                => 'Task name',
+    'task_description'         => 'Task description',
+    'task_price'               => 'Task price',
+    'tasks_form'               => 'Task form',
+    'new_task'                 => 'New task',
+    'select_project'           => 'Select project',
+    'task_finish_date'         => 'Finish date',
+    'no_client'                => 'No client',
+    'alert_no_client_assigned' => 'No client assigned to this project.',
+    'not_started'              => 'Not started',
+    'in_progress'              => 'In progress',
+    'complete'                 => 'Complete',
+    'alert_no_tasks_found'     => 'No tasks found for this project.',
+    'alert_task_delete'        => 'Caution! You want to delete a task that was used to generate an invoice.',
+    'info_task_readonly'       => 'This task cannot be altered anymore because it is already invoiced.',
+    'enable_projects'          => 'Enable the Projects module',
 
     // Sumex
+
     'sumex_settings'                               => 'Sumex Settings',
     'birthdate'                                    => 'Birthdate',
     'gender'                                       => 'Gender',
@@ -731,22 +733,21 @@ $lang = [
     'sumex_veka'                                   => 'VEKA',
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
-<<<<<<< HEAD
+
     'include_tax'                                  => 'Tax is included in total',
-=======
+
 
     // Clients/Enums/ClientTitleEnum
-    'mr'                                           => 'mr',
-    'mrs'                                          => 'mrs',
-    'doctor'                                       => 'doctor',
-    'professor'                                    => 'professor',
-    'custom'                                       => 'custom',
+    'mr'        => 'mr',
+    'mrs'       => 'mrs',
+    'doctor'    => 'doctor',
+    'professor' => 'professor',
+    'custom'    => 'custom',
 
->>>>>>> 853c2aedbe0048b7449f4b84e3d587c233c62f50
     // Errors
-    'validator_fail'                               => 'Unable to process field %s: %s',
+    'validator_fail' => 'Unable to process field %s: %s',
 
     // Types
-    'true'                                         => 'True',
-    'false'                                        => 'False'
+    'true'  => 'True',
+    'false' => 'False',
 ];
