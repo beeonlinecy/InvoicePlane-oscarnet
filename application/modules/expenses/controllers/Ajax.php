@@ -259,7 +259,7 @@ class Ajax extends Admin_Controller
         echo json_encode($item);
     }
 
-    public function modal_create_invoice()
+    public function modal_create_expense()
     {
         $this->load->module('layout');
         $this->load->model('invoice_groups/mdl_invoice_groups');
