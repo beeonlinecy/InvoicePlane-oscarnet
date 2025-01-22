@@ -407,11 +407,11 @@ class Mdl_Expenses extends Response_Model
      *
      * @return mixed
      */
-    public function get_invoice_number($invoice_group_id)
+    public function get_expense_number($expense_group_id)
     {
         $this->load->model('invoice_groups/mdl_invoice_groups');
 
-        return $this->mdl_invoice_groups->generate_invoice_number($invoice_group_id);
+        return $this->mdl_invoice_groups->generate_invoice_number($expense_group_id);
     }
 
     /**
@@ -461,9 +461,9 @@ class Mdl_Expenses extends Response_Model
     /**
      * @param int $invoice_id
      */
-    public function delete($invoice_id)
+    public function delete($expense_id)
     {
-        parent::delete($invoice_id);
+        parent::delete($expense_id);
 
         $this->load->helper('orphan');
         delete_orphans();
