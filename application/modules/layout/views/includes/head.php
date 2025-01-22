@@ -44,7 +44,7 @@
             });
         });
         $(document).on('click', '.create-expense', function () {
-            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_create_expense'); ?>");
+            $('#modal-placeholder').load("<?php echo site_url('expenses/ajax/modal_create_expense'); ?>");
         });
 
         $(document).on('click', '.create-invoice', function () {
