@@ -1,7 +1,7 @@
 <script>
     $(function () {
-        // Display the create invoice modal
-        $('#create-invoice').modal('show');
+        // Display the create expense modal
+        $('#create-expense').modal('show');
 
         // Enable select2 for all selects
         $('.simple-select').select2();
