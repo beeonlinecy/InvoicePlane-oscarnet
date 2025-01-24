@@ -16,11 +16,11 @@ if (! defined('BASEPATH')) {
 #[AllowDynamicProperties]
 class Mdl_Expenses extends Response_Model
 {
-    public $table = 'ip_invoices';
+    public $table = 'ip_expenses';
 
-    public $primary_key = 'ip_invoices.invoice_id';
+    public $primary_key = 'ip_expenses.id';
 
-    public $date_modified_field = 'invoice_date_modified';
+    public $date_modified_field = 'expense_date_modified';
 
     /**
      * @return array
@@ -47,7 +47,7 @@ class Mdl_Expenses extends Response_Model
                 'label' => trans('paid'),
                 'class' => 'paid',
                 'href'  => 'expenses/status/paid',
-            ],
+            ],              
         ];
     }
 
