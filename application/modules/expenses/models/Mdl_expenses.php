@@ -18,7 +18,7 @@ class Mdl_Expenses extends Response_Model
 {
     public $table = 'ip_expenses';
 
-    public $primary_key = 'ip_expenses.id';
+    public $primary_key = 'ip_expenses.expense_id';
 
     public $date_modified_field = 'expense_date_modified';
 
@@ -57,20 +57,7 @@ class Mdl_Expenses extends Response_Model
             SQL_CALC_FOUND_ROWS
             ip_quotes.*,
             ip_users.*,
-            ip_clients.*,
-            ip_invoice_sumex.*,
-            ip_invoice_amounts.invoice_amount_id,
-            IFnull(ip_invoice_amounts.invoice_item_subtotal, '0.00') AS invoice_item_subtotal,
-            IFnull(ip_invoice_amounts.invoice_item_tax_total, '0.00') AS invoice_item_tax_total,
-            IFnull(ip_invoice_amounts.invoice_tax_total, '0.00') AS invoice_tax_total,
-            IFnull(ip_invoice_amounts.invoice_total, '0.00') AS invoice_total,
-            IFnull(ip_invoice_amounts.invoice_paid, '0.00') AS invoice_paid,
-            IFnull(ip_invoice_amounts.invoice_balance, '0.00') AS invoice_balance,
-            ip_invoice_amounts.invoice_sign AS invoice_sign,
-            (CASE WHEN ip_invoices.invoice_status_id NOT IN (1,4) AND DATEDIFF(NOW(), invoice_date_due) > 0 THEN 1 ELSE 0 END) is_overdue,
-            DATEDIFF(NOW(), invoice_date_due) AS days_overdue,
-            (CASE (SELECT COUNT(*) FROM ip_invoices_recurring WHERE ip_invoices_recurring.invoice_id = ip_invoices.invoice_id and ip_invoices_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS invoice_is_recurring,
-            ip_invoices.*", false);
+            ip_clients.*,", false);
     }
 
     public function default_order_by()
@@ -80,11 +67,11 @@ class Mdl_Expenses extends Response_Model
 
     public function default_join()
     {
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
-        $this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
-        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
-        $this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
-        $this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
+        //$this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
+        //$this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
+        //$this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
+        //$this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
+        //$this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
     }
 
     /**
@@ -192,7 +179,7 @@ class Mdl_Expenses extends Response_Model
                 $this->db->insert('ip_invoice_tax_rates', $db_array);
             }
         }
-
+        
         if ($invoice_group !== '0') {
             $this->load->model('invoice_groups/mdl_invoice_groups');
             $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
@@ -204,7 +191,7 @@ class Mdl_Expenses extends Response_Model
                 $this->db->insert('ip_invoice_sumex', $db_array);
             }
         }
-
+        
         return $invoice_id;
     }
 
