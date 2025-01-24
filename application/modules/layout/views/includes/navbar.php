@@ -53,6 +53,19 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;
+                        <span class="hidden-md"><?php _trans('expenses'); ?></span>
+                        <i class="visible-md-inline fa fa-file-text"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#" class="create-expense"><?php _trans('create_expense'); ?></a></li>
+                        <li><?php echo anchor('expenses/index', trans('view_expenses')); ?></li>
+                        <li><?php echo anchor('expenses/recurring/index', trans('view_recurring_expenses')); ?></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;
                         <span class="hidden-md"><?php _trans('payments'); ?></span>
                         <i class="visible-md-inline fa fa-credit-card"></i>
                     </a>

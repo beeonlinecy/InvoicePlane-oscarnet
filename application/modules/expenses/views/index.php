@@ -7,7 +7,7 @@
                 data-toggle="collapse" data-target="#ip-submenu-collapse">
             <i class="fa fa-bars"></i> <?php _trans('submenu'); ?>
         </button>
-        <a class="create-invoice btn btn-sm btn-primary" href="#">
+        <a class="create-expense btn btn-sm btn-primary" href="#">
             <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
