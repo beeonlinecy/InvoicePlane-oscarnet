@@ -29,8 +29,8 @@
             ?>
             <tr>
                 <td>
-                    <span class="label <?php echo $expense_statuses[$expense->invoice_status_id]['class']; ?>">
-                        <?php echo $expense_statuses[$expense->invoice_status_id]['label'];
+                    <span class="label <?php echo $expense_statuses[$expense->expense_status_id]['class']; ?>">
+                        <?php echo $expense_statuses[$expense->expense_status_id]['label'];
                         if ($expense->invoice_sign == '-1') { ?>
                             &nbsp;<i class="fa fa-credit-invoice" title="<?php echo trans('credit_invoice') ?>"></i>
                         <?php } ?>

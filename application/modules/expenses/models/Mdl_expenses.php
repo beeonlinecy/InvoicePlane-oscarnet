@@ -55,14 +55,13 @@ class Mdl_Expenses extends Response_Model
     {
         $this->db->select("
             SQL_CALC_FOUND_ROWS
-            ip_quotes.*,
-            ip_users.*,
-            ip_clients.*,", false);
+            IFnull(ip_expenses.expense_total, '0.00') AS expense_total,
+           ", false);
     }
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoices.invoice_id DESC');
+        $this->db->order_by('ip_expenses.expense_id DESC');
     }
 
     public function default_join()
@@ -332,13 +331,13 @@ class Mdl_Expenses extends Response_Model
         $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
         $db_array['invoice_terms'] = get_setting('default_invoice_terms');
 
-        if ( ! isset($db_array['invoice_status_id'])) {
-            $db_array['invoice_status_id'] = 1;
+        if ( ! isset($db_array['expense_status_id'])) {
+            $db_array['expense_status_id'] = 1;
         }
 
         $generate_invoice_number = get_setting('generate_invoice_number_for_draft');
 
-        if ($db_array['invoice_status_id'] === 1 && $generate_invoice_number == 1) {
+        if ($db_array['expense_status_id'] === 1 && $generate_invoice_number == 1) {
             $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
         } elseif ($db_array['invoice_status_id'] != 1) {
             $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
