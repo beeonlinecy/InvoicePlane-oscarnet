@@ -7,7 +7,7 @@
             <th><?php _trans('expense'); ?></th>
             <th><?php _trans('created'); ?></th>
             <th><?php _trans('due_date'); ?></th>
-            <th><?php _trans('client_name'); ?></th>
+            <th><?php _trans('company_name'); ?></th>
             <th class="amount"><?php _trans('amount'); ?></th>
             <th class="amount last"><?php _trans('balance'); ?></th>
             <th><?php _trans('options'); ?></th>
@@ -32,13 +32,13 @@
                     <span class="label <?php echo $expense_statuses[$expense->expense_status_id]['class']; ?>">
                         <?php echo $expense_statuses[$expense->expense_status_id]['label'];
                         //if ($expense->invoice_sign == '-1') { ?>
-                            &nbsp;<i class="fa fa-credit-invoice" title="<?php echo trans('credit_invoice') ?>"></i>
+                            &nbsp;<i class="fa fa-credit-invoice" title="<?php echo _trans('credit_invoice') ?>"></i>
                         <?php //} ?>
                         <?php if ($expense->is_read_only) { ?>
                             &nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i>
                         <?php } ?>
                         <?php if ($expense->expense_is_recurring) { ?>
-                            &nbsp;<i class="fa fa-refresh" title="<?php echo trans('recurring') ?>"></i>
+                            &nbsp;<i class="fa fa-refresh" title="<?php echo _trans('recurring') ?>"></i>
                         <?php } ?>
                     </span>
                 </td>
@@ -63,7 +63,7 @@
                 <td>
                     <a href="<?php echo site_url('companies/view/' . $expense->company_id); ?>"
                        title="<?php _trans('view_company'); ?>">
-                        <?php _htmlsc(format_client($expense)); ?>
+                        <?php _htmlsc($expense->company_name); ?>
                     </a>
                 </td>
 
@@ -85,41 +85,41 @@
                         <ul class="dropdown-menu">
                             <?php if ($expense->is_read_only != 1) { ?>
                                 <li>
-                                    <a href="<?php echo site_url('expenses/view/' . $expense->invoice_id); ?>">
+                                    <a href="<?php echo site_url('expenses/view/' . $expense->expense_id); ?>">
                                         <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
                                     </a>
                                 </li>
                             <?php } ?>
                             <li>
-                                <a href="<?php echo site_url('expenses/generate_pdf/' . $expense->invoice_id); ?>"
+                                <a href="<?php echo site_url('expenses/generate_pdf/' . $expense->expense_id); ?>"
                                    target="_blank">
                                     <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('mailer/invoice/' . $expense->invoice_id); ?>">
+                                <a href="<?php echo site_url('mailer/invoice/' . $expense->expense_id); ?>">
                                     <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>
                                 </a>
                             </li>
                             <li>
                                 <a href="#" class="invoice-add-payment"
-                                   data-invoice-id="<?php echo $expense->invoice_id; ?>"
-                                   data-invoice-balance="<?php echo $expense->invoice_balance; ?>"
+                                   data-invoice-id="<?php echo $expense->expense_id; ?>"
+                                   data-invoice-balance="<?php //echo $expense->invoice_balance; ?>"
                                    data-invoice-payment-method="<?php echo $expense->payment_method; ?>">
                                     <i class="fa fa-money fa-margin"></i>
                                     <?php _trans('enter_payment'); ?>
                                 </a>
                             </li>
                             <?php if (
-                                $invoice->invoice_status_id == 1 ||
+                                $expense->expense_status_id == 1 ||
                                 ($this->config->item('enable_invoice_deletion') === true && $expense->is_read_only != 1)
                             ) { ?>
                                 <li>
-                                    <form action="<?php echo site_url('invoices/delete/' . $expense->invoice_id); ?>"
+                                    <form action="<?php echo site_url('expenses/delete/' . $expense->expense_id); ?>"
                                           method="POST">
                                         <?php _csrf_field(); ?>
                                         <button type="submit" class="dropdown-button"
-                                                onclick="return confirm('<?php _trans('delete_invoice_warning'); ?>');">
+                                                onclick="return confirm('<?php _trans('delete_expense_warning'); ?>');">
                                             <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
                                         </button>
                                     </form>

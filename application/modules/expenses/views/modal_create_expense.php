@@ -76,7 +76,7 @@
                    value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
 
             <div class="form-group has-feedback">
-                <label for="create_expense_client_id"><?php _trans('client'); ?></label>
+                <label for="create_expense_client_id"><?php _trans('company'); ?></label>
                 <div class="input-group">
                     <select name="client_id" id="create_expense_client_id" class="client-id-select form-control"
                             autofocus="autofocus" required>
