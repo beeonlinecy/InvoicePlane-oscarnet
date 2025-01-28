@@ -55,7 +55,8 @@ class Mdl_Expenses extends Response_Model
     {
         $this->db->select("
             SQL_CALC_FOUND_ROWS
-            IFnull(ip_expenses.expense_total, '0.00') AS expense_total,
+            (CASE (SELECT COUNT(*) FROM ip_expenses_recurring WHERE ip_expenses_recurring.expense_id = ip_expenses.expense_id and ip_expenses_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS expense_is_recurring,
+            ip_expenses.*,
            ", false);
     }
 

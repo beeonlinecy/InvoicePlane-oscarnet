@@ -31,50 +31,50 @@
                 <td>
                     <span class="label <?php echo $expense_statuses[$expense->expense_status_id]['class']; ?>">
                         <?php echo $expense_statuses[$expense->expense_status_id]['label'];
-                        if ($expense->invoice_sign == '-1') { ?>
+                        //if ($expense->invoice_sign == '-1') { ?>
                             &nbsp;<i class="fa fa-credit-invoice" title="<?php echo trans('credit_invoice') ?>"></i>
-                        <?php } ?>
+                        <?php //} ?>
                         <?php if ($expense->is_read_only) { ?>
                             &nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i>
                         <?php } ?>
-                        <?php if ($expense->invoice_is_recurring) { ?>
+                        <?php if ($expense->expense_is_recurring) { ?>
                             &nbsp;<i class="fa fa-refresh" title="<?php echo trans('recurring') ?>"></i>
                         <?php } ?>
                     </span>
                 </td>
 
                 <td>
-                    <a href="<?php echo site_url('expenses/view/' . $expense->invoice_id); ?>"
+                    <a href="<?php echo site_url('expenses/view/' . $expense->expense_id); ?>"
                        title="<?php _trans('edit'); ?>">
-                        <?php echo($expense->invoice_number ? $expense->invoice_number : $expense->invoice_id); ?>
+                        <?php echo($expense->expense_id); ?>
                     </a>
                 </td>
 
                 <td>
-                    <?php echo date_from_mysql($expense->invoice_date_created); ?>
+                    <?php echo date_from_mysql($expense->expense_date_created); ?>
                 </td>
 
                 <td>
-                    <span class="<?php if ($expense->is_overdue) { ?>font-overdue<?php } ?>">
-                        <?php echo date_from_mysql($expense->invoice_date_due); ?>
+                    <span class="<?php //if ($expense->is_overdue) { ?>font-overdue<?php //} ?>">
+                        <?php //echo date_from_mysql($expense->invoice_date_due); ?>
                     </span>
                 </td>
 
                 <td>
-                    <a href="<?php echo site_url('clients/view/' . $expense->client_id); ?>"
-                       title="<?php _trans('view_client'); ?>">
+                    <a href="<?php echo site_url('companies/view/' . $expense->company_id); ?>"
+                       title="<?php _trans('view_company'); ?>">
                         <?php _htmlsc(format_client($expense)); ?>
                     </a>
                 </td>
 
-                <td class="amount <?php if ($expense->invoice_sign == '-1') {
-                    echo 'text-danger';
-                }; ?>">
-                    <?php echo format_currency($expense->invoice_total); ?>
+                <td class="amount <?php //if ($expense->invoice_sign == '-1') {
+                    //echo 'text-danger';
+                //}; ?>">
+                    <?php echo format_currency($expense->expense_total); ?>
                 </td>
 
                 <td class="amount last">
-                    <?php echo format_currency($expense->invoice_balance); ?>
+                    <?php //echo format_currency($expense->invoice_balance); ?>
                 </td>
 
                 <td>
