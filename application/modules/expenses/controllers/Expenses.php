@@ -217,7 +217,7 @@ public function download($invoice)
                     'currency_symbol_placement' => get_setting('currency_symbol_placement'),
                     'decimal_point' => get_setting('decimal_point'),
                 ],
-                'invoice_statuses' => $this->mdl_invoices->statuses(),
+                'expense_statuses' => $this->mdl_expenses->statuses(),
                 'payment_cf_exist' => $payment_cf_exist,
             ]
         );
