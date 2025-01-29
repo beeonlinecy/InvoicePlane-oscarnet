@@ -76,9 +76,9 @@
                    value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
 
             <div class="form-group has-feedback">
-                <label for="create_expense_client_id"><?php _trans('company'); ?></label>
+                <label for="create_expense_company_id"><?php _trans('company'); ?></label>
                 <div class="input-group">
-                    <select name="client_id" id="create_expense_client_id" class="client-id-select form-control"
+                    <select name="company_id" id="create_expense_company_id" class="company-id-select form-control"
                             autofocus="autofocus" required>
                         <?php if (!empty($client)) : ?>
                             <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
@@ -105,13 +105,6 @@
             </div>
 
             <div class="form-group">
-                <label for="expense_password"><?php _trans('expense_password'); ?></label>
-                <input type="text" name="expense_password" id="expense_password" class="form-control"
-                       value="<?php echo get_setting('expense_pre_password') == '' ? '' : get_setting('expense_pre_password'); ?>"
-                       style="margin: 0 auto;" autocomplete="off">
-            </div>
-
-            <div class="form-group">
                 <label for="invoice_group_id"><?php _trans('invoice_group'); ?></label>
                 <select name="invoice_group_id" id="invoice_group_id"
                 	class="form-control simple-select" data-minimum-results-for-search="Infinity" required>
@@ -122,6 +115,13 @@
                         </option>
                     <?php } ?>
                 </select>
+            </div>
+
+            <div class="form-group">
+                <label for="expense_total"><?php _trans('expense_total'); ?></label>
+                <input type="text" name="expense_total" id="expense_total" class="form-control amount"
+                       value="0<?php //echo get_setting('expense_pre_password') == '' ? '' : get_setting('expense_pre_password'); ?>"
+                       style="margin: 0 auto;" autocomplete="off">
             </div>
 
         </div>
