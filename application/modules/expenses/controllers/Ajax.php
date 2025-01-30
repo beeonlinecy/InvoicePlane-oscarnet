@@ -209,14 +209,14 @@ class Ajax extends Admin_Controller
 
     public function create()
     {
-        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('expenses/mdl_expenses');
 
-        if ($this->mdl_invoices->run_validation()) {
-            $invoice_id = $this->mdl_invoices->create();
+        if ($this->mdl_expenses->run_validation()) {
+            $expense_id = $this->mdl_expenses->create();
 
             $response = [
                 'success' => 1,
-                'invoice_id' => $invoice_id,
+                'expense_id' => $expense_id,
             ];
         } else {
             $this->load->helper('json_error');

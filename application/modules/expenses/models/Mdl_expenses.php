@@ -148,42 +148,44 @@ class Mdl_Expenses extends Response_Model
 
     /**
      * @param null $db_array
-     * @param bool $include_invoice_tax_rates
+     * @param bool $include_expense_tax_rates
      *
      * @return int|null
      */
-    public function create($db_array = null, $include_invoice_tax_rates = true)
+    public function create($db_array = null, $include_expense_tax_rates = true)
     {
-        $invoice_id = parent::save(null, $db_array);
+        $expense_id = parent::save(null, $db_array);
 
-        $inv = $this->where('ip_invoices.invoice_id', $invoice_id)->get()->row();
-        $invoice_group = $inv->invoice_group_id;
+        $exp = $this->where('ip_expenses.expense_id', $expense_id)->get()->row();
+        $expense_group = $exp->expense_group_id;
 
         // Create an invoice amount record
         $db_array = [
-            'invoice_id' => $invoice_id,
+            'expense_id' => $expense_id,
         ];
 
-        $this->db->insert('ip_invoice_amounts', $db_array);
+        $this->db->insert('ip_expense_amounts', $db_array);
 
         if ($include_invoice_tax_rates) {
             // Create the default invoice tax record if applicable
             if (get_setting('default_invoice_tax_rate')) {
                 $db_array = array(
-                    'invoice_id' => $invoice_id,
+                    'expense_id' => $expense_id,
                     'tax_rate_id' => get_setting('default_invoice_tax_rate'),
                     'include_item_tax' => get_setting('default_include_item_tax', 0),
                     'include_tax' => get_setting('default_include_tax', 0),
-                    'invoice_tax_rate_amount' => 0
+                    'expense_tax_rate_amount' => 0
                 );
 
-                $this->db->insert('ip_invoice_tax_rates', $db_array);
+                $this->db->insert('ip_expense_tax_rates', $db_array);
             }
         }
         
         if ($invoice_group !== '0') {
             $this->load->model('invoice_groups/mdl_invoice_groups');
             $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
+            
+            /*
             if (preg_match('/sumex/i', $invgroup->invoice_group_name)) {
                 // If the Invoice Group includes "Sumex", make the invoice a Sumex one
                 $db_array = [
@@ -191,9 +193,10 @@ class Mdl_Expenses extends Response_Model
                 ];
                 $this->db->insert('ip_invoice_sumex', $db_array);
             }
+            */
         }
         
-        return $invoice_id;
+        return $expense_id;
     }
 
     /**
