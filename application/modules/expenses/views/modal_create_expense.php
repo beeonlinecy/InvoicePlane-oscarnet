@@ -30,7 +30,7 @@
         // Creates the invoice
         $('#expense_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
-            // will create the new client if necessar
+            // will create the new client if necessary
             $.post("<?php echo site_url('expenses/ajax/create'); ?>", {
                     client_id: $('#create_expense_client_id').val(),
                     expense_date_created: $('#expense_date_created').val(),
