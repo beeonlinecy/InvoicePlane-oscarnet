@@ -79,9 +79,9 @@
                 <label for="create_expense_company_id"><?php _trans('company'); ?></label>
                 <div class="input-group">
                     <select name="company_id" id="create_expense_company_id" class="company-id-select form-control"
-                            autofocus="autofocus" required>
-                        <?php if (!empty($client)) : ?>
-                            <option value="<?php echo $client->client_id; ?>"><?php _htmlsc(format_client($client)); ?></option>
+                            autofocus="autofocus">
+                        <?php if (!empty($company)) : ?>
+                            <option value="<?php echo $company->company_id; ?>"><?php _htmlsc(format_client($company)); ?></option>
                         <?php endif; ?>
                     </select>
                     <span id="toggle_permissive_search_clients" class="input-group-addon"
