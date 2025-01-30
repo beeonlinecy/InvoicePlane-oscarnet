@@ -16,24 +16,24 @@ require_once dirname(__FILE__, 2) . '/Enums/ClientTitleEnum.php';
  */
 
 #[AllowDynamicProperties]
-class Clients extends Admin_Controller
+class Companies extends Admin_Controller
 {
     private const CLIENT_TITLE = 'client_title';
 
     /**
-     * Clients constructor.
+     * companies constructor.
      */
     public function __construct()
     {
         parent::__construct();
 
-        $this->load->model('mdl_clients');
+        $this->load->model('mdl_companies');
     }
 
     public function index()
     {
-        // Display active clients by default
-        redirect('clients/status/active');
+        // Display active companies by default
+        redirect('companies/status/active');
     }
 
     /**
@@ -44,20 +44,20 @@ class Clients extends Admin_Controller
     {
         if (is_numeric(array_search($status, ['active', 'inactive']))) {
             $function = 'is_' . $status;
-            $this->mdl_clients->{$function}();
+            $this->mdl_companies->{$function}();
         }
 
-        $this->mdl_clients->with_total_balance()->paginate(site_url('clients/status/' . $status), $page);
-        $clients = $this->mdl_clients->result();
+        $this->mdl_companies->with_total_balance()->paginate(site_url('companies/status/' . $status), $page);
+        $companies = $this->mdl_companies->result();
 
         $this->layout->set([
-            'records'            => $clients,
+            'records'            => $companies,
             'filter_display'     => true,
-            'filter_placeholder' => trans('filter_clients'),
-            'filter_method'      => 'filter_clients',
+            'filter_placeholder' => trans('filter_companies'),
+            'filter_method'      => 'filter_companies',
         ]);
 
-        $this->layout->buffer('content', 'clients/index');
+        $this->layout->buffer('content', 'companies/index');
         $this->layout->render();
     }
 
@@ -67,7 +67,7 @@ class Clients extends Admin_Controller
     public function form($id = null)
     {
         if ($this->input->post('btn_cancel')) {
-            redirect('clients');
+            redirect('companies');
         }
 
         $new_client = false;
@@ -75,30 +75,30 @@ class Clients extends Admin_Controller
 
         // Set validation rule based on is_update
         if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
-            $check = $this->db->get_where('ip_clients', [
+            $check = $this->db->get_where('ip_companies', [
                 'client_name'    => $this->input->post('client_name'),
                 'client_surname' => $this->input->post('client_surname'),
             ])->result();
 
             if ( ! empty($check)) {
                 $this->session->set_flashdata('alert_error', trans('client_already_exists'));
-                redirect('clients/form');
+                redirect('companies/form');
             } else {
                 $new_client = true;
             }
         }
 
-        if ($this->mdl_clients->run_validation()) {
+        if ($this->mdl_companies->run_validation()) {
             $client_title_custom = $this->input->post('client_title_custom');
             if ($client_title_custom !== '') {
                 $_POST[self::CLIENT_TITLE] = $client_title_custom;
-                $this->mdl_clients->set_form_value(self::CLIENT_TITLE, $client_title_custom);
+                $this->mdl_companies->set_form_value(self::CLIENT_TITLE, $client_title_custom);
             }
-            $id = $this->mdl_clients->save($id);
+            $id = $this->mdl_companies->save($id);
 
             if ($new_client) {
-                $this->load->model('user_clients/mdl_user_clients');
-                $this->mdl_user_clients->get_users_all_clients();
+                $this->load->model('user_companies/mdl_user_companies');
+                $this->mdl_user_companies->get_users_all_companies();
             }
 
             $this->load->model('custom_fields/mdl_client_custom');
@@ -107,20 +107,20 @@ class Clients extends Admin_Controller
             if ($result !== true) {
                 $this->session->set_flashdata('alert_error', $result);
                 $this->session->set_flashdata('alert_success', null);
-                redirect('clients/form/' . $id);
+                redirect('companies/form/' . $id);
 
                 return;
             }
-            redirect('clients/view/' . $id);
+            redirect('companies/view/' . $id);
         }
 
         if ($id && ! $this->input->post('btn_submit')) {
-            if ( ! $this->mdl_clients->prep_form($id)) {
+            if ( ! $this->mdl_companies->prep_form($id)) {
                 show_404();
             }
 
             $this->load->model('custom_fields/mdl_client_custom');
-            $this->mdl_clients->set_form_value('is_update', true);
+            $this->mdl_companies->set_form_value('is_update', true);
 
             $client_custom = $this->mdl_client_custom->where('client_id', $id)->get();
 
@@ -130,13 +130,13 @@ class Clients extends Admin_Controller
                 unset($client_custom->client_id, $client_custom->client_custom_id);
 
                 foreach ($client_custom as $key => $val) {
-                    $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
+                    $this->mdl_companies->set_form_value('custom[' . $key . ']', $val);
                 }
             }
         } elseif ($this->input->post('btn_submit')) {
             if ($this->input->post('custom')) {
                 foreach ($this->input->post('custom') as $key => $val) {
-                    $this->mdl_clients->set_form_value('custom[' . $key . ']', $val);
+                    $this->mdl_companies->set_form_value('custom[' . $key . ']', $val);
                 }
             }
         }
@@ -160,7 +160,7 @@ class Clients extends Admin_Controller
             foreach ($fields as $fvalue) {
                 if ($fvalue->client_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
-                    $this->mdl_clients->set_form_value(
+                    $this->mdl_companies->set_form_value(
                         'custom[' . $cfield->custom_field_id . ']',
                         $fvalue->client_custom_fieldvalue
                     );
@@ -176,12 +176,12 @@ class Clients extends Admin_Controller
             'custom_fields'        => $custom_fields,
             'custom_values'        => $custom_values,
             'countries'            => get_country_list(trans('cldr')),
-            'selected_country'     => $this->mdl_clients->form_value('client_country') ?: get_setting('default_country'),
+            'selected_country'     => $this->mdl_companies->form_value('client_country') ?: get_setting('default_country'),
             'languages'            => get_available_languages(),
             'client_title_choices' => $this->get_client_title_choices(),
         ]);
 
-        $this->layout->buffer('content', 'clients/form');
+        $this->layout->buffer('content', 'companies/form');
         $this->layout->render();
     }
 
@@ -190,18 +190,18 @@ class Clients extends Admin_Controller
      */
     public function view($client_id, $activeTab = 'detail', $page = 0)
     {
-        $this->load->model('clients/mdl_client_notes');
+        $this->load->model('companies/mdl_client_notes');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
 
-        $client = $this->mdl_clients
+        $client = $this->mdl_companies
             ->with_total()
             ->with_total_balance()
             ->with_total_paid()
-            ->where('ip_clients.client_id', $client_id)
+            ->where('ip_companies.client_id', $client_id)
             ->get()->row();
 
         $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
@@ -212,9 +212,9 @@ class Clients extends Admin_Controller
             show_404();
         }
 
-        $this->mdl_invoices->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/invoices'), $page, 5);
-        $this->mdl_quotes->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/quotes'), $page, 5);
-        $this->mdl_payments->by_client($client_id)->paginate(site_url('clients/view/' . $client_id . '/payments'), $page, 5);
+        $this->mdl_invoices->by_client($client_id)->paginate(site_url('companies/view/' . $client_id . '/invoices'), $page, 5);
+        $this->mdl_quotes->by_client($client_id)->paginate(site_url('companies/view/' . $client_id . '/quotes'), $page, 5);
+        $this->mdl_payments->by_client($client_id)->paginate(site_url('companies/view/' . $client_id . '/payments'), $page, 5);
 
         $this->layout->set([
             'client'           => $client,
@@ -243,11 +243,11 @@ class Clients extends Admin_Controller
             ],
             [
                 'partial_notes',
-                'clients/partial_notes',
+                'companies/partial_notes',
             ],
             [
                 'content',
-                'clients/view',
+                'companies/view',
             ],
         ]);
 
@@ -259,8 +259,8 @@ class Clients extends Admin_Controller
      */
     public function delete($client_id)
     {
-        $this->mdl_clients->delete($client_id);
-        redirect('clients');
+        $this->mdl_companies->delete($client_id);
+        redirect('companies');
     }
 
     private function get_client_title_choices(): array
