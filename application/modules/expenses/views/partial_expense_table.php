@@ -31,9 +31,9 @@
                 <td>
                     <span class="label <?php echo $expense_statuses[$expense->expense_status_id]['class']; ?>">
                         <?php echo $expense_statuses[$expense->expense_status_id]['label'];
-                        //if ($expense->invoice_sign == '-1') { ?>
+                        if ($expense->expense_sign == '-1') { ?>
                             &nbsp;<i class="fa fa-credit-invoice" title="<?php echo _trans('credit_invoice') ?>"></i>
-                        <?php //} ?>
+                        <?php } ?>
                         <?php if ($expense->is_read_only) { ?>
                             &nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i>
                         <?php } ?>

@@ -56,7 +56,9 @@ class Mdl_Expenses extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_companies.*,
+            IFnull(ip_expense_amounts.expense_total, '0.00') AS expense_total,
             (CASE (SELECT COUNT(*) FROM ip_expenses_recurring WHERE ip_expenses_recurring.expense_id = ip_expenses.expense_id and ip_expenses_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS expense_is_recurring,
+            ip_expense_amounts.expense_sign AS expense_sign,
             ip_expenses.*,
            ", false);
     }
@@ -70,7 +72,7 @@ class Mdl_Expenses extends Response_Model
     {
         $this->db->join('ip_companies', 'ip_companies.company_id = ip_expenses.company_id');
         //$this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
-        //$this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id', 'left');
+        $this->db->join('ip_expense_amounts', 'ip_expense_amounts.expense_id = ip_expenses.expense_id', 'left');
         //$this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
         //$this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
     }
