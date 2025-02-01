@@ -1,6 +1,6 @@
 <div id="headerbar">
 
-    <h1 class="headerbar-title"><?php _trans('clients'); ?></h1>
+    <h1 class="headerbar-title"><?php _trans('companies'); ?></h1>
 
     <div class="headerbar-item pull-right">
         <button type="button" class="btn btn-default btn-sm submenu-toggle hidden-lg"
@@ -13,7 +13,7 @@
     </div>
 
     <div class="headerbar-item pull-right visible-lg">
-        <?php echo pager(site_url('clients/status/' . $this->uri->segment(3)), 'mdl_clients'); ?>
+        <?php echo pager(site_url('companies/status/' . $this->uri->segment(3)), 'mdl_companies'); ?>
     </div>
 
     <div class="headerbar-item pull-right visible-lg">
@@ -44,15 +44,15 @@
 
         <div class="submenu-row">
             <div class="btn-group btn-group-sm index-options">
-                <a href="<?php echo site_url('clients/status/active'); ?>"
+                <a href="<?php echo site_url('companies/status/active'); ?>"
                    class="btn <?php echo $this->uri->segment(3) == 'active' || !$this->uri->segment(3) ? 'btn-primary' : 'btn-default' ?>">
                     <?php _trans('active'); ?>
                 </a>
-                <a href="<?php echo site_url('clients/status/inactive'); ?>"
+                <a href="<?php echo site_url('companies/status/inactive'); ?>"
                    class="btn  <?php echo $this->uri->segment(3) == 'inactive' ? 'btn-primary' : 'btn-default' ?>">
                     <?php _trans('inactive'); ?>
                 </a>
-                <a href="<?php echo site_url('clients/status/all'); ?>"
+                <a href="<?php echo site_url('companies/status/all'); ?>"
                    class="btn  <?php echo $this->uri->segment(3) == 'all' ? 'btn-primary' : 'btn-default' ?>">
                     <?php _trans('all'); ?>
                 </a>
@@ -67,7 +67,7 @@
     <?php $this->layout->load_view('layout/alerts'); ?>
 
     <div id="filter_results">
-        <?php $this->layout->load_view('clients/partial_client_table'); ?>
+        <?php $this->layout->load_view('companies/partial_company_table'); ?>
     </div>
 
 </div>

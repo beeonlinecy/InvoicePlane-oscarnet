@@ -1,6 +1,6 @@
 <script>
     $(function () {
-        const client_id = <?php echo $client->client_id; ?>;
+        const company_id = <?php echo $client->company_id; ?>;
         function add_delete_client_notes_click_event(){
             $('.delete_client_note').click(delete_client_note);
         }
@@ -15,7 +15,7 @@
                 // Reload all notes
                 $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
                     {
-                        client_id: client_id
+                        company_id: company_id
                     }, function (response) {
                         <?php echo IP_DEBUG ? 'console.log(response);' : ''; ?>
 
@@ -32,7 +32,7 @@
         }
         function delete_client_note(event) {
             $('#fullpage-loader').fadeIn(200);
-            $.post('<?php echo site_url('clients/ajax/delete_client_note'); ?>',
+            $.post('<?php echo site_url('companies/ajax/delete_client_note'); ?>',
                 {
                     client_note_id: $(this).attr('data-id')
                 }, function (data) {
@@ -42,9 +42,9 @@
         }
         $('#save_client_note').click(function () {
             $('#fullpage-loader').fadeIn(200);
-            $.post('<?php echo site_url('clients/ajax/save_client_note'); ?>',
+            $.post('<?php echo site_url('companies/ajax/save_client_note'); ?>',
                 {
-                    client_id: client_id,
+                    company_id: company_id,
                     client_note: $('#client_note').val()
                 }, function (data) {
                     reload_client_notes(data)
@@ -72,17 +72,17 @@ $locations = [];
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
             <a href="#" class="btn btn-default client-create-quote"
-               data-client-id="<?php echo $client->client_id; ?>">
+               data-client-id="<?php echo $client->company_id; ?>">
                 <i class="fa fa-file"></i> <?php _trans('create_quote'); ?>
             </a>
             <a href="#" class="btn btn-default client-create-invoice"
-               data-client-id="<?php echo $client->client_id; ?>">
+               data-client-id="<?php echo $client->company_id; ?>">
                 <i class="fa fa-file-text"></i> <?php _trans('create_invoice'); ?></a>
-            <a href="<?php echo site_url('clients/form/' . $client->client_id); ?>"
+            <a href="<?php echo site_url('clients/form/' . $client->company_id); ?>"
                class="btn btn-default">
                 <i class="fa fa-edit"></i> <?php _trans('edit'); ?>
             </a>
-            <form action="<?php echo site_url('clients/delete/' . $client->client_id); ?>"
+            <form action="<?php echo site_url('clients/delete/' . $client->company_id); ?>"
                   method="POST" class="btn-group btn-group-sm">
                 <?php _csrf_field(); ?>
                 <button type="submit" class="btn btn-danger"
@@ -98,16 +98,16 @@ $locations = [];
 <ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
     <li<?php if ($activeTab === 'detail') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
     <li<?php if ($activeTab === 'quotes') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
     <li<?php if ($activeTab === 'invoices') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
     <li<?php if ($activeTab === 'payments') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->client_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
+    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
@@ -392,7 +392,7 @@ $locations = [];
 
             <div class="container-fluid">
                 <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/quotes'), 'mdl_quotes'); ?>
+                    <?php echo pager(site_url('clients/view/' . $client->company_id . '/quotes'), 'mdl_quotes'); ?>
                 </div>
             </div>
         </div>
@@ -404,7 +404,7 @@ $locations = [];
 
             <div class="container-fluid">
                 <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/invoices'), 'mdl_invoices'); ?>
+                    <?php echo pager(site_url('clients/view/' . $client->company_id . '/invoices'), 'mdl_invoices'); ?>
                 </div>
             </div>
         </div>
@@ -416,7 +416,7 @@ $locations = [];
 
             <div class="container-fluid">
                 <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->client_id . '/payments'), 'mdl_payments'); ?>
+                    <?php echo pager(site_url('clients/view/' . $client->company_id . '/payments'), 'mdl_payments'); ?>
                 </div>
             </div>
         </div>

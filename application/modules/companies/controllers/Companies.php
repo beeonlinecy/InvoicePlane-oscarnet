@@ -186,40 +186,40 @@ class Companies extends Admin_Controller
     }
 
     /**
-     * @param int $client_id
+     * @param int $company_id
      */
-    public function view($client_id, $activeTab = 'detail', $page = 0)
+    public function view($company_id, $activeTab = 'detail', $page = 0)
     {
         $this->load->model('companies/mdl_client_notes');
-        $this->load->model('invoices/mdl_invoices');
+        $this->load->model('expenses/mdl_expenses');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_client_custom');
 
-        $client = $this->mdl_companies
+        $company = $this->mdl_companies
             ->with_total()
             ->with_total_balance()
             ->with_total_paid()
-            ->where('ip_companies.client_id', $client_id)
+            ->where('ip_companies.company_id', $company_id)
             ->get()->row();
 
-        $custom_fields = $this->mdl_client_custom->get_by_client($client_id)->result();
+        $custom_fields = $this->mdl_client_custom->get_by_client($company_id)->result();
 
-        $this->mdl_client_custom->prep_form($client_id);
+        $this->mdl_client_custom->prep_form($company_id);
 
-        if ( ! $client) {
+        if ( ! $company) {
             show_404();
         }
 
-        $this->mdl_invoices->by_client($client_id)->paginate(site_url('companies/view/' . $client_id . '/invoices'), $page, 5);
-        $this->mdl_quotes->by_client($client_id)->paginate(site_url('companies/view/' . $client_id . '/quotes'), $page, 5);
-        $this->mdl_payments->by_client($client_id)->paginate(site_url('companies/view/' . $client_id . '/payments'), $page, 5);
+        $this->mdl_expenses->by_company($company_id)->paginate(site_url('companies/view/' . $company_id . '/expenses'), $page, 5);
+        $this->mdl_quotes->by_client($company_id)->paginate(site_url('companies/view/' . $company_id . '/quotes'), $page, 5);
+        $this->mdl_payments->by_client($company_id)->paginate(site_url('companies/view/' . $company_id . '/payments'), $page, 5);
 
         $this->layout->set([
-            'client'           => $client,
-            'client_notes'     => $this->mdl_client_notes->where('client_id', $client_id)->get()->result(),
-            'invoices'         => $this->mdl_invoices->result(),
+            'company'           => $company,
+            'client_notes'     => $this->mdl_client_notes->where('company_id', $company_id)->get()->result(),
+            'expenses'         => $this->mdl_expenses->result(),
             'quotes'           => $this->mdl_quotes->result(),
             'payments'         => $this->mdl_payments->result(),
             'custom_fields'    => $custom_fields,
@@ -255,11 +255,11 @@ class Companies extends Admin_Controller
     }
 
     /**
-     * @param int $client_id
+     * @param int $company_id
      */
-    public function delete($client_id)
+    public function delete($company_id)
     {
-        $this->mdl_companies->delete($client_id);
+        $this->mdl_companies->delete($company_id);
         redirect('companies');
     }
 

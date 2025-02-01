@@ -1,7 +1,7 @@
 $(".client-id-select").select2({
-    placeholder: "<?php _trans('client'); ?>",
+    placeholder: "<?php _trans('company'); ?>",
     ajax: {
-        url: "<?php echo site_url('clients/ajax/name_query'); ?>",
+        url: "<?php echo site_url('companies/ajax/name_query'); ?>",
         dataType: 'json',
         delay: 250,
         data: function (params) {

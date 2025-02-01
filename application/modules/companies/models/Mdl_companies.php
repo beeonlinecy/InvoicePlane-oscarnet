@@ -35,7 +35,7 @@ class Mdl_Companies extends Response_Model
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_companies.client_name');
+        $this->db->order_by('ip_companies.company_name');
     }
 
     public function validation_rules()
@@ -134,7 +134,7 @@ class Mdl_Companies extends Response_Model
     public function get_latest($amount = 10)
     {
         return $this->mdl_companies
-            ->where('client_active', 1)
+            //->where('client_active', 1)
             ->order_by('company_id', 'DESC')
             ->limit($amount)
             ->get()
@@ -192,21 +192,21 @@ class Mdl_Companies extends Response_Model
     }
 
     /**
-     * Returns company_id of existing client.
+     * Returns company_id of existing company.
      *
-     * @param $client_name
+     * @param $company_name
      *
      * @return int|null
      */
-    public function client_lookup($client_name)
+    public function client_lookup($company_name)
     {
-        $client = $this->mdl_companies->where('client_name', $client_name)->get();
+        $company = $this->mdl_companies->where('company_name', $company_name)->get();
 
-        if ($client->num_rows()) {
-            $company_id = $client->row()->company_id;
+        if ($company->num_rows()) {
+            $company_id = $company->row()->company_id;
         } else {
             $db_array = [
-                'client_name' => $client_name,
+                'company_name' => $company_name,
             ];
 
             $company_id = parent::save(null, $db_array);
@@ -231,7 +231,7 @@ class Mdl_Companies extends Response_Model
 
     public function with_total_balance()
     {
-        $this->filter_select('IFnull((SELECT SUM(invoice_balance) FROM ip_invoice_amounts WHERE invoice_id IN (SELECT invoice_id FROM ip_companies WHERE ip_companies.company_id = ip_companies.company_id)), 0) AS client_invoice_balance', false);
+        $this->filter_select('IFnull((SELECT SUM(expense_balance) FROM ip_expense_amounts WHERE expense_id IN (SELECT expense_id FROM ip_companies WHERE ip_companies.company_id = ip_companies.company_id)), 0) AS company_expense_balance', false);
 
         return $this;
     }
@@ -264,14 +264,14 @@ class Mdl_Companies extends Response_Model
             $this->where_not_in('ip_companies.company_id', $assigned_companies);
         }
 
-        $this->is_active();
+        //$this->is_active();
 
         return $this->get()->result();
     }
 
     public function is_active()
     {
-        $this->filter_where('client_active', 1);
+        //$this->filter_where('client_active', 1);
 
         return $this;
     }
