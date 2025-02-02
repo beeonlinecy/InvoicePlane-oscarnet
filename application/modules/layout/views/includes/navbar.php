@@ -62,6 +62,17 @@
                         <li><?php echo anchor('expenses/recurring/index', trans('view_recurring_expenses')); ?></li>
                     </ul>
                 </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;
+                        <span class="hidden-md"><?php _trans('companies'); ?></span>
+                        <i class="visible-md-inline fa fa-file-text"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><?php echo anchor('companies/form', trans('add_company')); ?></li>
+                        <li><?php echo anchor('companies/index', trans('view_companies')); ?></li>
+                    </ul>
+                </li>
 
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
