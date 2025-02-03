@@ -70,39 +70,39 @@ class Companies extends Admin_Controller
             redirect('companies');
         }
 
-        $new_client = false;
+        $new_company = false;
         $this->filter_input();  // <<<--- filters _POST array for nastiness
 
         // Set validation rule based on is_update
-        if ($this->input->post('is_update') == 0 && $this->input->post('client_name') != '') {
+        if ($this->input->post('is_update') == 0 && $this->input->post('company_name') != '') {
             $check = $this->db->get_where('ip_companies', [
-                'client_name'    => $this->input->post('client_name'),
-                'client_surname' => $this->input->post('client_surname'),
+                'company_name'    => $this->input->post('company_name'),
+                'company_surname' => $this->input->post('company_surname'),
             ])->result();
 
             if ( ! empty($check)) {
-                $this->session->set_flashdata('alert_error', trans('client_already_exists'));
+                $this->session->set_flashdata('alert_error', trans('company_already_exists'));
                 redirect('companies/form');
             } else {
-                $new_client = true;
+                $new_company = true;
             }
         }
 
         if ($this->mdl_companies->run_validation()) {
-            $client_title_custom = $this->input->post('client_title_custom');
-            if ($client_title_custom !== '') {
-                $_POST[self::CLIENT_TITLE] = $client_title_custom;
-                $this->mdl_companies->set_form_value(self::CLIENT_TITLE, $client_title_custom);
+            $company_title_custom = $this->input->post('company_title_custom');
+            if ($company_title_custom !== '') {
+                $_POST[self::COMPANY_TITLE] = $company_title_custom;
+                $this->mdl_companies->set_form_value(self::COMPANY_TITLE, $company_title_custom);
             }
             $id = $this->mdl_companies->save($id);
 
-            if ($new_client) {
+            if ($new_company) {
                 $this->load->model('user_companies/mdl_user_companies');
                 $this->mdl_user_companies->get_users_all_companies();
             }
 
-            $this->load->model('custom_fields/mdl_client_custom');
-            $result = $this->mdl_client_custom->save_custom($id, $this->input->post('custom'));
+            $this->load->model('custom_fields/mdl_company_custom');
+            $result = $this->mdl_company_custom->save_custom($id, $this->input->post('custom'));
 
             if ($result !== true) {
                 $this->session->set_flashdata('alert_error', $result);
@@ -119,17 +119,17 @@ class Companies extends Admin_Controller
                 show_404();
             }
 
-            $this->load->model('custom_fields/mdl_client_custom');
+            $this->load->model('custom_fields/mdl_company_custom');
             $this->mdl_companies->set_form_value('is_update', true);
 
-            $client_custom = $this->mdl_client_custom->where('client_id', $id)->get();
+            $company_custom = $this->mdl_company_custom->where('company_id', $id)->get();
 
-            if ($client_custom->num_rows()) {
-                $client_custom = $client_custom->row();
+            if ($company_custom->num_rows()) {
+                $company_custom = $company_custom->row();
 
-                unset($client_custom->client_id, $client_custom->client_custom_id);
+                unset($company_custom->client_id, $company_custom->company_custom_id);
 
-                foreach ($client_custom as $key => $val) {
+                foreach ($company_custom as $key => $val) {
                     $this->mdl_companies->set_form_value('custom[' . $key . ']', $val);
                 }
             }
@@ -143,9 +143,9 @@ class Companies extends Admin_Controller
 
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
-        $this->load->model('custom_fields/mdl_client_custom');
+        $this->load->model('custom_fields/mdl_company_custom');
 
-        $custom_fields = $this->mdl_custom_fields->by_table('ip_client_custom')->get()->result();
+        $custom_fields = $this->mdl_custom_fields->by_table('ip_company_custom')->get()->result();
         $custom_values = [];
         foreach ($custom_fields as $custom_field) {
             if (in_array($custom_field->custom_field_type, $this->mdl_custom_values->custom_value_fields())) {
@@ -154,15 +154,15 @@ class Companies extends Admin_Controller
             }
         }
 
-        $fields = $this->mdl_client_custom->get_by_clid($id);
+        $fields = $this->mdl_company_custom->get_by_clid($id);
 
         foreach ($custom_fields as $cfield) {
             foreach ($fields as $fvalue) {
-                if ($fvalue->client_custom_fieldid == $cfield->custom_field_id) {
+                if ($fvalue->company_custom_fieldid == $cfield->custom_field_id) {
                     // TODO: Hackish, may need a better optimization
                     $this->mdl_companies->set_form_value(
                         'custom[' . $cfield->custom_field_id . ']',
-                        $fvalue->client_custom_fieldvalue
+                        $fvalue->company_custom_fieldvalue
                     );
                     break;
                 }

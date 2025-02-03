@@ -41,86 +41,86 @@ class Mdl_Companies extends Response_Model
     public function validation_rules()
     {
         return [
-            'client_title' => [
-                'field' => 'client_title',
-                'label' => trans('client_title'),
+            'company_title' => [
+                'field' => 'company_title',
+                'label' => trans('company_title'),
             ],
-            'client_name' => [
-                'field' => 'client_name',
-                'label' => trans('client_name'),
+            'company_name' => [
+                'field' => 'company_name',
+                'label' => trans('company_name'),
                 'rules' => 'required',
             ],
-            'client_surname' => [
-                'field' => 'client_surname',
-                'label' => trans('client_surname'),
+            'company_surname' => [
+                'field' => 'company_surname',
+                'label' => trans('company_surname'),
             ],
-            'client_active' => [
-                'field' => 'client_active',
+            'company_active' => [
+                'field' => 'company_active',
             ],
-            'client_language' => [
-                'field' => 'client_language',
+            'company_language' => [
+                'field' => 'company_language',
                 'label' => trans('language'),
                 'rules' => 'trim',
             ],
-            'client_address_1' => [
-                'field' => 'client_address_1',
+            'company_address_1' => [
+                'field' => 'company_address_1',
             ],
-            'client_address_2' => [
-                'field' => 'client_address_2',
+            'company_address_2' => [
+                'field' => 'company_address_2',
             ],
-            'client_city' => [
-                'field' => 'client_city',
+            'company_city' => [
+                'field' => 'company_city',
             ],
-            'client_state' => [
-                'field' => 'client_state',
+            'company_state' => [
+                'field' => 'company_state',
             ],
-            'client_zip' => [
-                'field' => 'client_zip',
+            'company_zip' => [
+                'field' => 'company_zip',
             ],
-            'client_country' => [
-                'field' => 'client_country',
+            'company_country' => [
+                'field' => 'company_country',
                 'rules' => 'trim',
             ],
-            'client_phone' => [
-                'field' => 'client_phone',
+            'company_phone' => [
+                'field' => 'company_phone',
             ],
-            'client_fax' => [
-                'field' => 'client_fax',
+            'company_fax' => [
+                'field' => 'company_fax',
             ],
-            'client_mobile' => [
-                'field' => 'client_mobile',
+            'company_mobile' => [
+                'field' => 'company_mobile',
             ],
-            'client_email' => [
-                'field' => 'client_email',
+            'company_email' => [
+                'field' => 'company_email',
             ],
-            'client_web' => [
-                'field' => 'client_web',
+            'company_web' => [
+                'field' => 'company_web',
             ],
-            'client_vat_id' => [
-                'field' => 'client_vat_id',
+            'company_vat_id' => [
+                'field' => 'company_vat_id',
             ],
-            'client_tax_code' => [
-                'field' => 'client_tax_code',
+            'company_tax_code' => [
+                'field' => 'company_tax_code',
             ],
             // SUMEX
-            'client_birthdate' => [
-                'field' => 'client_birthdate',
+            'company_birthdate' => [
+                'field' => 'company_birthdate',
                 'rules' => 'callback_convert_date',
             ],
-            'client_gender' => [
-                'field' => 'client_gender',
+            'company_gender' => [
+                'field' => 'company_gender',
             ],
-            'client_avs' => [
-                'field' => 'client_avs',
+            'company_avs' => [
+                'field' => 'company_avs',
                 'label' => trans('sumex_ssn'),
                 'rules' => 'callback_fix_avs',
             ],
-            'client_insurednumber' => [
-                'field' => 'client_insurednumber',
+            'company_insurednumber' => [
+                'field' => 'company_insurednumber',
                 'label' => trans('sumex_insurednumber'),
             ],
-            'client_veka' => [
-                'field' => 'client_veka',
+            'company_veka' => [
+                'field' => 'company_veka',
                 'label' => trans('sumex_veka'),
             ],
         ];
@@ -173,8 +173,8 @@ class Mdl_Companies extends Response_Model
     {
         $db_array = parent::db_array();
 
-        if ( ! isset($db_array['client_active'])) {
-            $db_array['client_active'] = 0;
+        if ( ! isset($db_array['company_active'])) {
+            $db_array['company_active'] = 0;
         }
 
         return $db_array;
@@ -198,7 +198,7 @@ class Mdl_Companies extends Response_Model
      *
      * @return int|null
      */
-    public function client_lookup($company_name)
+    public function company_lookup($company_name)
     {
         $company = $this->mdl_companies->where('company_name', $company_name)->get();
 

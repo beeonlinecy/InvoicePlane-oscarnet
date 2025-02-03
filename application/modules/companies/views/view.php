@@ -1,6 +1,6 @@
 <script>
     $(function () {
-        const company_id = <?php echo $client->company_id; ?>;
+        const company_id = <?php echo $company->company_id; ?>;
         function add_delete_client_notes_click_event(){
             $('.delete_client_note').click(delete_client_note);
         }
@@ -13,7 +13,7 @@
                 $('#client_note').val('');
 
                 // Reload all notes
-                $('#notes_list').load("<?php echo site_url('clients/ajax/load_client_notes'); ?>",
+                $('#notes_list').load("<?php echo site_url('companies/ajax/load_client_notes'); ?>",
                     {
                         company_id: company_id
                     }, function (response) {

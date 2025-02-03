@@ -7,7 +7,7 @@
                 data-toggle="collapse" data-target="#ip-submenu-collapse">
             <i class="fa fa-bars"></i> <?php _trans('submenu'); ?>
         </button>
-        <a class="btn btn-primary btn-sm" href="<?php echo site_url('clients/form'); ?>">
+        <a class="btn btn-primary btn-sm" href="<?php echo site_url('companies/form'); ?>">
             <i class="fa fa-plus"></i> <?php _trans('new'); ?>
         </a>
     </div>
@@ -39,7 +39,7 @@
     <div class="collapse clearfix" id="ip-submenu-collapse">
 
         <div class="submenu-row">
-            <?php echo pager(site_url('clients/status/' . $this->uri->segment(3)), 'mdl_clients'); ?>
+            <?php echo pager(site_url('companies/status/' . $this->uri->segment(3)), 'mdl_companies'); ?>
         </div>
 
         <div class="submenu-row">

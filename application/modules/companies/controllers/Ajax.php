@@ -41,12 +41,12 @@ class Ajax extends Admin_Controller
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
         $escapedQuery = str_replace("%", "", $escapedQuery);
-        $clients = $this->mdl_clients
-            ->where('client_active', 1)
-            ->having('client_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('client_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->order_by('client_name')
+        $clients = $this->mdl_companies
+            ->where('company_active', 1)
+            ->having('company_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->or_having('company_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->or_having('company_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->order_by('company_name')
             ->get()
             ->result();
 
@@ -67,21 +67,21 @@ class Ajax extends Admin_Controller
     public function get_latest()
     {
         // Load the model & helper
-        $this->load->model('clients/mdl_clients');
+        $this->load->model('companies/mdl_companies');
 
         $response = [];
 
-        $clients = $this->mdl_clients
-            ->where('client_active', 1)
+        $clients = $this->mdl_companies
+            ->where('company_active', 1)
             ->limit(5)
-            ->order_by('client_date_created')
+            ->order_by('company_date_created')
             ->get()
             ->result();
 
-        foreach ($clients as $client) {
+        foreach ($companies as $company) {
             $response[] = [
-                'id' => $client->client_id,
-                'text' => htmlsc(format_client($client)),
+                'id' => $company->company_id,
+                'text' => htmlsc(format_client($company)),
             ];
         }
 
