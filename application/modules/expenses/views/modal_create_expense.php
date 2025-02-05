@@ -6,24 +6,24 @@
         // Enable select2 for all selects
         $('.simple-select').select2();
 
-        <?php $this->layout->load_view('clients/script_select2_client_id.js'); ?>
+        <?php $this->layout->load_view('companies/script_select2_company_id.js'); ?>
 
         // Toggle on/off permissive search on clients names
-        $('#toggle_permissive_search_clients').click(function () {
-            if ($('input#input_permissive_search_clients').val() == ('1')) {
-                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
+        $('#toggle_permissive_search_companies').click(function () {
+            if ($('input#input_permissive_search_companies').val() == ('1')) {
+                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_companies'); ?>", {
                     permissive_search_clients: '0'
                 });
-                $('input#input_permissive_search_clients').val('0');
-                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-on');
-                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-off');
+                $('input#input_permissive_search_companies').val('0');
+                $('span#toggle_permissive_search_companies i').removeClass('fa-toggle-on');
+                $('span#toggle_permissive_search_companies i').addClass('fa-toggle-off');
             } else {
-                $.get("<?php echo site_url('clients/ajax/save_preference_permissive_search_clients'); ?>", {
-                    permissive_search_clients: '1'
+                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_companies'); ?>", {
+                    permissive_search_companies: '1'
                 });
-                $('input#input_permissive_search_clients').val('1');
-                $('span#toggle_permissive_search_clients i').removeClass('fa-toggle-off');
-                $('span#toggle_permissive_search_clients i').addClass('fa-toggle-on');
+                $('input#input_permissive_search_companies').val('1');
+                $('span#toggle_permissive_search_companies i').removeClass('fa-toggle-off');
+                $('span#toggle_permissive_search_companies i').addClass('fa-toggle-on');
             }
         });
 
@@ -32,7 +32,7 @@
             // Posts the data to validate and create the invoice;
             // will create the new client if necessary
             $.post("<?php echo site_url('expenses/ajax/create'); ?>", {
-                    client_id: $('#create_expense_client_id').val(),
+                    company_id: $('#create_expense_company_id').val(),
                     expense_date_created: $('#expense_date_created').val(),
                     expense_group_id: $('#expense_group_id').val(),
                     expense_time_created: '<?php echo date('H:i:s') ?>',

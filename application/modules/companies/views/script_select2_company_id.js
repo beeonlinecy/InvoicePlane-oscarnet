@@ -1,4 +1,4 @@
-$(".client-id-select").select2({
+$(".company-id-select").select2({
     placeholder: "<?php _trans('company'); ?>",
     ajax: {
         url: "<?php echo site_url('companies/ajax/name_query'); ?>",

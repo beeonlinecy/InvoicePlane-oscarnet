@@ -22,38 +22,38 @@ class Ajax extends Admin_Controller
     public function name_query()
     {
         // Load the model & helper
-        $this->load->model('clients/mdl_clients');
+        $this->load->model('companies/mdl_companies');
 
         $response = [];
 
         // Get the post input
         $query = $this->input->get('query');
-        $permissiveSearchClients = $this->input->get('permissive_search_clients');
+        $permissiveSearchcompanies = $this->input->get('permissive_search_companies');
 
         if (empty($query)) {
             echo json_encode($response);
             exit;
         }
 
-        // Search for chars "in the middle" of clients names
-        $permissiveSearchClients ? $moreClientsQuery = '%' : $moreClientsQuery = '';
+        // Search for chars "in the middle" of companies names
+        $permissiveSearchcompanies ? $moreCompaniesQuery = '%' : $moreCompaniesQuery = '';
 
         // Search for clients
         $escapedQuery = $this->db->escape_str($query);
         $escapedQuery = str_replace("%", "", $escapedQuery);
-        $clients = $this->mdl_companies
+        $companies = $this->mdl_companies
             ->where('company_active', 1)
-            ->having('company_name LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('company_surname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
-            ->or_having('company_fullname LIKE \'' . $moreClientsQuery . $escapedQuery . '%\'')
+            ->having('company_name LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
+            ->or_having('company_surname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
+            ->or_having('company_fullname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
             ->order_by('company_name')
             ->get()
             ->result();
 
-        foreach ($clients as $client) {
+        foreach ($companies as $company) {
             $response[] = [
-                'id' => $client->client_id,
-                'text' => (format_client($client)),
+                'id' => $company->company_id,
+                'text' => (format_company($company)),
             ];
         }
 
