@@ -89,7 +89,7 @@ class Mdl_User_Companies extends MY_Model
     public function get_users_all_companies()
     {
         $this->load->model('users/mdl_users');
-        $users = $this->mdl_users->where('user_all_companies', 1)->get()->result();
+        $users = $this->mdl_users->where('user_all_clients', 1)->get()->result();
 
         $new_users = array();
 
