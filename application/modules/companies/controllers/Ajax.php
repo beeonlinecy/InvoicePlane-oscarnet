@@ -43,10 +43,10 @@ class Ajax extends Admin_Controller
         $escapedQuery = str_replace("%", "", $escapedQuery);
         $companies = $this->mdl_companies
             ->where('company_active', 1)
-            //->having('company_name LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
+            ->having('company_name LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
             //->or_having('company_surname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
             //->or_having('company_fullname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
-            //->order_by('company_name')
+            ->order_by('company_name')
             ->get()
             ->result();
 
@@ -89,7 +89,7 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function save_preference_permissive_search_clients()
+    public function save_preference_permissive_search_companies()
     {
         $this->load->model('mdl_settings');
         $permissiveSearchClients = $this->input->get('permissive_search_clients');

@@ -11,14 +11,14 @@
         // Toggle on/off permissive search on clients names
         $('#toggle_permissive_search_companies').click(function () {
             if ($('input#input_permissive_search_companies').val() == ('1')) {
-                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_companies'); ?>", {
-                    permissive_search_clients: '0'
+                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_clients'); ?>", {
+                    permissive_search_companies: '0'
                 });
                 $('input#input_permissive_search_companies').val('0');
                 $('span#toggle_permissive_search_companies i').removeClass('fa-toggle-on');
                 $('span#toggle_permissive_search_companies i').addClass('fa-toggle-off');
             } else {
-                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_companies'); ?>", {
+                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_clients'); ?>", {
                     permissive_search_companies: '1'
                 });
                 $('input#input_permissive_search_companies').val('1');
@@ -72,8 +72,8 @@
             <input class="hidden" id="payment_method_id"
                    value="<?php echo get_setting('expense_default_payment_method'); ?>">
 
-            <input class="hidden" id="input_permissive_search_clients"
-                   value="<?php echo get_setting('enable_permissive_search_clients'); ?>">
+            <input class="hidden" id="input_permissive_search_companies"
+                   value="<?php echo get_setting('enable_permissive_search_companies'); ?>">
 
             <div class="form-group has-feedback">
                 <label for="create_expense_company_id"><?php _trans('company'); ?></label>
@@ -84,8 +84,8 @@
                             <option value="<?php echo $company->company_id; ?>"><?php _htmlsc(format_client($company)); ?></option>
                         <?php endif; ?>
                     </select>
-                    <span id="toggle_permissive_search_clients" class="input-group-addon"
-                          title="<?php _trans('enable_permissive_search_clients'); ?>" style="cursor:pointer;">
+                    <span id="toggle_permissive_search_companies" class="input-group-addon"
+                          title="<?php _trans('enable_permissive_search_companies'); ?>" style="cursor:pointer;">
                         <i class="fa fa-toggle-<?php echo get_setting('enable_permissive_search_clients') ? 'on' : 'off' ?> fa-fw"></i>
                     </span>
                 </div>
