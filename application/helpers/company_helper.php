@@ -23,8 +23,8 @@ function format_company($company)
     if(property_exists($company, 'company_title')){
         $company_title = $company->company_title === 'custom' ? '' : $company->company_title ?? '';
     }
-
-    return ucfirst(trans($company_title)) . ' ' . $company->company_name . (empty($company->company_surname) ? '' : ' ' . $company->company_surname);
+    
+    return ucfirst(trans($company_title)) . ' ' . $company->company_name; //. (empty($company->company_surname) ? '' : ' ' . $company->company_surname);
 }
 
 /**

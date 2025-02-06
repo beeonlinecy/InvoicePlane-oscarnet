@@ -43,17 +43,17 @@ class Ajax extends Admin_Controller
         $escapedQuery = str_replace("%", "", $escapedQuery);
         $companies = $this->mdl_companies
             ->where('company_active', 1)
-            ->having('company_name LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
-            ->or_having('company_surname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
-            ->or_having('company_fullname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
-            ->order_by('company_name')
+            //->having('company_name LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
+            //->or_having('company_surname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
+            //->or_having('company_fullname LIKE \'' . $moreCompaniesQuery . $escapedQuery . '%\'')
+            //->order_by('company_name')
             ->get()
             ->result();
 
         foreach ($companies as $company) {
             $response[] = [
                 'id' => $company->company_id,
-                'text' => (format_company($company)),
+                'text' => ($company->company_name),
             ];
         }
 
