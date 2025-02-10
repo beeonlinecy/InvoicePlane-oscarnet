@@ -11,14 +11,14 @@
         // Toggle on/off permissive search on clients names
         $('#toggle_permissive_search_companies').click(function () {
             if ($('input#input_permissive_search_companies').val() == ('1')) {
-                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_clients'); ?>", {
+                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_companies'); ?>", {
                     permissive_search_companies: '0'
                 });
                 $('input#input_permissive_search_companies').val('0');
                 $('span#toggle_permissive_search_companies i').removeClass('fa-toggle-on');
                 $('span#toggle_permissive_search_companies i').addClass('fa-toggle-off');
             } else {
-                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_clients'); ?>", {
+                $.get("<?php echo site_url('companies/ajax/save_preference_permissive_search_companies'); ?>", {
                     permissive_search_companies: '1'
                 });
                 $('input#input_permissive_search_companies').val('1');

@@ -92,13 +92,13 @@ class Ajax extends Admin_Controller
     public function save_preference_permissive_search_companies()
     {
         $this->load->model('mdl_settings');
-        $permissiveSearchClients = $this->input->get('permissive_search_clients');
+        $permissiveSearchCompanies = $this->input->get('permissive_search_companies');
 
-        if (!preg_match('!^[0-1]{1}$!', $permissiveSearchClients)) {
+        if (!preg_match('!^[0-1]{1}$!', $permissiveSearchCompanies)) {
             exit;
         }
 
-        $this->mdl_settings->save('enable_permissive_search_clients', $permissiveSearchClients);
+        $this->mdl_settings->save('enable_permissive_search_clients', $permissiveSearchCompanies);
     }
 
     /**
