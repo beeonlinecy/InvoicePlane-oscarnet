@@ -26,20 +26,3 @@ function format_company($company)
     
     return ucfirst(trans($company_title)) . ' ' . $company->company_name; //. (empty($company->company_surname) ? '' : ' ' . $company->company_surname);
 }
-
-/**
- * @param string $gender
- * @return string
- */
-function format_gender($gender)
-{
-    if ($gender == 0) {
-        return trans('gender_male');
-    }
-
-    if ($gender == 1) {
-        return trans('gender_female');
-    }
-
-    return trans('gender_other');
-}

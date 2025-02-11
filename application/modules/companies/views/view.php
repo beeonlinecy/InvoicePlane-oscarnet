@@ -1,16 +1,16 @@
 <script>
     $(function () {
         const company_id = <?php echo $company->company_id; ?>;
-        function add_delete_client_notes_click_event(){
-            $('.delete_client_note').click(delete_client_note);
+        function add_delete_company_notes_click_event(){
+            $('.delete_company_note').click(delete_company_note);
         }
-        function reload_client_notes(data){
+        function reload_company_notes(data){
             <?php echo IP_DEBUG ? 'console.log(data);' : ''; ?>
             var response = JSON.parse(data);
             if (response.success === 1) {
                 // The validation was successful
                 $('.has-error').removeClass('has-error');
-                $('#client_note').val('');
+                $('#company_note').val('');
 
                 // Reload all notes
                 $('#notes_list').load("<?php echo site_url('companies/ajax/load_company_notes'); ?>",
@@ -45,7 +45,7 @@
             $.post('<?php echo site_url('companies/ajax/save_company_note'); ?>',
                 {
                     company_id: company_id,
-                    client_note: $('#company_note').val()
+                    company_note: $('#company_note').val()
                 }, function (data) {
                     reload_company_notes(data)
                 }
@@ -67,26 +67,26 @@ $locations = [];
         ?>
 
 <div id="headerbar">
-    <h1 class="headerbar-title"><?php _htmlsc(format_client($client)); ?></h1>
+    <h1 class="headerbar-title"><?php _htmlsc($company->company_name); ?></h1>
 
     <div class="headerbar-item pull-right">
         <div class="btn-group btn-group-sm">
-            <a href="#" class="btn btn-default client-create-quote"
-               data-client-id="<?php echo $client->company_id; ?>">
+            <a href="#" class="btn btn-default company-create-quote"
+               data-company-id="<?php echo $company->company_id; ?>">
                 <i class="fa fa-file"></i> <?php _trans('create_quote'); ?>
             </a>
-            <a href="#" class="btn btn-default client-create-invoice"
-               data-client-id="<?php echo $client->company_id; ?>">
-                <i class="fa fa-file-text"></i> <?php _trans('create_invoice'); ?></a>
-            <a href="<?php echo site_url('clients/form/' . $client->company_id); ?>"
+            <a href="#" class="btn btn-default company-create-expense"
+               data-company-id="<?php echo $company->company_id; ?>">
+                <i class="fa fa-file-text"></i> <?php _trans('create_expense'); ?></a>
+            <a href="<?php echo site_url('companies/form/' . $company->company_id); ?>"
                class="btn btn-default">
                 <i class="fa fa-edit"></i> <?php _trans('edit'); ?>
             </a>
-            <form action="<?php echo site_url('clients/delete/' . $client->company_id); ?>"
+            <form action="<?php echo site_url('companies/delete/' . $company->company_id); ?>"
                   method="POST" class="btn-group btn-group-sm">
                 <?php _csrf_field(); ?>
                 <button type="submit" class="btn btn-danger"
-                        onclick="return confirm('<?php _trans('delete_client_warning'); ?>');">
+                        onclick="return confirm('<?php _trans('delete_company_warning'); ?>');">
                     <i class="fa fa-trash-o"></i> <?php _trans('delete'); ?>
                 </button>
             </form>
@@ -98,22 +98,22 @@ $locations = [];
 <ul id="submenu" class="nav nav-tabs nav-tabs-noborder">
     <li<?php if ($activeTab === 'detail') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
+    } ?>><a href="<?php echo site_url('companies/view/' . $company->company_id . '/detail'); ?>"><?php _trans('details'); ?></a></li>
     <li<?php if ($activeTab === 'quotes') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
-    <li<?php if ($activeTab === 'invoices') {
+    } ?>><a href="<?php echo site_url('companies/view/' . $company->company_id . '/quotes'); ?>"><?php _trans('quotes'); ?></a></li>
+    <li<?php if ($activeTab === 'expenses') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/invoices'); ?>"><?php _trans('invoices'); ?></a></li>
+    } ?>><a href="<?php echo site_url('companies/view/' . $company->company_id . '/expenses'); ?>"><?php _trans('expenses'); ?></a></li>
     <li<?php if ($activeTab === 'payments') {
         echo ' class="active"';
-    } ?>><a href="<?php echo site_url('clients/view/' . $client->company_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
+    } ?>><a href="<?php echo site_url('companies/view/' . $company->company_id . '/payments'); ?>"><?php _trans('payments'); ?></a></li>
 </ul>
 
 <div id="content" class="tabbable tabs-below no-padding">
     <div class="tab-content no-padding">
 
-        <div id="clientDetails" class="tab-pane tab-rich-content <?php if ($activeTab === 'detail') {
+        <div id="companyDetails" class="tab-pane tab-rich-content <?php if ($activeTab === 'detail') {
             echo ' active';
         } ?>">
 
@@ -122,9 +122,9 @@ $locations = [];
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-6">
 
-                    <h3><?php _htmlsc(format_client($client)); ?></h3>
+                    <h3><?php _htmlsc(format_company($company)); ?></h3>
                     <p>
-                        <?php $this->layout->load_view('clients/partial_client_address'); ?>
+                        <?php $this->layout->load_view('companies/partial_company_address'); ?>
                     </p>
 
                 </div>
@@ -136,7 +136,7 @@ $locations = [];
                                 <?php _trans('language'); ?>
                             </th>
                             <td class="td-amount">
-                                <?php echo ucfirst($client->client_language); ?>
+                                <?php echo ucfirst($company->company_language); ?>
                             </td>
                         </tr>
                         <tr>
@@ -144,7 +144,7 @@ $locations = [];
                                 <?php _trans('total_billed'); ?>
                             </th>
                             <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_total); ?>
+                                <?php echo format_currency($company->company_expense_total); ?>
                             </td>
                         </tr>
                         <tr>
@@ -152,7 +152,7 @@ $locations = [];
                                 <?php _trans('total_paid'); ?>
                             </th>
                             <th class="td-amount">
-                                <?php echo format_currency($client->client_invoice_paid); ?>
+                                <?php echo format_currency($company->company_expense_paid); ?>
                             </th>
                         </tr>
                         <tr>
@@ -160,7 +160,7 @@ $locations = [];
                                 <?php _trans('total_balance'); ?>
                             </th>
                             <td class="td-amount">
-                                <?php echo format_currency($client->client_invoice_balance); ?>
+                                <?php echo format_currency($company->company_expense_balance); ?>
                             </td>
                         </tr>
                     </table>
@@ -177,34 +177,34 @@ $locations = [];
                         <div class="panel-heading"><?php _trans('contact_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
-                                <?php if ($client->client_email) : ?>
+                                <?php if ($company->company_email) : ?>
                                     <tr>
                                         <th><?php _trans('email'); ?></th>
-                                        <td><?php _auto_link($client->client_email, 'email'); ?></td>
+                                        <td><?php _auto_link($company->company_email, 'email'); ?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if ($client->client_phone) : ?>
+                                <?php if ($company->company_phone) : ?>
                                     <tr>
                                         <th><?php _trans('phone'); ?></th>
-                                        <td><?php _htmlsc($client->client_phone); ?></td>
+                                        <td><?php _htmlsc($company->company_phone); ?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if ($client->client_mobile) : ?>
+                                <?php if ($company->company_mobile) : ?>
                                     <tr>
                                         <th><?php _trans('mobile'); ?></th>
-                                        <td><?php _htmlsc($client->client_mobile); ?></td>
+                                        <td><?php _htmlsc($company->company_mobile); ?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if ($client->client_fax) : ?>
+                                <?php if ($company->company_fax) : ?>
                                     <tr>
                                         <th><?php _trans('fax'); ?></th>
-                                        <td><?php _htmlsc($client->client_fax); ?></td>
+                                        <td><?php _htmlsc($company->company_fax); ?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if ($client->client_web) : ?>
+                                <?php if ($company->company_web) : ?>
                                     <tr>
                                         <th><?php _trans('web'); ?></th>
-                                        <td><?php _auto_link($client->client_web, 'url', true); ?></td>
+                                        <td><?php _auto_link($company->company_web, 'url', true); ?></td>
                                     </tr>
                                 <?php endif; ?>
 
@@ -215,7 +215,7 @@ $locations = [];
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    $value      = $this->mdl_company_custom->form_value('cf_' . $custom_field->custom_field_id);
                                     ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
@@ -232,16 +232,16 @@ $locations = [];
                         <div class="panel-heading"><?php _trans('tax_information'); ?></div>
                         <div class="panel-body table-content">
                             <table class="table no-margin">
-                                <?php if ($client->client_vat_id) : ?>
+                                <?php if ($company->company_vat_id) : ?>
                                     <tr>
                                         <th><?php _trans('vat_id'); ?></th>
-                                        <td><?php _htmlsc($client->client_vat_id); ?></td>
+                                        <td><?php _htmlsc($company->company_vat_id); ?></td>
                                     </tr>
                                 <?php endif; ?>
-                                <?php if ($client->client_tax_code) : ?>
+                                <?php if ($company->company_tax_code) : ?>
                                     <tr>
                                         <th><?php _trans('tax_code'); ?></th>
-                                        <td><?php _htmlsc($client->client_tax_code); ?></td>
+                                        <td><?php _htmlsc($company->company_tax_code); ?></td>
                                     </tr>
                                 <?php endif; ?>
 
@@ -252,7 +252,7 @@ $locations = [];
                                     <tr>
                                         <?php
                                         $column = $custom_field->custom_field_label;
-                                    $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                    $value      = $this->mdl_company_custom->form_value('cf_' . $custom_field->custom_field_id);
                                     ?>
                                         <th><?php _htmlsc($column); ?></th>
                                         <td><?php _htmlsc($value); ?></td>
@@ -265,7 +265,7 @@ $locations = [];
                 </div>
             </div>
 
-            <?php if ($client->client_surname != ''): //Client is not a company?>
+            <?php if ($company->company_surname != ''): //company is not a company?>
                 <hr>
 
                 <div class="row">
@@ -280,26 +280,26 @@ $locations = [];
                                 <table class="table no-margin">
                                     <tr>
                                         <th><?php _trans('birthdate'); ?></th>
-                                        <td><?php echo format_date($client->client_birthdate); ?></td>
+                                        <td><?php echo format_date($company->company_birthdate); ?></td>
                                     </tr>
                                     <tr>
                                         <th><?php _trans('gender'); ?></th>
-                                        <td><?php echo format_gender($client->client_gender) ?></td>
+                                        <td><?php echo format_gender($company->company_gender) ?></td>
                                     </tr>
                                     <?php if ($this->mdl_settings->setting('sumex') == '1'): ?>
                                         <tr>
                                             <th><?php _trans('sumex_ssn'); ?></th>
-                                            <td><?php echo format_avs($client->client_avs) ?></td>
+                                            <td><?php echo format_avs($company->company_avs) ?></td>
                                         </tr>
 
                                         <tr>
                                             <th><?php _trans('sumex_insurednumber'); ?></th>
-                                            <td><?php _htmlsc($client->client_insurednumber) ?></td>
+                                            <td><?php _htmlsc($company->company_insurednumber) ?></td>
                                         </tr>
 
                                         <tr>
                                             <th><?php _trans('sumex_veka'); ?></th>
-                                            <td><?php _htmlsc($client->client_veka) ?></td>
+                                            <td><?php _htmlsc($company->company_veka) ?></td>
                                         </tr>
                                     <?php endif; ?>
 
@@ -310,7 +310,7 @@ $locations = [];
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        $value      = $this->mdl_company_custom->form_value('cf_' . $custom_field->custom_field_id);
                                         ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
@@ -344,7 +344,7 @@ $locations = [];
                                         <tr>
                                             <?php
                                             $column = $custom_field->custom_field_label;
-                                        $value      = $this->mdl_client_custom->form_value('cf_' . $custom_field->custom_field_id);
+                                        $value      = $this->mdl_company_custom->form_value('cf_' . $custom_field->custom_field_id);
                                         ?>
                                             <th><?php _htmlsc($column); ?></th>
                                             <td><?php _htmlsc($value); ?></td>
@@ -385,38 +385,38 @@ $locations = [];
 
         </div>
 
-        <div id="clientQuotes" class="tab-pane table-content<?php if ($activeTab === 'quotes') {
+        <div id="companyQuotes" class="tab-pane table-content<?php if ($activeTab === 'quotes') {
             echo ' active';
         } ?>">
             <?php echo $quote_table; ?>
 
             <div class="container-fluid">
                 <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->company_id . '/quotes'), 'mdl_quotes'); ?>
+                    <?php echo pager(site_url('companies/view/' . $company->company_id . '/quotes'), 'mdl_quotes'); ?>
                 </div>
             </div>
         </div>
 
-        <div id="clientInvoices" class="tab-pane table-content<?php if ($activeTab === 'invoices') {
+        <div id="companyexpenses" class="tab-pane table-content<?php if ($activeTab === 'expenses') {
             echo ' active';
         } ?>">
-            <?php echo $invoice_table; ?>
+            <?php echo $expense_table; ?>
 
             <div class="container-fluid">
                 <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->company_id . '/invoices'), 'mdl_invoices'); ?>
+                    <?php echo pager(site_url('companies/view/' . $company->company_id . '/expenses'), 'mdl_expenses'); ?>
                 </div>
             </div>
         </div>
 
-        <div id="clientPayments" class="tab-pane table-content<?php if ($activeTab === 'payments') {
+        <div id="companyPayments" class="tab-pane table-content<?php if ($activeTab === 'payments') {
             echo ' active';
         } ?>">
             <?php echo $payment_table; ?>
 
             <div class="container-fluid">
                 <div class="pull-right">
-                    <?php echo pager(site_url('clients/view/' . $client->company_id . '/payments'), 'mdl_payments'); ?>
+                    <?php echo pager(site_url('companies/view/' . $company->company_id . '/payments'), 'mdl_payments'); ?>
                 </div>
             </div>
         </div>

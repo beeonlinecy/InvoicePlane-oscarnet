@@ -81,7 +81,7 @@ class Ajax extends Admin_Controller
         foreach ($companies as $company) {
             $response[] = [
                 'id' => $company->company_id,
-                'text' => htmlsc(format_client($company)),
+                'text' => htmlsc(format_company($company)),
             ];
         }
 

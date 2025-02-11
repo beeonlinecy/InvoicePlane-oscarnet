@@ -190,12 +190,12 @@ class Companies extends Admin_Controller
      */
     public function view($company_id, $activeTab = 'detail', $page = 0)
     {
-        $this->load->model('companies/mdl_client_notes');
+        $this->load->model('companies/mdl_company_notes');
         $this->load->model('expenses/mdl_expenses');
         $this->load->model('quotes/mdl_quotes');
         $this->load->model('payments/mdl_payments');
         $this->load->model('custom_fields/mdl_custom_fields');
-        $this->load->model('custom_fields/mdl_client_custom');
+        $this->load->model('custom_fields/mdl_company_custom');
 
         $company = $this->mdl_companies
             ->with_total()
@@ -204,9 +204,9 @@ class Companies extends Admin_Controller
             ->where('ip_companies.company_id', $company_id)
             ->get()->row();
 
-        $custom_fields = $this->mdl_client_custom->get_by_client($company_id)->result();
+        $custom_fields = $this->mdl_company_custom->get_by_company($company_id)->result();
 
-        $this->mdl_client_custom->prep_form($company_id);
+        $this->mdl_company_custom->prep_form($company_id);
 
         if ( ! $company) {
             show_404();
@@ -230,8 +230,8 @@ class Companies extends Admin_Controller
 
         $this->layout->buffer([
             [
-                'invoice_table',
-                'invoices/partial_invoice_table',
+                'companies_table',
+                'companies/partial_company_table',
             ],
             [
                 'quote_table',

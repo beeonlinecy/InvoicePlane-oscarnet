@@ -62,6 +62,8 @@ class Base_Controller extends MX_Controller
             $this->load->helper('echo');
             $this->load->helper('client');
 
+            $this->load->helper('company');
+
             // Load setting model and load settings
             $this->load->model('settings/mdl_settings');
             if ($this->mdl_settings != null) {
