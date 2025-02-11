@@ -218,13 +218,13 @@ class Companies extends Admin_Controller
 
         $this->layout->set([
             'company'           => $company,
-            'client_notes'     => $this->mdl_client_notes->where('company_id', $company_id)->get()->result(),
+            'company_notes'     => $this->mdl_company_notes->where('company_id', $company_id)->get()->result(),
             'expenses'         => $this->mdl_expenses->result(),
             'quotes'           => $this->mdl_quotes->result(),
             'payments'         => $this->mdl_payments->result(),
             'custom_fields'    => $custom_fields,
             'quote_statuses'   => $this->mdl_quotes->statuses(),
-            'invoice_statuses' => $this->mdl_invoices->statuses(),
+            'expense_statuses' => $this->mdl_expenses->statuses(),
             'activeTab'        => $activeTab,
         ]);
 

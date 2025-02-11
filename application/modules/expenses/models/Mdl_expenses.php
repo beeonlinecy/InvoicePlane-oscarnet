@@ -519,10 +519,17 @@ class Mdl_Expenses extends Response_Model
 
         return $this;
     }
-
+    /*
     public function by_client($client_id)
     {
         $this->filter_where('ip_invoices.client_id', $client_id);
+
+        return $this;
+    }
+    */
+    public function by_company($company_id)
+    {
+        $this->filter_where('ip_expenses.company_id', $company_id);
 
         return $this;
     }

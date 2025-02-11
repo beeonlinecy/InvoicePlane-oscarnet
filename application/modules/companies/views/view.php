@@ -13,13 +13,13 @@
                 $('#client_note').val('');
 
                 // Reload all notes
-                $('#notes_list').load("<?php echo site_url('companies/ajax/load_client_notes'); ?>",
+                $('#notes_list').load("<?php echo site_url('companies/ajax/load_company_notes'); ?>",
                     {
                         company_id: company_id
                     }, function (response) {
                         <?php echo IP_DEBUG ? 'console.log(response);' : ''; ?>
 
-                        setTimeout(add_delete_client_notes_click_event, 161);
+                        setTimeout(add_delete_company_notes_click_event, 161);
                     });
             } else {
                 // The validation was not successful
@@ -30,28 +30,28 @@
             }
             $('#fullpage-loader').fadeOut(200);
         }
-        function delete_client_note(event) {
+        function delete_company_note(event) {
             $('#fullpage-loader').fadeIn(200);
-            $.post('<?php echo site_url('companies/ajax/delete_client_note'); ?>',
+            $.post('<?php echo site_url('companies/ajax/delete_company_note'); ?>',
                 {
-                    client_note_id: $(this).attr('data-id')
+                    company_note_id: $(this).attr('data-id')
                 }, function (data) {
-                    reload_client_notes(data)
+                    reload_company_notes(data)
                 }
             );
         }
-        $('#save_client_note').click(function () {
+        $('#save_company_note').click(function () {
             $('#fullpage-loader').fadeIn(200);
-            $.post('<?php echo site_url('companies/ajax/save_client_note'); ?>',
+            $.post('<?php echo site_url('companies/ajax/save_company_note'); ?>',
                 {
                     company_id: company_id,
-                    client_note: $('#client_note').val()
+                    client_note: $('#company_note').val()
                 }, function (data) {
-                    reload_client_notes(data)
+                    reload_company_notes(data)
                 }
             );
         });
-        add_delete_client_notes_click_event();
+        add_delete_company_notes_click_event();
     });
 </script>
 
@@ -372,8 +372,8 @@ $locations = [];
                                 <?php echo $partial_notes; ?>
                             </div>
                             <div class="input-group">
-                                <textarea id="client_note" class="form-control" rows="2" style="resize:none"></textarea>
-                                <span id="save_client_note" class="input-group-addon btn btn-default">
+                                <textarea id="company_note" class="form-control" rows="2" style="resize:none"></textarea>
+                                <span id="save_company_note" class="input-group-addon btn btn-default">
                                     <?php _trans('add_note'); ?>
                                 </span>
                             </div>

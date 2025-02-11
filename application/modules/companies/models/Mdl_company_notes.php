@@ -14,26 +14,26 @@ if (! defined('BASEPATH')) {
  */
 
 #[AllowDynamicProperties]
-class Mdl_Client_Notes extends Response_Model
+class Mdl_Company_Notes extends Response_Model
 {
-    public $table = 'ip_client_notes';
-    public $primary_key = 'ip_client_notes.client_note_id';
+    public $table = 'ip_company_notes';
+    public $primary_key = 'ip_company_notes.company_note_id';
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_client_notes.client_note_date DESC');
+        $this->db->order_by('ip_company_notes.company_note_date DESC');
     }
 
     public function validation_rules()
     {
         return array(
-            'client_id' => array(
-                'field' => 'client_id',
-                'label' => trans('client'),
+            'company_id' => array(
+                'field' => 'company_id',
+                'label' => trans('company'),
                 'rules' => 'required'
             ),
-            'client_note' => array(
-                'field' => 'client_note',
+            'company_note' => array(
+                'field' => 'company_note',
                 'label' => trans('note'),
                 'rules' => 'required'
             )
@@ -44,7 +44,7 @@ class Mdl_Client_Notes extends Response_Model
     {
         $db_array = parent::db_array();
 
-        $db_array['client_note_date'] = date('Y-m-d');
+        $db_array['company_note_date'] = date('Y-m-d');
 
         return $db_array;
     }

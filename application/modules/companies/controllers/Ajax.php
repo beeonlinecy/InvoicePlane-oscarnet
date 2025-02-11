@@ -107,8 +107,8 @@ class Ajax extends Admin_Controller
     public function delete_client_note()
     {
         $success = 0;
-        $client_note_id = $this->input->post('client_note_id');
-        $this->load->model('mdl_client_notes');
+        $client_note_id = $this->input->post('company_note_id');
+        $this->load->model('mdl_company_notes');
 
         // Only continue if the note exists or no item id was provided
         if ($this->mdl_client_notes->get_by_id($client_note_id) || empty($client_note_id)) {
@@ -132,12 +132,12 @@ class Ajax extends Admin_Controller
 
 
 
-    public function save_client_note()
+    public function save_company_note()
     {
-        $this->load->model('clients/mdl_client_notes');
+        $this->load->model('companies/mdl_company_notes');
 
-        if ($this->mdl_client_notes->run_validation()) {
-            $this->mdl_client_notes->save();
+        if ($this->mdl_company_notes->run_validation()) {
+            $this->mdl_company_notes->save();
 
             $response = [
                 'success' => 1,
