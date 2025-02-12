@@ -83,28 +83,30 @@ class Mdl_Expenses extends Response_Model
     public function validation_rules()
     {
         return [
-            'client_id' => [
-                'field' => 'client_id',
-                'label' => trans('client'),
+            'company_id' => [
+                'field' => 'company_id',
+                'label' => trans('company'),
                 'rules' => 'required',
             ],
-            'invoice_date_created' => [
-                'field' => 'invoice_date_created',
-                'label' => trans('invoice_date'),
+            'expense_date_created' => [
+                'field' => 'expense_date_created',
+                'label' => trans('expense_date'),
                 'rules' => 'required',
             ],
-            'invoice_time_created' => [
+            'expense_time_created' => [
                 'rules' => 'required',
             ],
-            'invoice_group_id' => [
-                'field' => 'invoice_group_id',
-                'label' => trans('invoice_group'),
+            /*
+            'expense_group_id' => [
+                'field' => 'expense_group_id',
+                'label' => trans('expense_group'),
                 'rules' => 'required',
-            ],
-            'invoice_password' => [
-                'field' => 'invoice_password',
-                'label' => trans('invoice_password'),
-            ],
+            ],*/
+            /*
+            'expense_password' => [
+                'field' => 'expense_password',
+                'label' => trans('expense_password'),
+            ], */
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
@@ -120,7 +122,7 @@ class Mdl_Expenses extends Response_Model
     /**
      * @return array
      */
-    public function validation_rules_save_invoice()
+    public function validation_rules_save_expense()
     {
         return [
             'invoice_number' => [
@@ -161,14 +163,14 @@ class Mdl_Expenses extends Response_Model
         $exp = $this->where('ip_expenses.expense_id', $expense_id)->get()->row();
         $expense_group = $exp->expense_group_id;
 
-        // Create an invoice amount record
+        // Create an expense amount record
         $db_array = [
             'expense_id' => $expense_id,
         ];
 
         $this->db->insert('ip_expense_amounts', $db_array);
 
-        if ($include_invoice_tax_rates) {
+        if ($include_expense_tax_rates) {
             // Create the default invoice tax record if applicable
             if (get_setting('default_invoice_tax_rate')) {
                 $db_array = array(
@@ -208,10 +210,10 @@ class Mdl_Expenses extends Response_Model
      * @param int  $target_id
      * @param bool $copy_recurring_items_only
      */
-    public function copy_invoice($source_id, $target_id, $copy_recurring_items_only = false): void
+    public function copy_expense($source_id, $target_id, $copy_recurring_items_only = false): void
     {
-        $this->load->model('invoices/mdl_items');
-        $this->load->model('invoices/mdl_invoice_tax_rates');
+        $this->load->model('expenses/mdl_items');
+        $this->load->model('expenses/mdl_invoice_tax_rates');
 
         // Copy the items
         $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
@@ -329,34 +331,34 @@ class Mdl_Expenses extends Response_Model
         $db_array = parent::db_array();
 
         // Get the client id for the submitted invoice
-        $this->load->model('clients/mdl_clients');
+        $this->load->model('companies/mdl_companies');
 
         // Check if is SUMEX
-        $this->load->model('invoice_groups/mdl_invoice_groups');
+        //$this->load->model('expense_groups/mdl_expense_groups');
 
-        $db_array['invoice_date_created'] = date_to_mysql($db_array['invoice_date_created']);
-        $db_array['invoice_date_due'] = $this->get_date_due($db_array['invoice_date_created']);
-        $db_array['invoice_terms'] = get_setting('default_invoice_terms');
+        $db_array['expense_date_created'] = date_to_mysql($db_array['expense_date_created']);
+        $db_array['expense_date_due'] = $this->get_date_due($db_array['expense_date_created']);
+        $db_array['expense_terms'] = get_setting('default_expense_terms');
 
         if ( ! isset($db_array['expense_status_id'])) {
             $db_array['expense_status_id'] = 1;
         }
 
-        $generate_invoice_number = get_setting('generate_invoice_number_for_draft');
+        $generate_expense_number = get_setting('generate_invoice_number_for_draft');
 
-        if ($db_array['expense_status_id'] === 1 && $generate_invoice_number == 1) {
-            $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
-        } elseif ($db_array['invoice_status_id'] != 1) {
-            $db_array['invoice_number'] = $this->get_invoice_number($db_array['invoice_group_id']);
+        if ($db_array['expense_status_id'] === 1 && $generate_expense_number == 1) {
+            $db_array['expense_number'] = $this->get_expense_number($db_array['expense_group_id']);
+        } elseif ($db_array['expense_status_id'] != 1) {
+            $db_array['expense_number'] = $this->get_expense_number($db_array['expense_group_id']);
         } else {
-            $db_array['invoice_number'] = '';
+            $db_array['expense_number'] = '';
         }
 
         // Set default values
         $db_array['payment_method'] = (empty($db_array['payment_method']) ? 0 : $db_array['payment_method']);
 
         // Generate the unique url key
-        $db_array['invoice_url_key'] = $this->get_url_key();
+        $db_array['expense_url_key'] = $this->get_url_key();
 
         return $db_array;
     }
@@ -402,9 +404,9 @@ class Mdl_Expenses extends Response_Model
      */
     public function get_expense_number($expense_group_id)
     {
-        $this->load->model('invoice_groups/mdl_invoice_groups');
+        $this->load->model('expense_categories/mdl_expense_categories');
 
-        return $this->mdl_invoice_groups->generate_invoice_number($expense_group_id);
+        return $this->mdl_expense_categories->generate_expense_number($expense_group_id);
     }
 
     /**

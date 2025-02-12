@@ -27,7 +27,7 @@
             }
         });
 
-        // Creates the invoice
+        // Creates the expense
         $('#expense_create_confirm').click(function () {
             // Posts the data to validate and create the invoice;
             // will create the new client if necessary
@@ -70,7 +70,7 @@
         <div class="modal-body">
 
             <input class="hidden" id="payment_method_id"
-                   value="<?php echo get_setting('expense_default_payment_method'); ?>">
+                   value="<?php echo get_setting('invoice_default_payment_method'); ?>">
 
             <input class="hidden" id="input_permissive_search_companies"
                    value="<?php echo get_setting('enable_permissive_search_companies'); ?>">
@@ -81,7 +81,7 @@
                     <select name="company_id" id="create_expense_company_id" class="company-id-select form-control"
                             autofocus="autofocus">
                         <?php if (!empty($company)) : ?>
-                            <option value="<?php echo $company->company_id; ?>"><?php _htmlsc(format_client($company)); ?></option>
+                            <option value="<?php echo $company->company_id; ?>"><?php _htmlsc(format_company($company)); ?></option>
                         <?php endif; ?>
                     </select>
                     <span id="toggle_permissive_search_companies" class="input-group-addon"
@@ -103,19 +103,19 @@
                 </span>
                 </div>
             </div>
-
+            <!--
             <div class="form-group">
-                <label for="invoice_group_id"><?php _trans('invoice_group'); ?></label>
-                <select name="invoice_group_id" id="invoice_group_id"
+                <label for="expense_group_id"><?php //_trans('expense_group'); ?></label>
+                <select name="expense_group_id" id="expense_group_id"
                 	class="form-control simple-select" data-minimum-results-for-search="Infinity" required>
-                    <?php foreach ($invoice_groups as $invoice_group) { ?>
-                        <option value="<?php echo $invoice_group->invoice_group_id; ?>"
-                                <?php if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php } ?>>
-                            <?php _htmlsc($invoice_group->invoice_group_name); ?>
+                    <?php //foreach ($expense_groups as $expense_group) { ?>
+                        <option value="<?php //echo $expense_group->expense_group_id; ?>"
+                                <?php //if (get_setting('default_invoice_group') == $invoice_group->invoice_group_id) { ?>selected="selected"<?php //} ?>>
+                            <?php //_htmlsc($expense_group->expense_group_name); ?>
                         </option>
-                    <?php } ?>
+                    <?php //} ?>
                 </select>
-            </div>
+            </div> -->
 
             <div class="form-group">
                 <label for="expense_total"><?php _trans('expense_total'); ?></label>
@@ -128,7 +128,7 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-success ajax-loader" id="invoice_create_confirm" type="button">
+                <button class="btn btn-success ajax-loader" id="expense_create_confirm" type="button">
                     <i class="fa fa-check"></i> <?php _trans('submit'); ?>
                 </button>
                 <button class="btn btn-danger" type="button" data-dismiss="modal">

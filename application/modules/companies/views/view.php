@@ -141,7 +141,7 @@ $locations = [];
                         </tr>
                         <tr>
                             <th>
-                                <?php _trans('total_billed'); ?>
+                                <?php _trans('total_paid'); ?>
                             </th>
                             <td class="td-amount">
                                 <?php echo format_currency($company->company_expense_total); ?>

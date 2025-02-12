@@ -262,15 +262,15 @@ class Ajax extends Admin_Controller
     public function modal_create_expense()
     {
         $this->load->module('layout');
-        $this->load->model('invoice_groups/mdl_invoice_groups');
+        //$this->load->model('invoice_groups/mdl_invoice_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
-        $this->load->model('clients/mdl_clients');
+        $this->load->model('companies/mdl_companies');
 
         $data = [
-            'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
+            //'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'client' => $this->mdl_clients->get_by_id($this->input->post('client_id')),
-            'clients' => $this->mdl_clients->get_latest(),
+            'company' => $this->mdl_companies->get_by_id($this->input->post('company_id')),
+            'companies' => $this->mdl_companies->get_latest(),
         ];
 
         $this->layout->load_view('expenses/modal_create_expense', $data);
