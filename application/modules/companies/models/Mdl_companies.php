@@ -217,21 +217,21 @@ class Mdl_Companies extends Response_Model
 
     public function with_total()
     {
-        $this->filter_select('IFnull((SELECT SUM(expense_total) FROM ip_expense_amounts WHERE expense_id IN (SELECT expense_id FROM ip_companies WHERE ip_companies.company_id = ip_companies.company_id)), 0) AS company_expense_total', false);
+        $this->filter_select('IFnull((SELECT SUM(expense_total) FROM ip_expense_amounts WHERE expense_id IN (SELECT expense_id FROM ip_expenses WHERE ip_expenses.company_id = ip_companies.company_id)), 0) AS company_expense_total', false);
 
         return $this;
     }
 
     public function with_total_paid()
     {
-        $this->filter_select('IFnull((SELECT SUM(expense_paid) FROM ip_expense_amounts WHERE expense_id IN (SELECT expense_id FROM ip_companies WHERE ip_companies.company_id = ip_companies.company_id)), 0) AS company_expense_paid', false);
+        $this->filter_select('IFnull((SELECT SUM(expense_paid) FROM ip_expense_amounts WHERE expense_id IN (SELECT expense_id FROM ip_expenses WHERE ip_expenses.company_id = ip_companies.company_id)), 0) AS company_expense_paid', false);
 
         return $this;
     }
 
     public function with_total_balance()
     {
-        $this->filter_select('IFnull((SELECT SUM(expense_balance) FROM ip_expense_amounts WHERE expense_id IN (SELECT expense_id FROM ip_companies WHERE ip_companies.company_id = ip_companies.company_id)), 0) AS company_expense_balance', false);
+        $this->filter_select('IFnull((SELECT SUM(expense_balance) FROM ip_expense_amounts WHERE expense_id IN (SELECT expense_id FROM ip_expenses WHERE ip_expenses.company_id = ip_companies.company_id)), 0) AS company_expense_balance', false);
 
         return $this;
     }
