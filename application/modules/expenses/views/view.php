@@ -7,7 +7,7 @@ $cv = $this->controller->view_data["custom_values"];
         $('.item-task-id').each(function () {
             // Disable client chaning if at least one item already has a task id assigned
             if ($(this).val().length > 0) {
-                $('#invoice_change_client').hide();
+                $('#expense_change_client').hide();
                 return false;
             }
         });
@@ -20,7 +20,7 @@ $cv = $this->controller->view_data["custom_values"];
 
         $('.btn_add_task').click(function () {
             $('#modal-placeholder').load(
-                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $invoice_id); ?>/" +
+                "<?php echo site_url('tasks/ajax/modal_task_lookups/' . $expense_id); ?>/" +
                 Math.floor(Math.random() * 1000)
             );
         });
@@ -35,21 +35,21 @@ $cv = $this->controller->view_data["custom_values"];
 
         $('#btn_create_recurring').click(function () {
             $('#modal-placeholder').load(
-                "<?php echo site_url('invoices/ajax/modal_create_recurring'); ?>",
+                "<?php echo site_url('expenses/ajax/modal_create_recurring'); ?>",
                 {
-                    invoice_id: <?php echo $invoice_id; ?>
+                    expense_id: <?php echo $expense_id; ?>
                 }
             );
         });
 
-        $('#invoice_change_client').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('invoices/ajax/modal_change_client'); ?>", {
-                invoice_id: <?php echo $invoice_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($invoice->client_id); ?>",
+        $('#expense_change_client').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('expenses/ajax/modal_change_client'); ?>", {
+                expense_id: <?php echo $expense_id; ?>,
+                client_id: "<?php echo $this->db->escape_str($expense->client_id); ?>",
             });
         });
 
-        $('#btn_save_invoice').click(function () {
+        $('#btn_save_expense').click(function () {
             var items = [];
             var item_order = 1;
             $('#item_table .item').each(function () {
@@ -65,17 +65,17 @@ $cv = $this->controller->view_data["custom_values"];
                 item_order++;
                 items.push(row);
             });
-            $.post("<?php echo site_url('invoices/ajax/save'); ?>", {
-                    invoice_id: <?php echo $invoice_id; ?>,
-                    invoice_number: $('#invoice_number').val(),
-                    invoice_date_created: $('#invoice_date_created').val(),
-                    invoice_date_due: $('#invoice_date_due').val(),
-                    invoice_status_id: $('#invoice_status_id').val(),
-                    invoice_password: $('#invoice_password').val(),
+            $.post("<?php echo site_url('expenses/ajax/save'); ?>", {
+                    expense_id: <?php echo $expense_id; ?>,
+                    expense_number: $('#expense_number').val(),
+                    expense_date_created: $('#expense_date_created').val(),
+                    expense_date_due: $('#expense_date_due').val(),
+                    expense_status_id: $('#expense_status_id').val(),
+                    expense_password: $('#expense_password').val(),
                     items: JSON.stringify(items),
-                    invoice_discount_amount: $('#invoice_discount_amount').val(),
-                    invoice_discount_percent: $('#invoice_discount_percent').val(),
-                    invoice_terms: $('#invoice_terms').val(),
+                    expense_discount_amount: $('#expense_discount_amount').val(),
+                    expense_discount_percent: $('#expense_discount_percent').val(),
+                    expense_terms: $('#expense_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val(),
                 },
@@ -83,7 +83,7 @@ $cv = $this->controller->view_data["custom_values"];
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
-                        window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
+                        window.location = "<?php echo site_url('expenses/view'); ?>/" + <?php echo $expense_id; ?>;
                     } else {
                         $('#fullpage-loader').hide();
                         $('.control-group').removeClass('has-error');
@@ -94,13 +94,13 @@ $cv = $this->controller->view_data["custom_values"];
                             $('#' + key).parent().addClass('has-error');
                             all_resp_errors += resp_errors[key];
                         }
-                        $('#invoice_form').prepend('<div class="alert alert-danger">' + all_resp_errors + '</div>');
+                        $('#expense_form').prepend('<div class="alert alert-danger">' + all_resp_errors + '</div>');
                     }
                 });
         });
 
         $('#btn_generate_pdf').click(function () {
-            window.open('<?php echo site_url('invoices/generate_pdf/' . $invoice_id); ?>', '_blank');
+            window.open('<?php echo site_url('expenses/generate_pdf/' . $expense_id); ?>', '_blank');
         });
 
         $(document).on('click', '.btn_delete_item', function () {
@@ -112,7 +112,7 @@ $cv = $this->controller->view_data["custom_values"];
                 $(this).parents('.item').remove();
             }
 
-            $.post("<?php echo site_url('invoices/ajax/delete_item/' . $invoice->invoice_id); ?>", {
+            $.post("<?php echo site_url('expenses/ajax/delete_item/' . $expense->expense_id); ?>", {
                     'item_id': item_id,
                 },
                 function (data) {
@@ -127,7 +127,7 @@ $cv = $this->controller->view_data["custom_values"];
                 });
         });
 
-        <?php if ($invoice->is_read_only != 1):
+        <?php if ($expense->is_read_only != 1):
           if (get_setting('show_responsive_itemlist') == 1) { ?>
              function UpR(k) {
                var parent = k.parents('.item');
@@ -161,31 +161,31 @@ $cv = $this->controller->view_data["custom_values"];
             });
         <?php } ?>
 
-        if ($('#invoice_discount_percent').val().length > 0) {
-            $('#invoice_discount_amount').prop('disabled', true);
+        if ($('#expense_discount_percent').val().length > 0) {
+            $('#expense_discount_amount').prop('disabled', true);
         }
 
-        if ($('#invoice_discount_amount').val().length > 0) {
-            $('#invoice_discount_percent').prop('disabled', true);
+        if ($('#expense_discount_amount').val().length > 0) {
+            $('#expense_discount_percent').prop('disabled', true);
         }
 
-        $('#invoice_discount_amount').keyup(function () {
+        $('#expense_discount_amount').keyup(function () {
             if (this.value.length > 0) {
-                $('#invoice_discount_percent').prop('disabled', true);
+                $('#expense_discount_percent').prop('disabled', true);
             } else {
-                $('#invoice_discount_percent').prop('disabled', false);
+                $('#expense_discount_percent').prop('disabled', false);
             }
         });
-        $('#invoice_discount_percent').keyup(function () {
+        $('#expense_discount_percent').keyup(function () {
             if (this.value.length > 0) {
-                $('#invoice_discount_amount').prop('disabled', true);
+                $('#expense_discount_amount').prop('disabled', true);
             } else {
-                $('#invoice_discount_amount').prop('disabled', false);
+                $('#expense_discount_amount').prop('disabled', false);
             }
         });
         <?php endif; ?>
 
-        <?php if ($invoice->invoice_is_recurring) : ?>
+        <?php if ($expense->expense_is_recurring) : ?>
         $(document).on('click', '.js-item-recurrence-toggler', function () {
             var itemRecurrenceState = $(this).next('input').val();
             if (itemRecurrenceState === ('1')) {
@@ -204,46 +204,46 @@ $cv = $this->controller->view_data["custom_values"];
 </script>
 
 <?php
-echo $modal_delete_invoice;
-echo $modal_add_invoice_tax;
+echo $modal_delete_expense;
+echo $modal_add_expense_tax;
 if ($this->config->item('disable_read_only') == true) {
-    $invoice->is_read_only = 0;
+    $expense->is_read_only = 0;
 }
 ?>
 
 <div id="headerbar">
     <h1 class="headerbar-title">
         <?php
-        echo trans('invoice') . ' ';
-        echo($invoice->invoice_number ? '#' . $invoice->invoice_number : $invoice->invoice_id);
+        echo trans('expense') . ' ';
+        echo($expense->expense_number ? '#' . $expense->expense_number : $expense->expense_id);
         ?>
     </h1>
 
-    <div class="headerbar-item pull-right <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>btn-group<?php } ?>">
+    <div class="headerbar-item pull-right <?php if ($expense->is_read_only != 1 || $expense->expense_status_id != 4) { ?>btn-group<?php } ?>">
 
         <div class="options btn-group btn-group-sm">
             <a class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" href="#">
                 <i class="fa fa-caret-down no-margin"></i> <?php _trans('options'); ?>
             </a>
             <ul class="dropdown-menu">
-                <?php if ($invoice->is_read_only != 1) { ?>
+                <?php if ($expense->is_read_only != 1) { ?>
                     <li>
-                        <a href="#add-invoice-tax" data-toggle="modal">
-                            <i class="fa fa-plus fa-margin"></i> <?php _trans('add_invoice_tax'); ?>
+                        <a href="#add-expense-tax" data-toggle="modal">
+                            <i class="fa fa-plus fa-margin"></i> <?php _trans('add_expense_tax'); ?>
                         </a>
                     </li>
                 <?php } ?>
                 <li>
-                    <a href="#" id="btn_create_credit" data-invoice-id="<?php echo $invoice_id; ?>">
-                        <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_invoice'); ?>
+                    <a href="#" id="btn_create_credit" data-expense-id="<?php echo $expense_id; ?>">
+                        <i class="fa fa-minus fa-margin"></i> <?php _trans('create_credit_expense'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->invoice_balance != 0) : ?>
+                <?php if ($expense->expense_balance != 0) : ?>
                     <li>
-                        <a href="#" class="invoice-add-payment"
-                           data-invoice-id="<?php echo $invoice_id; ?>"
-                           data-invoice-balance="<?php echo $invoice->invoice_balance; ?>"
-                           data-invoice-payment-method="<?php echo $invoice->payment_method; ?>"
+                        <a href="#" class="expense-add-payment"
+                           data-expense-id="<?php echo $expense_id; ?>"
+                           data-expense-balance="<?php echo $expense->expense_balance; ?>"
+                           data-expense-payment-method="<?php echo $expense->payment_method; ?>"
                            data-payment-cf-exist="<?php echo $payment_cf_exist ?? ''; ?>">
                             <i class="fa fa-credit-card fa-margin"></i>
                             <?php _trans('enter_payment'); ?>
@@ -252,13 +252,13 @@ if ($this->config->item('disable_read_only') == true) {
                 <?php endif; ?>
                 <li>
                     <a href="#" id="btn_generate_pdf"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-expense-id="<?php echo $expense_id; ?>">
                         <i class="fa fa-print fa-margin"></i>
                         <?php _trans('download_pdf'); ?>
                     </a>
                 </li>
                 <li>
-                    <a href="<?php echo site_url('mailer/invoice/' . $invoice->invoice_id); ?>">
+                    <a href="<?php echo site_url('mailer/expense/' . $expense->expense_id); ?>">
                         <i class="fa fa-send fa-margin"></i>
                         <?php _trans('send_email'); ?>
                     </a>
@@ -266,21 +266,21 @@ if ($this->config->item('disable_read_only') == true) {
                 <li class="divider"></li>
                 <li>
                     <a href="#" id="btn_create_recurring"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                       data-expense-id="<?php echo $expense_id; ?>">
                         <i class="fa fa-refresh fa-margin"></i>
                         <?php _trans('create_recurring'); ?>
                     </a>
                 </li>
                 <li>
-                    <a href="#" id="btn_copy_invoice"
-                       data-invoice-id="<?php echo $invoice_id; ?>">
+                    <a href="#" id="btn_copy_expense"
+                       data-expense-id="<?php echo $expense_id; ?>">
                         <i class="fa fa-copy fa-margin"></i>
-                        <?php _trans('copy_invoice'); ?>
+                        <?php _trans('copy_expense'); ?>
                     </a>
                 </li>
-                <?php if ($invoice->invoice_status_id == 1 || ($this->config->item('enable_invoice_deletion') === true && $invoice->is_read_only != 1)) { ?>
+                <?php if ($expense->expense_status_id == 1 || ($this->config->item('enable_expense_deletion') === true && $expense->is_read_only != 1)) { ?>
                     <li>
-                        <a href="#delete-invoice" data-toggle="modal">
+                        <a href="#delete-expense" data-toggle="modal">
                             <i class="fa fa-trash-o fa-margin"></i>
                             <?php _trans('delete'); ?>
                         </a>
@@ -289,21 +289,21 @@ if ($this->config->item('disable_read_only') == true) {
             </ul>
         </div>
 
-        <?php if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) { ?>
-            <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_invoice">
+        <?php if ($expense->is_read_only != 1 || $expense->expense_status_id != 4) { ?>
+            <a href="#" class="btn btn-sm btn-success ajax-loader" id="btn_save_expense">
                 <i class="fa fa-check"></i> <?php _trans('save'); ?>
             </a>
         <?php } ?>
     </div>
 
-    <div class="headerbar-item invoice-labels pull-right">
-        <?php if ($invoice->invoice_is_recurring) { ?>
+    <div class="headerbar-item expense-labels pull-right">
+        <?php if ($expense->expense_is_recurring) { ?>
             <span class="label label-info">
                 <i class="fa fa-refresh"></i>
                 <?php _trans('recurring'); ?>
             </span>
         <?php } ?>
-        <?php if ($invoice->is_read_only == 1) { ?>
+        <?php if ($expense->is_read_only == 1) { ?>
             <span class="label label-danger">
                 <i class="fa fa-read-only"></i> <?php _trans('read_only'); ?>
             </span>
@@ -316,39 +316,39 @@ if ($this->config->item('disable_read_only') == true) {
 
     <?php echo $this->layout->load_view('layout/alerts'); ?>
 
-    <div id="invoice_form">
-        <div class="invoice">
+    <div id="expense_form">
+        <div class="expense">
 
             <div class="row">
                 <div class="col-xs-12 col-sm-6 col-md-5">
 
                     <h3>
-                        <a href="<?php echo site_url('clients/view/' . $invoice->client_id); ?>">
-                            <?php _htmlsc(format_client($invoice)) ?>
+                        <a href="<?php echo site_url('clients/view/' . $expense->client_id); ?>">
+                            <?php _htmlsc(format_client($expense)) ?>
                         </a>
-                        <?php if ($invoice->invoice_status_id == 1 && !$invoice->creditinvoice_parent_id) { ?>
-                            <span id="invoice_change_client" class="fa fa-edit cursor-pointer small"
+                        <?php if ($expense->expense_status_id == 1 && !$expense->creditexpense_parent_id) { ?>
+                            <span id="expense_change_client" class="fa fa-edit cursor-pointer small"
                                   data-toggle="tooltip" data-placement="bottom"
                                   title="<?php _trans('change_client'); ?>"></span>
                         <?php } ?>
                     </h3>
                     <br>
                     <div class="client-address">
-                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $invoice]); ?>
+                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $expense]); ?>
                     </div>
-                    <?php if ($invoice->client_phone || $invoice->client_email) : ?>
+                    <?php if ($expense->client_phone || $expense->client_email) : ?>
                         <hr>
                     <?php endif; ?>
-                    <?php if ($invoice->client_phone): ?>
+                    <?php if ($expense->client_phone): ?>
                         <div>
                             <?php _trans('phone'); ?>:&nbsp;
-                            <?php _htmlsc($invoice->client_phone); ?>
+                            <?php _htmlsc($expense->client_phone); ?>
                         </div>
                     <?php endif; ?>
-                    <?php if ($invoice->client_email): ?>
+                    <?php if ($expense->client_email): ?>
                         <div>
                             <?php _trans('email'); ?>:&nbsp;
-                            <?php _auto_link($invoice->client_email); ?>
+                            <?php _auto_link($expense->client_email); ?>
                         </div>
                     <?php endif; ?>
 
@@ -360,14 +360,14 @@ if ($this->config->item('disable_read_only') == true) {
                     <div class="details-box panel panel-default panel-body">
                         <div class="row">
 
-                            <?php if ($invoice->invoice_sign == -1) { ?>
+                            <?php if ($expense->expense_sign == -1) { ?>
                                 <div class="col-xs-12">
                                     <div class="alert alert-warning small">
-                                        <i class="fa fa-credit-invoice"></i>&nbsp;
+                                        <i class="fa fa-credit-expense"></i>&nbsp;
                                         <?php
-                                        echo trans('credit_invoice_for_invoice') . ' ';
-                                        $parent_invoice_number = $this->mdl_invoices->get_parent_invoice_number($invoice->creditinvoice_parent_id);
-                                        echo anchor('/invoices/view/' . $invoice->creditinvoice_parent_id, $parent_invoice_number);
+                                        echo trans('credit_expense_for_expense') . ' ';
+                                        $parent_expense_number = $this->mdl_expenses->get_parent_expense_number($expense->creditexpense_parent_id);
+                                        echo anchor('/expenses/view/' . $expense->creditexpense_parent_id, $parent_expense_number);
                                         ?>
                                     </div>
                                 </div>
@@ -375,27 +375,27 @@ if ($this->config->item('disable_read_only') == true) {
 
                             <div class="col-xs-12 col-md-6">
 
-                                <div class="invoice-properties">
-                                    <label><?php _trans('invoice'); ?> #</label>
-                                    <input type="text" id="invoice_number" class="form-control input-sm"
-                                        <?php if ($invoice->invoice_number) : ?>
-                                            value="<?php echo $invoice->invoice_number; ?>"
+                                <div class="expense-properties">
+                                    <label><?php _trans('expense'); ?> #</label>
+                                    <input type="text" id="expense_number" class="form-control input-sm"
+                                        <?php if ($expense->expense_number) : ?>
+                                            value="<?php echo $expense->expense_number; ?>"
                                         <?php else : ?>
                                             placeholder="<?php _trans('not_set'); ?>"
                                         <?php endif; ?>
-                                        <?php if ($invoice->is_read_only == 1) {
+                                        <?php if ($expense->is_read_only == 1) {
                                             echo 'disabled="disabled"';
                                         } ?>>
                                 </div>
 
-                                <div class="invoice-properties has-feedback">
+                                <div class="expense-properties has-feedback">
                                     <label><?php _trans('date'); ?></label>
 
                                     <div class="input-group">
-                                        <input name="invoice_date_created" id="invoice_date_created"
+                                        <input name="expense_date_created" id="expense_date_created"
                                                class="form-control input-sm datepicker"
-                                               value="<?php echo date_from_mysql($invoice->invoice_date_created); ?>"
-                                            <?php if ($invoice->is_read_only == 1) {
+                                               value="<?php echo date_from_mysql($expense->expense_date_created); ?>"
+                                            <?php if ($expense->is_read_only == 1) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
                                         <span class="input-group-addon">
@@ -404,14 +404,14 @@ if ($this->config->item('disable_read_only') == true) {
                                     </div>
                                 </div>
 
-                                <div class="invoice-properties has-feedback">
+                                <div class="expense-properties has-feedback">
                                     <label><?php _trans('due_date'); ?></label>
 
                                     <div class="input-group">
-                                        <input name="invoice_date_due" id="invoice_date_due"
+                                        <input name="expense_date_due" id="expense_date_due"
                                                class="form-control input-sm datepicker"
-                                               value="<?php echo date_from_mysql($invoice->invoice_date_due); ?>"
-                                            <?php if ($invoice->is_read_only == 1) {
+                                               value="<?php echo date_from_mysql($expense->expense_date_due); ?>"
+                                            <?php if ($expense->is_read_only == 1) {
                                                 echo 'disabled="disabled"';
                                             } ?>>
                                         <span class="input-group-addon">
@@ -425,44 +425,44 @@ if ($this->config->item('disable_read_only') == true) {
                                     <?php if ($custom_field->custom_field_location != 1) {
                                         continue;
                                     } ?>
-                                    <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                    <?php print_field($this->mdl_expenses, $custom_field, $cv); ?>
                                 <?php endforeach; ?>
 
                             </div>
 
                             <div class="col-xs-12 col-md-6">
 
-                                <div class="invoice-properties">
+                                <div class="expense-properties">
                                     <label>
                                         <?php _trans('status');
-                                        if ($invoice->is_read_only != 1 || $invoice->invoice_status_id != 4) {
+                                        if ($expense->is_read_only != 1 || $expense->expense_status_id != 4) {
                                             echo ' <span class="small">(' . trans('can_be_changed') . ')</span>';
                                         } ?>
                                     </label>
-                                    <select name="invoice_status_id" id="invoice_status_id"
+                                    <select name="expense_status_id" id="expense_status_id"
                                             class="form-control input-sm simple-select" data-minimum-results-for-search="Infinity"
-                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                        <?php if ($expense->is_read_only == 1 && $expense->expense_status_id == 4) {
                                             echo 'disabled="disabled"';
                                         } ?>>
-                                        <?php foreach ($invoice_statuses as $key => $status) { ?>
+                                        <?php foreach ($expense_statuses as $key => $status) { ?>
                                             <option value="<?php echo $key; ?>"
-                                                    <?php if ($key == $invoice->invoice_status_id) { ?>selected="selected"<?php } ?>>
+                                                    <?php if ($key == $expense->expense_status_id) { ?>selected="selected"<?php } ?>>
                                                 <?php echo $status['label']; ?>
                                             </option>
                                         <?php } ?>
                                     </select>
                                 </div>
 
-                                <div class="invoice-properties">
+                                <div class="expense-properties">
                                     <label><?php _trans('payment_method'); ?></label>
                                     <select name="payment_method" id="payment_method"
                                             class="form-control input-sm simple-select"
-                                        <?php if ($invoice->is_read_only == 1 && $invoice->invoice_status_id == 4) {
+                                        <?php if ($expense->is_read_only == 1 && $expense->expense_status_id == 4) {
                                             echo 'disabled="disabled"';
                                         } ?>>
                                         <option value="0"><?php _trans('select_payment_method'); ?></option>
                                         <?php foreach ($payment_methods as $payment_method) { ?>
-                                            <option <?php check_select($invoice->payment_method,
+                                            <option <?php check_select($expense->payment_method,
                                                 $payment_method->payment_method_id) ?>
                                                 value="<?php echo $payment_method->payment_method_id; ?>">
                                                 <?php echo $payment_method->payment_method_name; ?>
@@ -471,25 +471,25 @@ if ($this->config->item('disable_read_only') == true) {
                                     </select>
                                 </div>
 
-                                <div class="invoice-properties">
-                                    <label><?php _trans('invoice_password'); ?></label>
-                                    <input type="text" id="invoice_password" class="form-control input-sm"
-                                           value="<?php _htmlsc($invoice->invoice_password); ?>"
-                                        <?php if ($invoice->is_read_only == 1) {
+                                <div class="expense-properties">
+                                    <label><?php _trans('expense_password'); ?></label>
+                                    <input type="text" id="expense_password" class="form-control input-sm"
+                                           value="<?php _htmlsc($expense->expense_password); ?>"
+                                        <?php if ($expense->is_read_only == 1) {
                                             echo 'disabled="disabled"';
                                         } ?>>
                                 </div>
                             </div>
 
-                            <?php if ($invoice->invoice_status_id != 1) { ?>
+                            <?php if ($expense->expense_status_id != 1) { ?>
                                 <div class="col-xs-12 col-md-6">
                                     <div class="form-group">
-                                        <label for="invoice-guest-url"><?php _trans('guest_url'); ?></label>
+                                        <label for="expense-guest-url"><?php _trans('guest_url'); ?></label>
                                         <div class="input-group">
-                                            <input type="text" id="invoice-guest-url" readonly class="form-control"
-                                                   value="<?php echo site_url('guest/view/invoice/' . $invoice->invoice_url_key) ?>">
+                                            <input type="text" id="expense-guest-url" readonly class="form-control"
+                                                   value="<?php echo site_url('guest/view/expense/' . $expense->expense_url_key) ?>">
                                             <span class="input-group-addon to-clipboard cursor-pointer"
-                                                  data-clipboard-target="#invoice-guest-url">
+                                                  data-clipboard-target="#expense-guest-url">
                                                 <i class="fa fa-clipboard fa-fw"></i>
                                             </span>
                                         </div>
@@ -506,9 +506,9 @@ if ($this->config->item('disable_read_only') == true) {
             <br>
 
             <?php if (get_setting('show_responsive_itemlist') == 1) {
-                    $this->layout->load_view('invoices/partial_itemlist_responsive');
+                    $this->layout->load_view('expenses/partial_itemlist_responsive');
                   } else {
-                    $this->layout->load_view('invoices/partial_itemlist_table');
+                    $this->layout->load_view('expenses/partial_itemlist_table');
                   }
             ?>
 
@@ -519,14 +519,14 @@ if ($this->config->item('disable_read_only') == true) {
 
                     <div class="panel panel-default no-margin">
                         <div class="panel-heading">
-                            <?php _trans('invoice_terms'); ?>
+                            <?php _trans('expense_terms'); ?>
                         </div>
                         <div class="panel-body">
-                            <textarea id="invoice_terms" name="invoice_terms" class="form-control" rows="3"
-                                <?php if ($invoice->is_read_only == 1) {
+                            <textarea id="expense_terms" name="expense_terms" class="form-control" rows="3"
+                                <?php if ($expense->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>
-                            ><?php _htmlsc($invoice->invoice_terms); ?></textarea>
+                            ><?php _htmlsc($expense->expense_terms); ?></textarea>
                         </div>
                     </div>
 
@@ -535,7 +535,7 @@ if ($this->config->item('disable_read_only') == true) {
                 </div>
                 <div class="col-xs-12 col-md-6">
 
-                    <?php $this->layout->load_view('upload/dropzone-invoice-html'); ?>
+                    <?php $this->layout->load_view('upload/dropzone-expense-html'); ?>
 
                 </div>
             </div>
@@ -561,7 +561,7 @@ if ($this->config->item('disable_read_only') == true) {
                                             } ?>
                                             <?php $i++; ?>
                                             <?php if ($i % 2 != 0): ?>
-                                                <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                                <?php print_field($this->mdl_expenses, $custom_field, $cv); ?>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </div>
@@ -573,7 +573,7 @@ if ($this->config->item('disable_read_only') == true) {
                                             } ?>
                                             <?php $i++; ?>
                                             <?php if ($i % 2 == 0): ?>
-                                                <?php print_field($this->mdl_invoices, $custom_field, $cv); ?>
+                                                <?php print_field($this->mdl_expenses, $custom_field, $cv); ?>
                                             <?php endif; ?>
                                         <?php endforeach; ?>
                                     </div>
@@ -591,4 +591,4 @@ if ($this->config->item('disable_read_only') == true) {
     </div>
 </div>
 
-<?php $this->layout->load_view('upload/dropzone-invoice-scripts'); ?>
+<?php $this->layout->load_view('upload/dropzone-expense-scripts'); ?>
