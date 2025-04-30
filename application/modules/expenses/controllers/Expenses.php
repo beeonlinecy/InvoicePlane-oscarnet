@@ -228,7 +228,7 @@ public function download($expense)
                     ['modal_delete_expense', 'expenses/modal_delete_expense'],
                     ['modal_add_expense_tax', 'expenses/modal_add_expense_tax'],
                     ['modal_add_payment', 'payments/modal_add_payment'],
-                    ['content', 'expenses/view_sumex'],
+                    //['content', 'expenses/view_sumex'],
                 ]
             );
         } else {
