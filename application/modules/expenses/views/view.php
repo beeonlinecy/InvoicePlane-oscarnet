@@ -5,9 +5,9 @@ $cv = $this->controller->view_data["custom_values"];
 <script>
     $(function () {
         $('.item-task-id').each(function () {
-            // Disable client chaning if at least one item already has a task id assigned
+            // Disable company chaning if at least one item already has a task id assigned
             if ($(this).val().length > 0) {
-                $('#expense_change_client').hide();
+                $('#expense_change_company').hide();
                 return false;
             }
         });
@@ -42,10 +42,10 @@ $cv = $this->controller->view_data["custom_values"];
             );
         });
 
-        $('#expense_change_client').click(function () {
-            $('#modal-placeholder').load("<?php echo site_url('expenses/ajax/modal_change_client'); ?>", {
+        $('#expense_change_company').click(function () {
+            $('#modal-placeholder').load("<?php echo site_url('expenses/ajax/modal_change_company'); ?>", {
                 expense_id: <?php echo $expense_id; ?>,
-                client_id: "<?php echo $this->db->escape_str($expense->client_id); ?>",
+                company_id: "<?php echo $this->db->escape_str($expense->company_id); ?>",
             });
         });
 
@@ -324,12 +324,12 @@ if ($this->config->item('disable_read_only') == true) {
 
                     <h3>
                         <a href="<?php echo site_url('companies/view/' . $expense->company_id); ?>">
-                            <?php _htmlsc(format_client($expense)) ?>
+                            <?php _htmlsc(format_company($expense)) ?>
                         </a>
                         <?php if ($expense->expense_status_id == 1 && !$expense->creditexpense_parent_id) { ?>
                             <span id="expense_change_company" class="fa fa-edit cursor-pointer small"
                                   data-toggle="tooltip" data-placement="bottom"
-                                  title="<?php _trans('change_client'); ?>"></span>
+                                  title="<?php _trans('change_company'); ?>"></span>
                         <?php } ?>
                     </h3>
                     <br>

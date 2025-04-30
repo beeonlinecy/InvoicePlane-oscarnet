@@ -147,7 +147,7 @@ public function download($expense)
         );
 
         $this->load->helper("custom_values");
-        $this->load->helper("client");
+        $this->load->helper("company");
         $this->load->model('units/mdl_units');
         $this->load->module('payments');
 

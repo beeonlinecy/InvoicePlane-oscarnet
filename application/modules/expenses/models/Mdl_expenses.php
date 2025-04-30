@@ -55,8 +55,7 @@ class Mdl_Expenses extends Response_Model
     {
         $this->db->select("
             SQL_CALC_FOUND_ROWS
-            ip_companies.*,
-            ip_expense_sumex.*,
+            ip_companies.*, 
             IFnull(ip_expense_amounts.expense_item_subtotal, '0.00') AS expense_item_subtotal,
             IFnull(ip_expense_amounts.expense_item_tax_total, '0.00') AS expense_item_tax_total,
             IFnull(ip_expense_amounts.expense_total, '0.00') AS expense_total,
@@ -303,17 +302,17 @@ class Mdl_Expenses extends Response_Model
             $this->mdl_items->save(null, $db_array);
         }
 
-        $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
+        $expense_tax_rates = $this->mdl_expense_tax_rates->where('expense_id', $source_id)->get()->result();
 
-        foreach ($invoice_tax_rates as $invoice_tax_rate) {
+        foreach ($expense_tax_rates as $expense_tax_rate) {
             $db_array = [
-                'invoice_id'              => $target_id,
-                'tax_rate_id'             => $invoice_tax_rate->tax_rate_id,
-                'include_item_tax'        => $invoice_tax_rate->include_item_tax,
-                'invoice_tax_rate_amount' => -$invoice_tax_rate->invoice_tax_rate_amount,
+                'expense_id'              => $target_id,
+                'tax_rate_id'             => $expense_tax_rate->tax_rate_id,
+                'include_item_tax'        => $expense_tax_rate->include_item_tax,
+                'expense_tax_rate_amount' => -$expense_tax_rate->expense_tax_rate_amount,
             ];
 
-            $this->mdl_invoice_tax_rates->save(null, $db_array);
+            $this->mdl_expense_tax_rates->save(null, $db_array);
         }
 
         // Copy the custom fields
@@ -322,9 +321,9 @@ class Mdl_Expenses extends Response_Model
 
         $form_data = [];
         foreach ($custom_fields as $field) {
-            $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
+            $form_data[$field->expense_custom_fieldid] = $field->expense_custom_fieldvalue;
         }
-        $this->mdl_invoice_custom->save_custom($target_id, $form_data);
+        $this->mdl_expense_custom->save_custom($target_id, $form_data);
     }
 
     /**
@@ -334,7 +333,7 @@ class Mdl_Expenses extends Response_Model
     {
         $db_array = parent::db_array();
 
-        // Get the client id for the submitted invoice
+        // Get the client id for the submitted expense
         $this->load->model('companies/mdl_companies');
 
         // Check if is SUMEX
@@ -368,41 +367,41 @@ class Mdl_Expenses extends Response_Model
     }
 
     /**
-     * @param $invoice
+     * @param $expense
      *
      * @return mixed
      */
-    public function get_payments($invoice)
+    public function get_payments($expense)
     {
         $this->load->model('payments/mdl_payments');
 
-        $this->db->where('invoice_id', $invoice->invoice_id);
+        $this->db->where('expense_id', $expense->expense_id);
         $payment_results = $this->db->get('ip_payments');
 
         if ($payment_results->num_rows() > 0) {
-            $invoice->payments = $payment_results->result();
+            $expense->payments = $payment_results->result();
         } else {
-            $invoice->payments = null;
+            $expense->payments = null;
         }
 
-        return $invoice;
+        return $expense;
     }
 
     /**
-     * @param string $invoice_date_created
+     * @param string $expense_date_created
      *
      * @return string
      */
-    public function get_date_due($invoice_date_created)
+    public function get_date_due($expense_date_created)
     {
-        $invoice_date_due = new DateTime($invoice_date_created);
-        $invoice_date_due->add(new DateInterval('P' . get_setting('invoices_due_after') . 'D'));
+        $expense_date_due = new DateTime($expense_date_created);
+        $expense_date_due->add(new DateInterval('P' . get_setting('expenses_due_after') . 'D'));
 
-        return $invoice_date_due->format('Y-m-d');
+        return $expense_date_due->format('Y-m-d');
     }
 
     /**
-     * @param $invoice_group_id
+     * @param $expense_group_id
      *
      * @return mixed
      */
@@ -424,15 +423,15 @@ class Mdl_Expenses extends Response_Model
     }
 
     /**
-     * @param $invoice_id
+     * @param $expense_id
      *
      * @return mixed
      */
-    public function get_invoice_group_id($invoice_id)
+    public function get_expense_group_id($expense_id)
     {
-        $invoice = $this->get_by_id($invoice_id);
+        $expense = $this->get_by_id($expense_id);
 
-        return $invoice->invoice_group_id;
+        return $expense->expense_group_id;
     }
 
     /**
@@ -547,89 +546,89 @@ class Mdl_Expenses extends Response_Model
     {
         $expense = $this->get_by_id($expense_id);
 
-        if ( ! empty($invoice)) {
-            if ($invoice->invoice_status_id == 2) {
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->set('invoice_status_id', 3);
-                $this->db->update('ip_invoices');
+        if ( ! empty($expense)) {
+            if ($expense->expense_status_id == 2) {
+                $this->db->where('expense_id', $expense_id);
+                $this->db->where('expense_id', $expense_id);
+                $this->db->set('expense_status_id', 3);
+                $this->db->update('ip_expenses');
             }
 
-            // Set the invoice to read-only if feature is not disabled and setting is view
+            // Set the expense to read-only if feature is not disabled and setting is view
             if ($this->config->item('disable_read_only') == false && get_setting('read_only_toggle') == 3) {
-                $this->db->where('invoice_id', $invoice_id);
+                $this->db->where('expense_id', $expense_id);
                 $this->db->set('is_read_only', 1);
-                $this->db->update('ip_invoices');
+                $this->db->update('ip_expenses');
             }
         }
     }
 
     /**
-     * @param $invoice_id
+     * @param $expense_id
      */
-    public function mark_sent($invoice_id)
+    public function mark_sent($expense_id)
     {
-        $invoice = $this->get_by_id($invoice_id);
+        $expense = $this->get_by_id($expense_id);
 
-        if ( ! empty($invoice)) {
-            if ($invoice->invoice_status_id == 1) {
-                // Generate new invoice number if applicable
-                $expense_number = $invoice->expense_number;
+        if ( ! empty($expense)) {
+            if ($expense->expense_status_id == 1) {
+                // Generate new expense number if applicable
+                $expense_number = $expense->expense_number;
 
                 // Set new date and save
-                $this->db->where('invoice_id', $invoice_id);
-                $this->db->set('invoice_status_id', 2);
+                $this->db->where('expense_id', $expense_id);
+                $this->db->set('expense_status_id', 2);
                 $this->db->set('expense_number', $expense_number);
-                $this->db->update('ip_invoices');
+                $this->db->update('ip_expenses');
 
-                $this->update_invoice_due_date($invoice_id);
+                $this->update_expense_due_date($expense_id);
             }
 
-            // Set the invoice to read-only if feature is not disabled and setting is sent
+            // Set the expense to read-only if feature is not disabled and setting is sent
             if ($this->config->item('disable_read_only') == false && get_setting('read_only_toggle') == 2) {
-                $this->db->where('invoice_id', $invoice_id);
+                $this->db->where('expense_id', $expense_id);
                 $this->db->set('is_read_only', 1);
-                $this->db->update('ip_invoices');
+                $this->db->update('ip_expenses');
             }
         }
     }
 
     /**
-     * @param $invoice_id
+     * @param $expense_id
      */
-    public function generate_expense_number_if_applicable($invoice_id)
+    public function generate_expense_number_if_applicable($expense_id)
     {
-        $invoice = $this->mdl_invoices->get_by_id($invoice_id);
+        $expense = $this->mdl_expenses->get_by_id($expense_id);
 
-        if ( ! empty($invoice)) {
-            if ($invoice->invoice_status_id == 1 && $invoice->expense_number == '') {
-                // Generate new invoice number if applicable
+        if ( ! empty($expense)) {
+            if ($expense->expense_status_id == 1 && $expense->expense_number == '') {
+                // Generate new expense number if applicable
                 if (get_setting('generate_expense_number_for_draft') == 0) {
-                    $expense_number = $this->get_expense_number($invoice->invoice_group_id);
+                    $expense_number = $this->get_expense_number($expense->expense_group_id);
 
-                    // Set new invoice number and save
-                    $this->db->where('invoice_id', $invoice_id);
+                    // Set new expense number and save
+                    $this->db->where('expense_id', $expense_id);
                     $this->db->set('expense_number', $expense_number);
-                    $this->db->update('ip_invoices');
+                    $this->db->update('ip_expenses');
                 }
             }
         }
     }
 
     /**
-     * Update the invoice due date.
+     * Update the expense due date.
      *
-     * @param $invoice_id
+     * @param $expense_id
      */
-    public function update_invoice_due_date($invoice_id)
+    public function update_expense_due_date($expense_id)
     {
-        $invoice = $this->get_by_id($invoice_id);
+        $expense = $this->get_by_id($expense_id);
 
-        if ( ! empty($invoice) && get_setting('no_update_invoice_due_date_mail') == 0 && $invoice->is_read_only != 1) {
+        if ( ! empty($expense) && get_setting('no_update_expense_due_date_mail') == 0 && $expense->is_read_only != 1) {
             $current_date = date_to_mysql(date(date_format_setting()));
-            $this->db->where('invoice_id', $invoice_id);
-            $this->db->set('invoice_date_due', $this->get_date_due($current_date));
-            $this->db->update('ip_invoices');
+            $this->db->where('expense_id', $expense_id);
+            $this->db->set('expense_date_due', $this->get_date_due($current_date));
+            $this->db->update('ip_expenses');
         }
     }
 }

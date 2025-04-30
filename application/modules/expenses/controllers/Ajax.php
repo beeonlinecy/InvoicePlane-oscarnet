@@ -92,8 +92,8 @@ class Ajax extends Admin_Controller
             $expense_number = $this->input->post('expense_number');
 
             if (empty($expense_number) && $expense_status != 1) {
-                $expense_group_id = $this->mdl_invoices->get_expense_group_id($expense_id);
-                $expense_number = $this->mdl_invoices->get_expense_number($expense_group_id);
+                $expense_group_id = $this->mdl_expenses->get_expense_group_id($expense_id);
+                $expense_number = $this->mdl_expenses->get_expense_number($expense_group_id);
             }
 
             $db_array = [
