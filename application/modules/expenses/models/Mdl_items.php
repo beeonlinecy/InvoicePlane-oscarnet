@@ -5,41 +5,41 @@ if (! defined('BASEPATH')) {
 }
 
 /*
- * InvoicePlane
+ * expensePlane
  *
- * @author      InvoicePlane Developers & Contributors
- * @copyright   Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license     https://invoiceplane.com/license.txt
- * @link        https://invoiceplane.com
+ * @author      expensePlane Developers & Contributors
+ * @copyright   Copyright (c) 2012 - 2018 expensePlane.com
+ * @license     https://expenseplane.com/license.txt
+ * @link        https://expenseplane.com
  */
 
 #[AllowDynamicProperties]
 class Mdl_Items extends Response_Model
 {
 
-    public $table = 'ip_invoice_items';
+    public $table = 'ip_expense_items';
 
-    public $primary_key = 'ip_invoice_items.item_id';
+    public $primary_key = 'ip_expense_items.item_id';
 
     public $date_created_field = 'item_date_added';
 
     public function default_select()
     {
-        $this->db->select('ip_invoice_item_amounts.*, ip_products.*, ip_invoice_items.*,
+        $this->db->select('ip_expense_item_amounts.*, ip_products.*, ip_expense_items.*,
             item_tax_rates.tax_rate_percent AS item_tax_rate_percent,
             item_tax_rates.tax_rate_name AS item_tax_rate_name');
     }
 
     public function default_order_by()
     {
-        $this->db->order_by('ip_invoice_items.item_order');
+        $this->db->order_by('ip_expense_items.item_order');
     }
 
     public function default_join()
     {
-        $this->db->join('ip_invoice_item_amounts', 'ip_invoice_item_amounts.item_id = ip_invoice_items.item_id', 'left');
-        $this->db->join('ip_tax_rates AS item_tax_rates', 'item_tax_rates.tax_rate_id = ip_invoice_items.item_tax_rate_id', 'left');
-        $this->db->join('ip_products', 'ip_products.product_id = ip_invoice_items.item_product_id', 'left');
+        $this->db->join('ip_expense_item_amounts', 'ip_expense_item_amounts.item_id = ip_expense_items.item_id', 'left');
+        $this->db->join('ip_tax_rates AS item_tax_rates', 'item_tax_rates.tax_rate_id = ip_expense_items.item_tax_rate_id', 'left');
+        $this->db->join('ip_products', 'ip_products.product_id = ip_expense_items.item_product_id', 'left');
     }
 
     /**
@@ -48,9 +48,9 @@ class Mdl_Items extends Response_Model
     public function validation_rules()
     {
         return [
-            'invoice_id' => [
-                'field' => 'invoice_id',
-                'label' => trans('invoice'),
+            'expense_id' => [
+                'field' => 'expense_id',
+                'label' => trans('expense'),
                 'rules' => 'required',
             ],
             'item_sku' => [
@@ -106,15 +106,15 @@ class Mdl_Items extends Response_Model
     {
         $id = parent::save($id, $db_array);
 
-        $this->load->model('invoices/mdl_item_amounts');
+        $this->load->model('expenses/mdl_item_amounts');
         $this->mdl_item_amounts->calculate($id);
 
-        $this->load->model('invoices/mdl_invoice_amounts');
+        $this->load->model('expenses/mdl_expense_amounts');
 
-        if (is_object($db_array) && isset($db_array->invoice_id)) {
-            $this->mdl_invoice_amounts->calculate($db_array->invoice_id);
-        } elseif (is_array($db_array) && isset($db_array['invoice_id'])) {
-            $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        if (is_object($db_array) && isset($db_array->expense_id)) {
+            $this->mdl_expense_amounts->calculate($db_array->expense_id);
+        } elseif (is_array($db_array) && isset($db_array['expense_id'])) {
+            $this->mdl_expense_amounts->calculate($db_array['expense_id']);
         }
 
         return $id;
@@ -128,7 +128,7 @@ class Mdl_Items extends Response_Model
     public function delete($item_id)
     {
         // Get item:
-        // the invoice id is needed to recalculate invoice amounts
+        // the expense id is needed to recalculate expense amounts
         // and the task id to update status if the item refers a task
         $query = $this->db->get_where($this->table, ['item_id' => $item_id]);
 
@@ -137,18 +137,18 @@ class Mdl_Items extends Response_Model
         }
 
         $row = $query->row();
-        $invoice_id = $row->invoice_id;
+        $expense_id = $row->expense_id;
 
         // Delete the item
         parent::delete($item_id);
 
         // Delete the item amounts
         $this->db->where('item_id', $item_id);
-        $this->db->delete('ip_invoice_item_amounts');
+        $this->db->delete('ip_expense_item_amounts');
 
-        // Recalculate invoice amounts
-        $this->load->model('invoices/mdl_invoice_amounts');
-        $this->mdl_invoice_amounts->calculate($invoice_id);
+        // Recalculate expense amounts
+        $this->load->model('expenses/mdl_expense_amounts');
+        $this->mdl_expense_amounts->calculate($expense_id);
 
         return true;
     }
