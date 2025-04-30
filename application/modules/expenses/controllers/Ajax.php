@@ -24,11 +24,11 @@ class Ajax extends Admin_Controller
         $this->load->model('invoices/mdl_items');
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('units/mdl_units');
-        $this->load->model('invoices/mdl_invoice_sumex');
+        $this->load->model('invoices/mdl_expense_sumex');
 
-        $invoice_id = $this->security->xss_clean($this->input->post('invoice_id', true));
+        $expense_id = $this->security->xss_clean($this->input->post('expense_id', true));
 
-        $this->mdl_invoices->set_id($invoice_id);
+        $this->mdl_invoices->set_id($expense_id);
 
         if ($this->mdl_invoices->run_validation('validation_rules_save_invoice')) {
             $items = json_decode($this->input->post('items'));
@@ -74,67 +74,67 @@ class Ajax extends Admin_Controller
                 }
             }
 
-            $invoice_status = $this->input->post('invoice_status_id');
+            $expense_status = $this->input->post('expense_status_id');
 
-            if ($this->input->post('invoice_discount_amount') === '') {
-                $invoice_discount_amount = floatval(0);
+            if ($this->input->post('expense_discount_amount') === '') {
+                $expense_discount_amount = floatval(0);
             } else {
-                $invoice_discount_amount = $this->input->post('invoice_discount_amount');
+                $expense_discount_amount = $this->input->post('expense_discount_amount');
             }
 
-            if ($this->input->post('invoice_discount_percent') === '') {
-                $invoice_discount_percent = floatval(0);
+            if ($this->input->post('expense_discount_percent') === '') {
+                $expense_discount_percent = floatval(0);
             } else {
-                $invoice_discount_percent = $this->input->post('invoice_discount_percent');
+                $expense_discount_percent = $this->input->post('expense_discount_percent');
             }
 
             // Generate new invoice number if needed
-            $invoice_number = $this->input->post('invoice_number');
+            $expense_number = $this->input->post('expense_number');
 
-            if (empty($invoice_number) && $invoice_status != 1) {
-                $invoice_group_id = $this->mdl_invoices->get_invoice_group_id($invoice_id);
-                $invoice_number = $this->mdl_invoices->get_invoice_number($invoice_group_id);
+            if (empty($expense_number) && $expense_status != 1) {
+                $expense_group_id = $this->mdl_invoices->get_expense_group_id($expense_id);
+                $expense_number = $this->mdl_invoices->get_expense_number($expense_group_id);
             }
 
             $db_array = [
-                'invoice_number' => $invoice_number,
-                'invoice_terms' => $this->security->xss_clean($this->input->post('invoice_terms')),
-                'invoice_date_created' => date_to_mysql($this->input->post('invoice_date_created')),
-                'invoice_date_due' => date_to_mysql($this->input->post('invoice_date_due')),
-                'invoice_password' => $this->security->xss_clean($this->input->post('invoice_password')),
-                'invoice_status_id' => $invoice_status,
+                'expense_number' => $expense_number,
+                'expense_terms' => $this->security->xss_clean($this->input->post('expense_terms')),
+                'expense_date_created' => date_to_mysql($this->input->post('expense_date_created')),
+                'expense_date_due' => date_to_mysql($this->input->post('expense_date_due')),
+                'expense_password' => $this->security->xss_clean($this->input->post('expense_password')),
+                'expense_status_id' => $expense_status,
                 'payment_method' => $this->security->xss_clean($this->input->post('payment_method')),
-                'invoice_discount_amount' => standardize_amount($invoice_discount_amount),
-                'invoice_discount_percent' => standardize_amount($invoice_discount_percent),
+                'expense_discount_amount' => standardize_amount($expense_discount_amount),
+                'expense_discount_percent' => standardize_amount($expense_discount_percent),
             ];
 
             // check if status changed to sent, the feature is enabled and settings is set to sent
             if ($this->config->item('disable_read_only') === false) {
-                if ($invoice_status == get_setting('read_only_toggle')) {
+                if ($expense_status == get_setting('read_only_toggle')) {
                     $db_array['is_read_only'] = 1;
                 }
             }
 
-            $this->mdl_invoices->save($invoice_id, $db_array);
-            $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $invoice_id)->get()->num_rows();
+            $this->mdl_invoices->save($expense_id, $db_array);
+            $sumexInvoice = $this->mdl_invoices->where('sumex_invoice', $expense_id)->get()->num_rows();
 
             if ($sumexInvoice >= 1) {
                 $sumex_array = [
-                    'sumex_invoice' => $invoice_id,
-                    'sumex_reason' => $this->input->post('invoice_sumex_reason'),
-                    'sumex_diagnosis' => $this->input->post('invoice_sumex_diagnosis'),
-                    'sumex_treatmentstart' => date_to_mysql($this->input->post('invoice_sumex_treatmentstart')),
-                    'sumex_treatmentend' => date_to_mysql($this->input->post('invoice_sumex_treatmentend')),
-                    'sumex_casedate' => date_to_mysql($this->input->post('invoice_sumex_casedate')),
-                    'sumex_casenumber' => $this->input->post('invoice_sumex_casenumber'),
-                    'sumex_observations' => $this->input->post('invoice_sumex_observations'),
+                    'sumex_invoice' => $expense_id,
+                    'sumex_reason' => $this->input->post('expense_sumex_reason'),
+                    'sumex_diagnosis' => $this->input->post('expense_sumex_diagnosis'),
+                    'sumex_treatmentstart' => date_to_mysql($this->input->post('expense_sumex_treatmentstart')),
+                    'sumex_treatmentend' => date_to_mysql($this->input->post('expense_sumex_treatmentend')),
+                    'sumex_casedate' => date_to_mysql($this->input->post('expense_sumex_casedate')),
+                    'sumex_casenumber' => $this->input->post('expense_sumex_casenumber'),
+                    'sumex_observations' => $this->input->post('expense_sumex_observations'),
                 ];
-                $this->mdl_invoice_sumex->save($invoice_id, $sumex_array);
+                $this->mdl_expense_sumex->save($expense_id, $sumex_array);
             }
 
             // Recalculate for discounts
-            $this->load->model('invoices/mdl_invoice_amounts');
-            $this->mdl_invoice_amounts->calculate($invoice_id);
+            $this->load->model('invoices/mdl_expense_amounts');
+            $this->mdl_expense_amounts->calculate($expense_id);
 
             $response = [
                 'success' => 1,
@@ -171,8 +171,8 @@ class Ajax extends Admin_Controller
             }
 
 
-            $this->load->model('custom_fields/mdl_invoice_custom');
-            $result = $this->mdl_invoice_custom->save_custom($invoice_id, $db_array);
+            $this->load->model('custom_fields/mdl_expense_custom');
+            $result = $this->mdl_expense_custom->save_custom($expense_id, $db_array);
             if ($result !== true) {
                 $response = [
                     'success' => 0,
@@ -187,12 +187,12 @@ class Ajax extends Admin_Controller
         echo json_encode($response);
     }
 
-    public function save_invoice_tax_rate()
+    public function save_expense_tax_rate()
     {
-        $this->load->model('invoices/mdl_invoice_tax_rates');
+        $this->load->model('invoices/mdl_expense_tax_rates');
 
-        if ($this->mdl_invoice_tax_rates->run_validation()) {
-            $this->mdl_invoice_tax_rates->save();
+        if ($this->mdl_expense_tax_rates->run_validation()) {
+            $this->mdl_expense_tax_rates->save();
 
             $response = [
                 'success' => 1,
@@ -200,7 +200,7 @@ class Ajax extends Admin_Controller
         } else {
             $response = [
                 'success' => 0,
-                'validation_errors' => $this->mdl_invoice_tax_rates->validation_errors,
+                'validation_errors' => $this->mdl_expense_tax_rates->validation_errors,
             ];
         }
 
@@ -262,12 +262,12 @@ class Ajax extends Admin_Controller
     public function modal_create_expense()
     {
         $this->load->module('layout');
-        //$this->load->model('invoice_groups/mdl_invoice_groups');
+        //$this->load->model('expense_groups/mdl_expense_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('companies/mdl_companies');
 
         $data = [
-            //'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
+            //'expense_groups' => $this->mdl_expense_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
             'company' => $this->mdl_companies->get_by_id($this->input->post('company_id')),
             'companies' => $this->mdl_companies->get_latest(),
@@ -283,7 +283,7 @@ class Ajax extends Admin_Controller
         $this->load->model('mdl_invoices_recurring');
 
         $data = [
-            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
+            'expense_id' => $this->security->xss_clean($this->input->post('expense_id')),
             'recur_frequencies' => $this->mdl_invoices_recurring->recur_frequencies,
         ];
 
@@ -292,10 +292,10 @@ class Ajax extends Admin_Controller
 
     public function get_recur_start_date()
     {
-        $invoice_date = $this->input->post('invoice_date');
+        $expense_date = $this->input->post('expense_date');
         $recur_frequency = $this->input->post('recur_frequency');
 
-        echo increment_user_date($invoice_date, $recur_frequency);
+        echo increment_user_date($expense_date, $recur_frequency);
     }
 
     public function modal_change_client()
@@ -305,7 +305,7 @@ class Ajax extends Admin_Controller
 
         $data = [
             'client_id' => $this->security->xss_clean($this->input->post('client_id')),
-            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
+            'expense_id' => $this->security->xss_clean($this->input->post('expense_id')),
             'clients' => $this->mdl_clients->get_latest(),
         ];
 
@@ -322,17 +322,17 @@ class Ajax extends Admin_Controller
         $client = $this->mdl_clients->where('ip_clients.client_id', $client_id)->get()->row();
 
         if (!empty($client)) {
-            $invoice_id = $this->security->xss_clean($this->input->post('invoice_id'));
+            $expense_id = $this->security->xss_clean($this->input->post('expense_id'));
 
             $db_array = [
                 'client_id' => $client_id,
             ];
-            $this->db->where('invoice_id', $invoice_id);
+            $this->db->where('expense_id', $expense_id);
             $this->db->update('ip_invoices', $db_array);
 
             $response = [
                 'success' => 1,
-                'invoice_id' => $this->security->xss_clean($invoice_id),
+                'expense_id' => $this->security->xss_clean($expense_id),
             ];
         } else {
             $this->load->helper('json_error');
@@ -350,14 +350,14 @@ class Ajax extends Admin_Controller
         $this->load->module('layout');
 
         $this->load->model('invoices/mdl_invoices');
-        $this->load->model('invoice_groups/mdl_invoice_groups');
+        $this->load->model('expense_groups/mdl_expense_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
 
         $data = [
-            'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
+            'expense_groups' => $this->mdl_expense_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))
+            'expense_id' => $this->security->xss_clean($this->input->post('expense_id')),
+            'invoice' => $this->mdl_invoices->where('ip_invoices.expense_id', $this->security->xss_clean($this->input->post('expense_id')))
                 ->get()
                 ->row(),
         ];
@@ -369,17 +369,17 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('invoices/mdl_items');
-        $this->load->model('invoices/mdl_invoice_tax_rates');
+        $this->load->model('invoices/mdl_expense_tax_rates');
 
         if ($this->mdl_invoices->run_validation()) {
             $target_id = $this->mdl_invoices->save();
-            $source_id = $this->security->xss_clean($this->input->post('invoice_id'));
+            $source_id = $this->security->xss_clean($this->input->post('expense_id'));
 
             $this->mdl_invoices->copy_invoice($source_id, $target_id);
 
             $response = [
                 'success' => 1,
-                'invoice_id' => $target_id,
+                'expense_id' => $target_id,
             ];
         } else {
             $this->load->helper('json_error');
@@ -397,14 +397,14 @@ class Ajax extends Admin_Controller
         $this->load->module('layout');
 
         $this->load->model('invoices/mdl_invoices');
-        $this->load->model('invoice_groups/mdl_invoice_groups');
+        $this->load->model('expense_groups/mdl_expense_groups');
         $this->load->model('tax_rates/mdl_tax_rates');
 
         $data = [
-            'invoice_groups' => $this->mdl_invoice_groups->get()->result(),
+            'expense_groups' => $this->mdl_expense_groups->get()->result(),
             'tax_rates' => $this->mdl_tax_rates->get()->result(),
-            'invoice_id' => $this->security->xss_clean($this->input->post('invoice_id')),
-            'invoice' => $this->mdl_invoices->where('ip_invoices.invoice_id', $this->security->xss_clean($this->input->post('invoice_id')))
+            'expense_id' => $this->security->xss_clean($this->input->post('expense_id')),
+            'invoice' => $this->mdl_invoices->where('ip_invoices.expense_id', $this->security->xss_clean($this->input->post('expense_id')))
                 ->get()
                 ->row(),
         ];
@@ -416,30 +416,30 @@ class Ajax extends Admin_Controller
     {
         $this->load->model('invoices/mdl_invoices');
         $this->load->model('invoices/mdl_items');
-        $this->load->model('invoices/mdl_invoice_tax_rates');
+        $this->load->model('invoices/mdl_expense_tax_rates');
 
         if ($this->mdl_invoices->run_validation()) {
             $target_id = $this->mdl_invoices->save();
-            $source_id = $this->security->xss_clean($this->input->post('invoice_id'));
+            $source_id = $this->security->xss_clean($this->input->post('expense_id'));
 
             $this->mdl_invoices->copy_credit_invoice($source_id, $target_id);
 
             // Set source invoice to read-only
             if ($this->config->item('disable_read_only') == false) {
-                $this->mdl_invoices->where('invoice_id', $source_id);
+                $this->mdl_invoices->where('expense_id', $source_id);
                 $this->mdl_invoices->update('ip_invoices', ['is_read_only' => '1']);
             }
 
             // Set target invoice to credit invoice
-            $this->mdl_invoices->where('invoice_id', $target_id);
-            $this->mdl_invoices->update('ip_invoices', ['creditinvoice_parent_id' => $source_id]);
+            $this->mdl_invoices->where('expense_id', $target_id);
+            $this->mdl_invoices->update('ip_invoices', ['creditexpense_parent_id' => $source_id]);
 
-            $this->mdl_invoices->where('invoice_id', $target_id);
-            $this->mdl_invoices->update('ip_invoice_amounts', ['invoice_sign' => '-1']);
+            $this->mdl_invoices->where('expense_id', $target_id);
+            $this->mdl_invoices->update('ip_expense_amounts', ['expense_sign' => '-1']);
 
             $response = [
                 'success' => 1,
-                'invoice_id' => $target_id,
+                'expense_id' => $target_id,
             ];
         } else {
             $this->load->helper('json_error');
@@ -453,16 +453,16 @@ class Ajax extends Admin_Controller
     }
 
     /**
-     * @param $invoice_id
+     * @param $expense_id
      */
-    public function delete_item($invoice_id)
+    public function delete_item($expense_id)
     {
         $success = 0;
         $item_id = $this->security->xss_clean($this->input->post('item_id'));
         $this->load->model('mdl_invoices');
 
         // Only continue if the invoice exists or no item id was provided
-        if ($this->mdl_invoices->get_by_id($invoice_id) || empty($item_id)) {
+        if ($this->mdl_invoices->get_by_id($expense_id) || empty($item_id)) {
 
             // Delete invoice item
             $this->load->model('mdl_items');

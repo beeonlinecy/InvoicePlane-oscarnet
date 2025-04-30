@@ -222,16 +222,16 @@ public function download($expense)
             ]
         );
 
-        if ($expense->sumex_id != null) {
-            $this->layout->buffer(
-                [
-                    ['modal_delete_expense', 'expenses/modal_delete_expense'],
-                    ['modal_add_expense_tax', 'expenses/modal_add_expense_tax'],
-                    ['modal_add_payment', 'payments/modal_add_payment'],
-                    //['content', 'expenses/view_sumex'],
-                ]
-            );
-        } else {
+        //if ($expense->sumex_id != null) {
+        //    $this->layout->buffer(
+        //        [
+        //            ['modal_delete_expense', 'expenses/modal_delete_expense'],
+        //            ['modal_add_expense_tax', 'expenses/modal_add_expense_tax'],
+        //            ['modal_add_payment', 'payments/modal_add_payment'],
+        //            ['content', 'expenses/view_sumex'],
+        //        ]
+        //    );
+        //} else {
             $this->layout->buffer(
                 [
                     ['modal_delete_expense', 'expenses/modal_delete_expense'],
@@ -240,7 +240,7 @@ public function download($expense)
                     ['content', 'expenses/view'],
                 ]
             );
-        }
+        //}
 
         $this->layout->render();
     }

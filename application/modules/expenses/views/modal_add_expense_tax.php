@@ -3,9 +3,9 @@
         // Select2 for all select inputs
         $(".simple-select").select2();
 
-        $('#invoice_tax_submit').click(function () {
-            $.post("<?php echo site_url('invoices/ajax/save_invoice_tax_rate'); ?>", {
-                    invoice_id: <?php echo $invoice_id; ?>,
+        $('#expense_tax_submit').click(function () {
+            $.post("<?php echo site_url('expenses/ajax/save_expense_tax_rate'); ?>", {
+                    expense_id: <?php echo $expense_id; ?>,
                     tax_rate_id: $('#tax_rate_id').val(),
                     include_item_tax: $('#include_item_tax').val(),
                     include_tax: $('#include_tax').val()
@@ -14,23 +14,23 @@
                     <?php echo(IP_DEBUG ? 'console.log(data);' : ''); ?>
                     var response = JSON.parse(data);
                     if (response.success === 1) {
-                        window.location = "<?php echo site_url('invoices/view'); ?>/" + <?php echo $invoice_id; ?>;
+                        window.location = "<?php echo site_url('expenses/view'); ?>/" + <?php echo $expense_id; ?>;
                     }
                 });
         });
     });
 </script>
 
-<div id="add-invoice-tax" class="modal modal-lg" role="dialog" aria-labelledby="add-invoice-tax" aria-hidden="true">
+<div id="add-expense-tax" class="modal modal-lg" role="dialog" aria-labelledby="add-expense-tax" aria-hidden="true">
     <form class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="panel-title"><?php _trans('add_invoice_tax'); ?></h4>
+            <h4 class="panel-title"><?php _trans('add_expense_tax'); ?></h4>
         </div>
         <div class="modal-body">
 
             <div class="form-group">
-                <label for="tax_rate_id"><?php _trans('invoice_tax_rate'); ?>: </label>
+                <label for="tax_rate_id"><?php _trans('expense_tax_rate'); ?>: </label>
                 <select name="tax_rate_id" id="tax_rate_id" class="form-control simple-select">
                     <option value="0"><?php _trans('none'); ?></option>
                     <?php foreach ($tax_rates as $tax_rate) { ?>
@@ -69,7 +69,7 @@
 
         <div class="modal-footer">
             <div class="btn-group">
-                <button class="btn btn-success" id="invoice_tax_submit" type="button">
+                <button class="btn btn-success" id="expense_tax_submit" type="button">
                     <i class="fa fa-check"></i> <?php _trans('submit'); ?>
                 </button>
                 <button class="btn btn-danger" type="button" data-dismiss="modal">

@@ -71,10 +71,10 @@ class Mdl_Expenses extends Response_Model
     public function default_join()
     {
         $this->db->join('ip_companies', 'ip_companies.company_id = ip_expenses.company_id');
-        //$this->db->join('ip_users', 'ip_users.user_id = ip_invoices.user_id');
+        //$this->db->join('ip_users', 'ip_users.user_id = ip_expenses.user_id');
         $this->db->join('ip_expense_amounts', 'ip_expense_amounts.expense_id = ip_expenses.expense_id', 'left');
-        //$this->db->join('ip_invoice_sumex', 'sumex_invoice = ip_invoices.invoice_id', 'left');
-        //$this->db->join('ip_quotes', 'ip_quotes.invoice_id = ip_invoices.invoice_id', 'left');
+        //$this->db->join('ip_expense_sumex', 'sumex_expense = ip_expenses.expense_id', 'left');
+        //$this->db->join('ip_quotes', 'ip_quotes.expense_id = ip_expenses.expense_id', 'left');
     }
 
     /**
@@ -125,27 +125,27 @@ class Mdl_Expenses extends Response_Model
     public function validation_rules_save_expense()
     {
         return [
-            'invoice_number' => [
-                'field' => 'invoice_number',
-                'label' => trans('invoice') . ' #',
-                'rules' => 'is_unique[ip_invoices.invoice_number' . (($this->id) ? '.invoice_id.' . $this->id : '') . ']',
+            'expense_number' => [
+                'field' => 'expense_number',
+                'label' => trans('expense') . ' #',
+                'rules' => 'is_unique[ip_expenses.expense_number' . (($this->id) ? '.expense_id.' . $this->id : '') . ']',
             ],
-            'invoice_date_created' => [
-                'field' => 'invoice_date_created',
+            'expense_date_created' => [
+                'field' => 'expense_date_created',
                 'label' => trans('date'),
                 'rules' => 'required',
             ],
-            'invoice_date_due' => [
-                'field' => 'invoice_date_due',
+            'expense_date_due' => [
+                'field' => 'expense_date_due',
                 'label' => trans('due_date'),
                 'rules' => 'required',
             ],
-            'invoice_time_created' => [
+            'expense_time_created' => [
                 'rules' => 'required',
             ],
-            'invoice_password' => [
-                'field' => 'invoice_password',
-                'label' => trans('invoice_password'),
+            'expense_password' => [
+                'field' => 'expense_password',
+                'label' => trans('expense_password'),
             ],
         ];
     }
@@ -171,11 +171,11 @@ class Mdl_Expenses extends Response_Model
         $this->db->insert('ip_expense_amounts', $db_array);
 
         if ($include_expense_tax_rates) {
-            // Create the default invoice tax record if applicable
-            if (get_setting('default_invoice_tax_rate')) {
+            // Create the default expense tax record if applicable
+            if (get_setting('default_expense_tax_rate')) {
                 $db_array = array(
                     'expense_id' => $expense_id,
-                    'tax_rate_id' => get_setting('default_invoice_tax_rate'),
+                    'tax_rate_id' => get_setting('default_expense_tax_rate'),
                     'include_item_tax' => get_setting('default_include_item_tax', 0),
                     'include_tax' => get_setting('default_include_tax', 0),
                     'expense_tax_rate_amount' => 0
@@ -185,17 +185,17 @@ class Mdl_Expenses extends Response_Model
             }
         }
         
-        if ($invoice_group !== '0') {
-            $this->load->model('invoice_groups/mdl_invoice_groups');
-            $invgroup = $this->mdl_invoice_groups->where('invoice_group_id', $invoice_group)->get()->row();
+        if ($expense_group !== '0') {
+            $this->load->model('expense_groups/mdl_expense_groups');
+            $invgroup = $this->mdl_expense_groups->where('expense_group_id', $expense_group)->get()->row();
             
             /*
-            if (preg_match('/sumex/i', $invgroup->invoice_group_name)) {
-                // If the Invoice Group includes "Sumex", make the invoice a Sumex one
+            if (preg_match('/sumex/i', $invgroup->expense_group_name)) {
+                // If the expense Group includes "Sumex", make the expense a Sumex one
                 $db_array = [
-                    'sumex_invoice' => $invoice_id,
+                    'sumex_expense' => $expense_id,
                 ];
-                $this->db->insert('ip_invoice_sumex', $db_array);
+                $this->db->insert('ip_expense_sumex', $db_array);
             }
             */
         }
@@ -204,7 +204,7 @@ class Mdl_Expenses extends Response_Model
     }
 
     /**
-     * Copies invoice items, tax rates, etc from source to target.
+     * Copies expense items, tax rates, etc from source to target.
      *
      * @param int  $source_id
      * @param int  $target_id
@@ -213,87 +213,87 @@ class Mdl_Expenses extends Response_Model
     public function copy_expense($source_id, $target_id, $copy_recurring_items_only = false): void
     {
         $this->load->model('expenses/mdl_items');
-        $this->load->model('expenses/mdl_invoice_tax_rates');
+        $this->load->model('expenses/mdl_expense_tax_rates');
 
         // Copy the items
-        $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
+        $expense_items = $this->mdl_items->where('expense_id', $source_id)->get()->result();
 
-        foreach ($invoice_items as $invoice_item) {
+        foreach ($expense_items as $expense_item) {
             $db_array = [
-                'invoice_id'           => $target_id,
-                'item_tax_rate_id'     => $invoice_item->item_tax_rate_id,
-                'item_product_id'      => $invoice_item->item_product_id,
-                'item_task_id'         => $invoice_item->item_task_id,
-                'item_name'            => $invoice_item->item_name,
-                'item_description'     => $invoice_item->item_description,
-                'item_quantity'        => $invoice_item->item_quantity,
-                'item_price'           => $invoice_item->item_price,
-                'item_discount_amount' => $invoice_item->item_discount_amount,
-                'item_order'           => $invoice_item->item_order,
-                'item_is_recurring'    => $invoice_item->item_is_recurring,
-                'item_product_unit'    => $invoice_item->item_product_unit,
-                'item_product_unit_id' => $invoice_item->item_product_unit_id,
+                'expense_id'           => $target_id,
+                'item_tax_rate_id'     => $expense_item->item_tax_rate_id,
+                'item_product_id'      => $expense_item->item_product_id,
+                'item_task_id'         => $expense_item->item_task_id,
+                'item_name'            => $expense_item->item_name,
+                'item_description'     => $expense_item->item_description,
+                'item_quantity'        => $expense_item->item_quantity,
+                'item_price'           => $expense_item->item_price,
+                'item_discount_amount' => $expense_item->item_discount_amount,
+                'item_order'           => $expense_item->item_order,
+                'item_is_recurring'    => $expense_item->item_is_recurring,
+                'item_product_unit'    => $expense_item->item_product_unit,
+                'item_product_unit_id' => $expense_item->item_product_unit_id,
             ];
 
-            if ( ! $copy_recurring_items_only || $invoice_item->item_is_recurring) {
+            if ( ! $copy_recurring_items_only || $expense_item->item_is_recurring) {
                 $this->mdl_items->save(null, $db_array);
             }
         }
 
         // Copy the tax rates
-        $invoice_tax_rates = $this->mdl_invoice_tax_rates->where('invoice_id', $source_id)->get()->result();
+        $expense_tax_rates = $this->mdl_expense_tax_rates->where('expense_id', $source_id)->get()->result();
 
-        foreach ($invoice_tax_rates as $invoice_tax_rate) {
+        foreach ($expense_tax_rates as $expense_tax_rate) {
             $db_array = array(
-                'invoice_id' => $target_id,
-                'tax_rate_id' => $invoice_tax_rate->tax_rate_id,
-                'include_item_tax' => $invoice_tax_rate->include_item_tax,
-                'include_tax' => $invoice_tax_rate->include_tax,
-                'invoice_tax_rate_amount' => $invoice_tax_rate->invoice_tax_rate_amount
+                'expense_id' => $target_id,
+                'tax_rate_id' => $expense_tax_rate->tax_rate_id,
+                'include_item_tax' => $expense_tax_rate->include_item_tax,
+                'include_tax' => $expense_tax_rate->include_tax,
+                'expense_tax_rate_amount' => $expense_tax_rate->expense_tax_rate_amount
             );
 
-            $this->mdl_invoice_tax_rates->save(null, $db_array);
+            $this->mdl_expense_tax_rates->save(null, $db_array);
         }
 
         // Copy the custom fields
-        $this->load->model('custom_fields/mdl_invoice_custom');
-        $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
+        $this->load->model('custom_fields/mdl_expense_custom');
+        $custom_fields = $this->mdl_expense_custom->where('expense_id', $source_id)->get()->result();
 
         $form_data = [];
         foreach ($custom_fields as $field) {
-            $form_data[$field->invoice_custom_fieldid] = $field->invoice_custom_fieldvalue;
+            $form_data[$field->expense_custom_fieldid] = $field->expense_custom_fieldvalue;
         }
-        $this->mdl_invoice_custom->save_custom($target_id, $form_data);
+        $this->mdl_expense_custom->save_custom($target_id, $form_data);
     }
 
     /**
-     * Copies invoice items, tax rates, etc from source to target.
+     * Copies expense items, tax rates, etc from source to target.
      *
      * @param int $source_id
      * @param int $target_id
      */
-    public function copy_credit_invoice($source_id, $target_id)
+    public function copy_credit_expense($source_id, $target_id)
     {
-        $this->load->model('invoices/mdl_items');
-        $this->load->model('invoices/mdl_invoice_tax_rates');
+        $this->load->model('expenses/mdl_items');
+        $this->load->model('expenses/mdl_expense_tax_rates');
 
-        $invoice_items = $this->mdl_items->where('invoice_id', $source_id)->get()->result();
+        $expense_items = $this->mdl_items->where('expense_id', $source_id)->get()->result();
 
-        foreach ($invoice_items as $invoice_item) {
+        foreach ($expense_items as $expense_item) {
             $db_array = [
-                'invoice_id'           => $target_id,
-                'item_tax_rate_id'     => $invoice_item->item_tax_rate_id,
-                'item_product_id'      => $invoice_item->item_product_id,
-                'item_task_id'         => $invoice_item->item_task_id,
-                'item_name'            => $invoice_item->item_name,
-                'item_description'     => $invoice_item->item_description,
-                'item_quantity'        => $invoice_item->item_quantity * -1,
-                'item_price'           => $invoice_item->item_price,
-                'item_discount_amount' => $invoice_item->item_discount_amount,
-                'item_order'           => $invoice_item->item_order,
-                'item_is_recurring'    => $invoice_item->item_is_recurring,
-                'item_product_unit'    => $invoice_item->item_product_unit,
-                'item_product_unit_id' => $invoice_item->item_product_unit_id,
+                'expense_id'           => $target_id,
+                'item_tax_rate_id'     => $expense_item->item_tax_rate_id,
+                'item_product_id'      => $expense_item->item_product_id,
+                'item_task_id'         => $expense_item->item_task_id,
+                'item_name'            => $expense_item->item_name,
+                'item_description'     => $expense_item->item_description,
+                'item_quantity'        => $expense_item->item_quantity * -1,
+                'item_price'           => $expense_item->item_price,
+                'item_discount_amount' => $expense_item->item_discount_amount,
+                'item_order'           => $expense_item->item_order,
+                'item_is_recurring'    => $expense_item->item_is_recurring,
+                'item_product_unit'    => $expense_item->item_product_unit,
+                'item_product_unit_id' => $expense_item->item_product_unit_id,
             ];
 
             $this->mdl_items->save(null, $db_array);
@@ -344,7 +344,7 @@ class Mdl_Expenses extends Response_Model
             $db_array['expense_status_id'] = 1;
         }
 
-        $generate_expense_number = get_setting('generate_invoice_number_for_draft');
+        $generate_expense_number = get_setting('generate_expense_number_for_draft');
 
         if ($db_array['expense_status_id'] === 1 && $generate_expense_number == 1) {
             $db_array['expense_number'] = $this->get_expense_number($db_array['expense_group_id']);
@@ -432,15 +432,15 @@ class Mdl_Expenses extends Response_Model
     }
 
     /**
-     * @param int $parent_invoice_id
+     * @param int $parent_expense_id
      *
      * @return mixed
      */
-    public function get_parent_invoice_number($parent_invoice_id)
+    public function get_parent_expense_number($parent_expense_id)
     {
-        $parent_invoice = $this->get_by_id($parent_invoice_id);
+        $parent_expense = $this->get_by_id($parent_expense_id);
 
-        return $parent_invoice->invoice_number;
+        return $parent_expense->expense_number;
     }
 
     /**
@@ -448,13 +448,13 @@ class Mdl_Expenses extends Response_Model
      */
     public function get_custom_values($id)
     {
-        $this->load->module('custom_fields/Mdl_invoice_custom');
+        $this->load->module('custom_fields/Mdl_expense_custom');
 
-        return $this->invoice_custom->get_by_invid($id);
+        return $this->expense_custom->get_by_invid($id);
     }
 
     /**
-     * @param int $invoice_id
+     * @param int $expense_id
      */
     public function delete($expense_id)
     {
@@ -464,15 +464,15 @@ class Mdl_Expenses extends Response_Model
         delete_orphans();
     }
 
-    // Excludes draft and paid invoices, i.e. keeps unpaid invoices.
+    // Excludes draft and paid expenses, i.e. keeps unpaid expenses.
     public function is_open()
     {
-        $this->filter_where_in('invoice_status_id', [2, 3]);
+        $this->filter_where_in('expense_status_id', [2, 3]);
 
         return $this;
     }
 
-    // Used to check if the invoice is Sumex
+    // Used to check if the expense is Sumex
     public function is_sumex()
     {
         $this->where('sumex_id is NOT NULL', null, false);
@@ -482,35 +482,35 @@ class Mdl_Expenses extends Response_Model
 
     public function guest_visible()
     {
-        $this->filter_where_in('invoice_status_id', [2, 3, 4]);
+        $this->filter_where_in('expense_status_id', [2, 3, 4]);
 
         return $this;
     }
 
     public function is_draft()
     {
-        $this->filter_where('invoice_status_id', 1);
+        $this->filter_where('expense_status_id', 1);
 
         return $this;
     }
 
     public function is_sent()
     {
-        $this->filter_where('invoice_status_id', 2);
+        $this->filter_where('expense_status_id', 2);
 
         return $this;
     }
 
     public function is_viewed()
     {
-        $this->filter_where('invoice_status_id', 3);
+        $this->filter_where('expense_status_id', 3);
 
         return $this;
     }
 
     public function is_paid()
     {
-        $this->filter_where('invoice_status_id', 4);
+        $this->filter_where('expense_status_id', 4);
 
         return $this;
     }
@@ -524,7 +524,7 @@ class Mdl_Expenses extends Response_Model
     /*
     public function by_client($client_id)
     {
-        $this->filter_where('ip_invoices.client_id', $client_id);
+        $this->filter_where('ip_expenses.client_id', $client_id);
 
         return $this;
     }
@@ -537,11 +537,11 @@ class Mdl_Expenses extends Response_Model
     }
 
     /**
-     * @param $invoice_id
+     * @param $expense_id
      */
-    public function mark_viewed($invoice_id)
+    public function mark_viewed($expense_id)
     {
-        $invoice = $this->get_by_id($invoice_id);
+        $expense = $this->get_by_id($expense_id);
 
         if ( ! empty($invoice)) {
             if ($invoice->invoice_status_id == 2) {
@@ -570,12 +570,12 @@ class Mdl_Expenses extends Response_Model
         if ( ! empty($invoice)) {
             if ($invoice->invoice_status_id == 1) {
                 // Generate new invoice number if applicable
-                $invoice_number = $invoice->invoice_number;
+                $expense_number = $invoice->expense_number;
 
                 // Set new date and save
                 $this->db->where('invoice_id', $invoice_id);
                 $this->db->set('invoice_status_id', 2);
-                $this->db->set('invoice_number', $invoice_number);
+                $this->db->set('expense_number', $expense_number);
                 $this->db->update('ip_invoices');
 
                 $this->update_invoice_due_date($invoice_id);
@@ -593,19 +593,19 @@ class Mdl_Expenses extends Response_Model
     /**
      * @param $invoice_id
      */
-    public function generate_invoice_number_if_applicable($invoice_id)
+    public function generate_expense_number_if_applicable($invoice_id)
     {
         $invoice = $this->mdl_invoices->get_by_id($invoice_id);
 
         if ( ! empty($invoice)) {
-            if ($invoice->invoice_status_id == 1 && $invoice->invoice_number == '') {
+            if ($invoice->invoice_status_id == 1 && $invoice->expense_number == '') {
                 // Generate new invoice number if applicable
-                if (get_setting('generate_invoice_number_for_draft') == 0) {
-                    $invoice_number = $this->get_invoice_number($invoice->invoice_group_id);
+                if (get_setting('generate_expense_number_for_draft') == 0) {
+                    $expense_number = $this->get_expense_number($invoice->invoice_group_id);
 
                     // Set new invoice number and save
                     $this->db->where('invoice_id', $invoice_id);
-                    $this->db->set('invoice_number', $invoice_number);
+                    $this->db->set('expense_number', $expense_number);
                     $this->db->update('ip_invoices');
                 }
             }

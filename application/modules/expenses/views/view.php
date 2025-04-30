@@ -323,32 +323,32 @@ if ($this->config->item('disable_read_only') == true) {
                 <div class="col-xs-12 col-sm-6 col-md-5">
 
                     <h3>
-                        <a href="<?php echo site_url('clients/view/' . $expense->client_id); ?>">
+                        <a href="<?php echo site_url('companies/view/' . $expense->company_id); ?>">
                             <?php _htmlsc(format_client($expense)) ?>
                         </a>
                         <?php if ($expense->expense_status_id == 1 && !$expense->creditexpense_parent_id) { ?>
-                            <span id="expense_change_client" class="fa fa-edit cursor-pointer small"
+                            <span id="expense_change_company" class="fa fa-edit cursor-pointer small"
                                   data-toggle="tooltip" data-placement="bottom"
                                   title="<?php _trans('change_client'); ?>"></span>
                         <?php } ?>
                     </h3>
                     <br>
-                    <div class="client-address">
-                        <?php $this->layout->load_view('clients/partial_client_address', ['client' => $expense]); ?>
+                    <div class="company-address">
+                        <?php $this->layout->load_view('clients/partial_company_address', ['company' => $expense]); ?>
                     </div>
-                    <?php if ($expense->client_phone || $expense->client_email) : ?>
+                    <?php if ($expense->company_phone || $expense->company_email) : ?>
                         <hr>
                     <?php endif; ?>
-                    <?php if ($expense->client_phone): ?>
+                    <?php if ($expense->company_phone): ?>
                         <div>
                             <?php _trans('phone'); ?>:&nbsp;
-                            <?php _htmlsc($expense->client_phone); ?>
+                            <?php _htmlsc($expense->company_phone); ?>
                         </div>
                     <?php endif; ?>
-                    <?php if ($expense->client_email): ?>
+                    <?php if ($expense->company_email): ?>
                         <div>
                             <?php _trans('email'); ?>:&nbsp;
-                            <?php _auto_link($expense->client_email); ?>
+                            <?php _auto_link($expense->company_email); ?>
                         </div>
                     <?php endif; ?>
 

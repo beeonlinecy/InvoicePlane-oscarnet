@@ -1,18 +1,18 @@
-<div id="delete-invoice" class="modal modal-lg" role="dialog" aria-labelledby="delete-invoice" aria-hidden="true">
+<div id="delete-expense" class="modal modal-lg" role="dialog" aria-labelledby="delete-expense" aria-hidden="true">
 
     <div class="modal-content">
         <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal"><i class="fa fa-close"></i></button>
-            <h4 class="panel-title"><?php _trans('delete_invoice'); ?></h4>
+            <h4 class="panel-title"><?php _trans('delete_expense'); ?></h4>
         </div>
         <div class="modal-body">
 
-            <div class="alert alert-danger"><?php _trans('delete_invoice_warning'); ?></div>
+            <div class="alert alert-danger"><?php _trans('delete_expense_warning'); ?></div>
 
         </div>
         <div class="modal-footer">
 
-            <form action="<?php echo site_url('invoices/delete/' . $invoice->invoice_id); ?>"
+            <form action="<?php echo site_url('expenses/delete/' . $expense->expense_id); ?>"
                   method="POST">
                 <?php _csrf_field(); ?>
 
