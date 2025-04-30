@@ -334,7 +334,7 @@ if ($this->config->item('disable_read_only') == true) {
                     </h3>
                     <br>
                     <div class="company-address">
-                        <?php $this->layout->load_view('clients/partial_company_address', ['company' => $expense]); ?>
+                        <?php $this->layout->load_view('companies/partial_company_address', ['company' => $expense]); ?>
                     </div>
                     <?php if ($expense->company_phone || $expense->company_email) : ?>
                         <hr>

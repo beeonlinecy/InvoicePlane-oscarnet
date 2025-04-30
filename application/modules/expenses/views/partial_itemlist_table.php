@@ -19,7 +19,7 @@
         <tr>
             <td rowspan="2" class="td-icon">
                 <i class="fa fa-arrows cursor-move"></i>
-                <?php if ($invoice->invoice_is_recurring) : ?>
+                <?php if ($expense->expense_is_recurring) : ?>
                     <br/>
                     <i title="<?php echo trans('recurring') ?>"
                        class="js-item-recurrence-toggler cursor-pointer fa fa-calendar-o text-muted"></i>
@@ -27,7 +27,7 @@
                 <?php endif; ?>
             </td>
             <td class="td-text">
-                <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
+                <input type="hidden" name="expense_id" value="<?php echo $expense_id; ?>">
                 <input type="hidden" name="item_id" value="">
                 <input type="hidden" name="item_product_id" value="">
                 <input type="hidden" name="item_task_id" class="item-task-id" value="">
@@ -78,7 +78,7 @@
             </td>
         </tr>
         <tr>
-            <?php if ($invoice->sumex_id == ""): ?>
+            <?php if ($expense->sumex_id == ""): ?>
                 <td class="td-textarea">
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('description'); ?></span>
@@ -91,7 +91,7 @@
                         <span class="input-group-addon"><?php _trans('date'); ?></span>
                         <input type="text" name="item_date" class="input-sm form-control datepicker"
                                value="<?php echo format_date(@$item->item_date); ?>"
-                            <?php if ($invoice->is_read_only == 1) {
+                            <?php if ($expense->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
                     </div>
@@ -135,7 +135,7 @@
                 <td rowspan="2" class="td-icon">
                     <i class="fa fa-arrows cursor-move"></i>
                     <?php
-                    if ($invoice->invoice_is_recurring) :
+                    if ($expense->expense_is_recurring) :
                         if ($item->item_is_recurring == 1 || is_null($item->item_is_recurring)) {
                             $item_recurrence_state = '1';
                             $item_recurrence_class = 'fa-calendar-check-o text-success';
@@ -152,9 +152,9 @@
                 </td>
 
                 <td class="td-text">
-                    <input type="hidden" name="invoice_id" value="<?php echo $invoice_id; ?>">
+                    <input type="hidden" name="expense_id" value="<?php echo $expense_id; ?>">
                     <input type="hidden" name="item_id" value="<?php echo $item->item_id; ?>"
-                        <?php if ($invoice->is_read_only == 1) {
+                        <?php if ($expense->is_read_only == 1) {
                             echo 'disabled="disabled"';
                         } ?>>
                     <input type="hidden" name="item_task_id" class="item-task-id"
@@ -167,7 +167,7 @@
                         <span class="input-group-addon"><?php _trans('item'); ?></span>
                         <input type="text" name="item_name" class="input-sm form-control"
                                value="<?php _htmlsc($item->item_name); ?>"
-                            <?php if ($invoice->is_read_only == 1) {
+                            <?php if ($expense->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
                     </div>
@@ -177,7 +177,7 @@
                         <span class="input-group-addon"><?php _trans('quantity'); ?></span>
                         <input type="text" name="item_quantity" class="input-sm form-control amount"
                                value="<?php echo format_quantity($item->item_quantity); ?>"
-                            <?php if ($invoice->is_read_only == 1) {
+                            <?php if ($expense->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
                     </div>
@@ -187,7 +187,7 @@
                         <span class="input-group-addon"><?php _trans('price'); ?></span>
                         <input type="text" name="item_price" class="input-sm form-control amount"
                                value="<?php echo format_amount($item->item_price); ?>"
-                            <?php if ($invoice->is_read_only == 1) {
+                            <?php if ($expense->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
                     </div>
@@ -199,7 +199,7 @@
                                value="<?php echo format_amount($item->item_discount_amount); ?>"
                                data-toggle="tooltip" data-placement="bottom"
                                title="<?php echo get_setting('currency_symbol') . ' ' . trans('per_item'); ?>"
-                            <?php if ($invoice->is_read_only == 1) {
+                            <?php if ($expense->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
                     </div>
@@ -208,7 +208,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('tax_rate'); ?></span>
                         <select name="item_tax_rate_id" class="form-control input-sm"
-                            <?php if ($invoice->is_read_only == 1) {
+                            <?php if ($expense->is_read_only == 1) {
                                 echo 'disabled="disabled"';
                             } ?>>
                             <option value="0"><?php _trans('none'); ?></option>
@@ -222,7 +222,7 @@
                     </div>
                 </td>
                 <td class="td-icon text-right td-vert-middle">
-                    <?php if ($invoice->is_read_only != 1): ?>
+                    <?php if ($expense->is_read_only != 1): ?>
                         <button type="button" class="btn_delete_item btn btn-link btn-sm" title="<?php _trans('delete'); ?>"
                                 data-item-id="<?php echo $item->item_id; ?>">
                             <i class="fa fa-trash-o text-danger"></i>
@@ -232,13 +232,13 @@
             </tr>
 
             <tr>
-                <?php if ($invoice->sumex_id == ""): ?>
+                <?php if ($expense->sumex_id == ""): ?>
                     <td class="td-textarea">
                         <div class="input-group">
                             <span class="input-group-addon"><?php _trans('description'); ?></span>
                             <textarea name="item_description"
                                       class="input-sm form-control"
-                                <?php if ($invoice->is_read_only == 1) {
+                                <?php if ($expense->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>><?php echo htmlsc($item->item_description); ?></textarea>
                         </div>
@@ -249,7 +249,7 @@
                             <span class="input-group-addon"><?php _trans('date'); ?></span>
                             <input type="text" name="item_date" class="input-sm form-control datepicker"
                                    value="<?php echo format_date($item->item_date); ?>"
-                                <?php if ($invoice->is_read_only == 1) {
+                                <?php if ($expense->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>>
                         </div>
@@ -306,7 +306,7 @@
 <div class="row">
     <div class="col-xs-12 col-md-4">
         <div class="btn-group">
-            <?php if ($invoice->is_read_only != 1) { ?>
+            <?php if ($expense->is_read_only != 1) { ?>
                 <a href="javascript:void(0);" class="btn_add_row btn btn-sm btn-default">
                     <i class="fa fa-plus"></i> <?php _trans('add_new_row'); ?>
                 </a>
@@ -328,29 +328,29 @@
             <tr>
                 <td style="width: 40%;"><?php _trans('subtotal'); ?></td>
                 <td style="width: 60%;"
-                    class="amount"><?php echo format_currency($invoice->invoice_item_subtotal); ?></td>
+                    class="amount"><?php echo format_currency($expense->expense_item_subtotal); ?></td>
             </tr>
             <tr>
                 <td><?php _trans('item_tax'); ?></td>
-                <td class="amount"><?php echo format_currency($invoice->invoice_item_tax_total); ?></td>
+                <td class="amount"><?php echo format_currency($expense->expense_item_tax_total); ?></td>
             </tr>
             <tr>
-                <td><?php _trans('invoice_tax'); ?></td>
+                <td><?php _trans('expense_tax'); ?></td>
                 <td>
-                    <?php if ($invoice_tax_rates) {
-                        foreach ($invoice_tax_rates as $invoice_tax_rate) { ?>
+                    <?php if ($expense_tax_rates) {
+                        foreach ($expense_tax_rates as $expense_tax_rate) { ?>
                             <form method="post"
-                                action="<?php echo site_url('invoices/delete_invoice_tax/' . $invoice->invoice_id . '/' . $invoice_tax_rate->invoice_tax_rate_id) ?>">
+                                action="<?php echo site_url('expenses/delete_expense_tax/' . $expense->expense_id . '/' . $expense_tax_rate->expense_tax_rate_id) ?>">
                                 <?php _csrf_field(); ?>
                                 <button type="submit" class="btn btn-xs btn-link"
                                         onclick="return confirm('<?php _trans('delete_tax_warning'); ?>');">
                                     <i class="fa fa-trash-o"></i>
                                 </button>
                                 <span class="text-muted">
-                                    <?php echo htmlsc($invoice_tax_rate->invoice_tax_rate_name) . ' ' . format_amount($invoice_tax_rate->invoice_tax_rate_percent) . '%' ?>
+                                    <?php echo htmlsc($expense_tax_rate->expense_tax_rate_name) . ' ' . format_amount($expense_tax_rate->expense_tax_rate_percent) . '%' ?>
                                 </span>
                                 <span class="amount">
-                                    <?php echo format_currency($invoice_tax_rate->invoice_tax_rate_amount); ?>
+                                    <?php echo format_currency($expense_tax_rate->expense_tax_rate_amount); ?>
                                 </span>
                             </form>
                         <?php }
@@ -364,10 +364,10 @@
                 <td class="clearfix">
                     <div class="discount-field">
                         <div class="input-group input-group-sm">
-                            <input id="invoice_discount_amount" name="invoice_discount_amount"
+                            <input id="expense_discount_amount" name="expense_discount_amount"
                                    class="discount-option form-control input-sm amount"
-                                   value="<?php echo format_amount($invoice->invoice_discount_amount != 0 ? $invoice->invoice_discount_amount : ''); ?>"
-                                <?php if ($invoice->is_read_only == 1) {
+                                   value="<?php echo format_amount($expense->expense_discount_amount != 0 ? $expense->expense_discount_amount : ''); ?>"
+                                <?php if ($expense->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>>
                             <div class="input-group-addon"><?php echo get_setting('currency_symbol'); ?></div>
@@ -375,10 +375,10 @@
                     </div>
                     <div class="discount-field">
                         <div class="input-group input-group-sm">
-                            <input id="invoice_discount_percent" name="invoice_discount_percent"
-                                   value="<?php echo format_amount($invoice->invoice_discount_percent != 0 ? $invoice->invoice_discount_percent : ''); ?>"
+                            <input id="expense_discount_percent" name="expense_discount_percent"
+                                   value="<?php echo format_amount($expense->expense_discount_percent != 0 ? $expense->expense_discount_percent : ''); ?>"
                                    class="discount-option form-control input-sm amount"
-                                <?php if ($invoice->is_read_only == 1) {
+                                <?php if ($expense->is_read_only == 1) {
                                     echo 'disabled="disabled"';
                                 } ?>>
                             <div class="input-group-addon">&percnt;</div>
@@ -388,15 +388,15 @@
             </tr>
             <tr>
                 <td><?php _trans('total'); ?></td>
-                <td class="amount"><b><?php echo format_currency($invoice->invoice_total); ?></b></td>
+                <td class="amount"><b><?php echo format_currency($expense->expense_total); ?></b></td>
             </tr>
             <tr>
                 <td><?php _trans('paid'); ?></td>
-                <td class="amount"><b><?php echo format_currency($invoice->invoice_paid); ?></b></td>
+                <td class="amount"><b><?php echo format_currency($expense->expense_paid); ?></b></td>
             </tr>
             <tr>
                 <td><b><?php _trans('balance'); ?></b></td>
-                <td class="amount"><b><?php echo format_currency($invoice->invoice_balance); ?></b></td>
+                <td class="amount"><b><?php echo format_currency($expense->expense_balance); ?></b></td>
             </tr>
         </table>
     </div>

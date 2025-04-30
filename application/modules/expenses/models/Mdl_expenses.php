@@ -56,7 +56,11 @@ class Mdl_Expenses extends Response_Model
         $this->db->select("
             SQL_CALC_FOUND_ROWS
             ip_companies.*,
+            ip_expense_sumex.*,
+            IFnull(ip_expense_amounts.expense_item_subtotal, '0.00') AS expense_item_subtotal,
+            IFnull(ip_expense_amounts.expense_item_tax_total, '0.00') AS expense_item_tax_total,
             IFnull(ip_expense_amounts.expense_total, '0.00') AS expense_total,
+            IFnull(ip_expense_amounts.expense_balance, '0.00') AS expense_balance,
             (CASE (SELECT COUNT(*) FROM ip_expenses_recurring WHERE ip_expenses_recurring.expense_id = ip_expenses.expense_id and ip_expenses_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS expense_is_recurring,
             ip_expense_amounts.expense_sign AS expense_sign,
             ip_expenses.*,
@@ -313,8 +317,8 @@ class Mdl_Expenses extends Response_Model
         }
 
         // Copy the custom fields
-        $this->load->model('custom_fields/mdl_invoice_custom');
-        $custom_fields = $this->mdl_invoice_custom->where('invoice_id', $source_id)->get()->result();
+        $this->load->model('custom_fields/mdl_expense_custom');
+        $custom_fields = $this->mdl_expens_custom->where('expense_id', $source_id)->get()->result();
 
         $form_data = [];
         foreach ($custom_fields as $field) {

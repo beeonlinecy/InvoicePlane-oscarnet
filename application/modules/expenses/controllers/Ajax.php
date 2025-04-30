@@ -432,7 +432,7 @@ class Ajax extends Admin_Controller
 
             // Set target invoice to credit invoice
             $this->mdl_invoices->where('expense_id', $target_id);
-            $this->mdl_invoices->update('ip_invoices', ['creditexpense_parent_id' => $source_id]);
+            $this->mdl_invoices->update('ip_expenses', ['creditexpense_parent_id' => $source_id]);
 
             $this->mdl_invoices->where('expense_id', $target_id);
             $this->mdl_invoices->update('ip_expense_amounts', ['expense_sign' => '-1']);
