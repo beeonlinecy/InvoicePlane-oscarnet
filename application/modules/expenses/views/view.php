@@ -535,7 +535,7 @@ if ($this->config->item('disable_read_only') == true) {
                 </div>
                 <div class="col-xs-12 col-md-6">
 
-                    <?php $this->layout->load_view('upload/dropzone-expense-html'); ?>
+                    <?php $this->layout->load_view('upload/dropzone-invoice-html'); ?>
 
                 </div>
             </div>

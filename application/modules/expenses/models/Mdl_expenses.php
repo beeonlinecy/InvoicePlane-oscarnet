@@ -55,9 +55,11 @@ class Mdl_Expenses extends Response_Model
     {
         $this->db->select("
             SQL_CALC_FOUND_ROWS
-            ip_companies.*, 
+            ip_companies.*,
+            ip_expense_sumex.*,
             IFnull(ip_expense_amounts.expense_item_subtotal, '0.00') AS expense_item_subtotal,
             IFnull(ip_expense_amounts.expense_item_tax_total, '0.00') AS expense_item_tax_total,
+            IFnull(ip_expense_amounts.expense_paid, '0.00') AS expense_paid,
             IFnull(ip_expense_amounts.expense_total, '0.00') AS expense_total,
             IFnull(ip_expense_amounts.expense_balance, '0.00') AS expense_balance,
             (CASE (SELECT COUNT(*) FROM ip_expenses_recurring WHERE ip_expenses_recurring.expense_id = ip_expenses.expense_id and ip_expenses_recurring.recur_next_date IS NOT NULL) WHEN 0 THEN 0 ELSE 1 END) AS expense_is_recurring,
@@ -76,7 +78,7 @@ class Mdl_Expenses extends Response_Model
         $this->db->join('ip_companies', 'ip_companies.company_id = ip_expenses.company_id');
         //$this->db->join('ip_users', 'ip_users.user_id = ip_expenses.user_id');
         $this->db->join('ip_expense_amounts', 'ip_expense_amounts.expense_id = ip_expenses.expense_id', 'left');
-        //$this->db->join('ip_expense_sumex', 'sumex_expense = ip_expenses.expense_id', 'left');
+        $this->db->join('ip_expense_sumex', 'sumex_expense = ip_expenses.expense_id', 'left');
         //$this->db->join('ip_quotes', 'ip_quotes.expense_id = ip_expenses.expense_id', 'left');
     }
 

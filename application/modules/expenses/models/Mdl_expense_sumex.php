@@ -5,23 +5,23 @@ if (! defined('BASEPATH')) {
 }
 
 /*
- * InvoicePlane
+ * expensePlane
  *
- * @author		InvoicePlane Developers & Contributors
- * @copyright	Copyright (c) 2012 - 2018 InvoicePlane.com
- * @license		https://invoiceplane.com/license.txt
- * @link		https://invoiceplane.com
+ * @author		expensePlane Developers & Contributors
+ * @copyright	Copyright (c) 2012 - 2018 expensePlane.com
+ * @license		https://expenseplane.com/license.txt
+ * @link		https://expenseplane.com
  */
 
 #[AllowDynamicProperties]
-class Mdl_invoice_sumex extends Response_Model
+class Mdl_expense_sumex extends Response_Model
 {
-    public $table = 'ip_invoice_sumex';
-    public $primary_key = 'ip_invoice_sumex.sumex_id';
+    public $table = 'ip_expense_sumex';
+    public $primary_key = 'ip_expense_sumex.sumex_id';
 
     public function default_select()
     {
-        $this->db->select('ip_invoice_sumex.*');
+        $this->db->select('ip_expense_sumex.*');
     }
 
     /**
@@ -31,7 +31,7 @@ class Mdl_invoice_sumex extends Response_Model
      */
     public function save($id = null, $db_array = null)
     {
-        $id = $this->where('sumex_invoice', $id)->get()->row()->sumex_id;
+        $id = $this->where('sumex_expense', $id)->get()->row()->sumex_id;
         parent::save($id, $db_array);
     }
 
@@ -41,9 +41,9 @@ class Mdl_invoice_sumex extends Response_Model
     public function validation_rules()
     {
         return array(
-            'sumex_invoice' => array(
-                'field' => 'sumex_invoice',
-                'label' => trans('invoice'),
+            'sumex_expense' => array(
+                'field' => 'sumex_expense',
+                'label' => trans('expense'),
                 'rules' => 'required'
             ),
             'sumex_reason' => array(
