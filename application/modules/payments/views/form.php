@@ -66,6 +66,28 @@
             </div>
         </div>
 
+        <div class="form-group">
+            <div class="col-xs-12 col-sm-2 text-right text-left-xs">
+                <label for="client_id" class="control-label"><?php _trans('client'); ?></label>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <select name="client_id" id="client_id" class="form-control simple-select" required>
+                    <?php if (!$payment_id) { ?>
+                        <?php foreach ($active_clients as $client) { ?>
+                            <option value="<?php echo $client->client_id; ?>"
+                                <?php check_select($this->mdl_payments->form_value('invoice_id'), $invoice->invoice_id); ?>>
+                                <?php echo $invoice->invoice_number . ' - ' . format_client($invoice) . ' - ' . format_currency($invoice->invoice_balance); ?>
+                            </option>
+                        <?php } ?>
+                    <?php } else { ?>
+                        <option value="<?php echo $payment->invoice_id; ?>">
+                            <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance); ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+        </div>
+
         <div class="form-group has-feedback">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="payment_date" class="control-label"><?php _trans('date'); ?></label>
