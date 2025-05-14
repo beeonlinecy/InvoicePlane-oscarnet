@@ -102,7 +102,11 @@ class Payments extends Admin_Controller
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_values/mdl_custom_values');
 
+        $this->load->model('clients/mdl_clients');
+
         $open_invoices = $this->mdl_invoices->is_open()->get()->result();
+
+        $all_clients = $this->mdl_clients->get()->result();
 
         $custom_fields = $this->mdl_custom_fields->by_table('ip_payment_custom')->get()->result();
         $custom_values = [];
@@ -141,6 +145,7 @@ class Payments extends Admin_Controller
                 'payment_id' => $id,
                 'payment_methods' => $this->mdl_payment_methods->get()->result(),
                 'open_invoices' => $open_invoices,
+                'all_clients'   => $all_clients,
                 'custom_fields' => $custom_fields,
                 'custom_values' => $custom_values,
                 'amounts' => json_encode($amounts),
