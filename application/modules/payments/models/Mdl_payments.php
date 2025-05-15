@@ -113,9 +113,6 @@ class Mdl_Payments extends Response_Model
             }        
         //    return false;
         }
-
-
-
         return true;
     }
 
