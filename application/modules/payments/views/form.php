@@ -50,6 +50,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="invoice_id" id="invoice_id" class="form-control simple-select">
+                <option value="" ></option>
                     <?php if (!$payment_id) { ?>
                         <?php foreach ($open_invoices as $invoice) { ?>
                             <option value="<?php echo $invoice->invoice_id; ?>"
@@ -72,6 +73,7 @@
             </div>
             <div class="col-xs-12 col-sm-6">
                 <select name="client_id" id="client_id" class="form-control simple-select">
+                        <option value="" ></option>
                         <?php foreach ($all_clients as $client) { ?>
                             <option value="<?php echo $client->client_id; ?>"
                             <?php check_select($this->mdl_payments->form_value('invoice_id'), $client->client_id); ?>>
