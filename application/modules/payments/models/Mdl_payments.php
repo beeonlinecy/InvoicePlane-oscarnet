@@ -58,6 +58,11 @@ class Mdl_Payments extends Response_Model
                 'label' => trans('invoice'),
                 //'rules' => 'required'
             ),
+            'client_id' => array(
+                'field' => 'client_id',
+                'label' => trans('client'),
+                //'rules' => 'required'
+            ),
             'payment_date' => array(
                 'field' => 'payment_date',
                 'label' => trans('date'),
@@ -151,7 +156,7 @@ class Mdl_Payments extends Response_Model
             // Recalculate invoice amounts
             $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
         }
-        
+
         return $id;
     }
 
