@@ -56,7 +56,7 @@ class Mdl_Payments extends Response_Model
             'invoice_id' => array(
                 'field' => 'invoice_id',
                 'label' => trans('invoice'),
-                'rules' => 'required'
+                //'rules' => 'required'
             ),
             'payment_date' => array(
                 'field' => 'payment_date',
@@ -91,24 +91,25 @@ class Mdl_Payments extends Response_Model
 
         $invoice = $this->db->where('invoice_id', $invoice_id)->get('ip_invoice_amounts')->row();
 
-        if ($invoice == null) {
-            return false;
+        if (!$invoice == null) {
+            $invoice_balance = (float)$invoice->invoice_balance;
+
+            if ($payment_id) {
+                $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
+
+                $invoice_balance = $invoice_balance + (float)$payment->payment_amount;
+            }
+
+            $invoice_balance = (float)$invoice_balance;
+
+            if ($amount > $invoice_balance) {
+                $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
+                return false;
+            }        
+        //    return false;
         }
 
-        $invoice_balance = (float)$invoice->invoice_balance;
 
-        if ($payment_id) {
-            $payment = $this->db->where('payment_id', $payment_id)->get('ip_payments')->row();
-
-            $invoice_balance = $invoice_balance + (float)$payment->payment_amount;
-        }
-
-        $invoice_balance = (float)$invoice_balance;
-
-        if ($amount > $invoice_balance) {
-            $this->form_validation->set_message('validate_payment_amount', trans('payment_cannot_exceed_balance'));
-            return false;
-        }
 
         return true;
     }
@@ -126,29 +127,31 @@ class Mdl_Payments extends Response_Model
         // Save the payment
         $id = parent::save($id, $db_array);
 
-        // Recalculate invoice amounts
-        $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        if(!$invoice == null){
+            // Recalculate invoice amounts
+            $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
 
-        // Set proper status for the invoice
-        $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
+            // Set proper status for the invoice
+            $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
 
-        // Calculate sum for payments
-        if ($invoice == null) {
-            return false;
+            // Calculate sum for payments
+            if ($invoice == null) {
+                return false;
+            }
+
+            $paid = (float)$invoice->invoice_paid;
+            $total = (float)$invoice->invoice_total;
+
+            if ($paid >= $total) {
+                $this->db->where('invoice_id', $db_array['invoice_id']);
+                $this->db->set('invoice_status_id', 4);
+                $this->db->update('ip_invoices');
+            }
+
+            // Recalculate invoice amounts
+            $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
         }
-
-        $paid = (float)$invoice->invoice_paid;
-        $total = (float)$invoice->invoice_total;
-
-        if ($paid >= $total) {
-            $this->db->where('invoice_id', $db_array['invoice_id']);
-            $this->db->set('invoice_status_id', 4);
-            $this->db->update('ip_invoices');
-        }
-
-        // Recalculate invoice amounts
-        $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
-
+        
         return $id;
     }
 
