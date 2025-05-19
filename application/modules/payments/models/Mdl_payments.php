@@ -220,6 +220,7 @@ class Mdl_Payments extends Response_Model
     }
 
     /**
+     * Returns payments of the client with client_id
      * @param $client_id
      * @return $this
      */
@@ -228,5 +229,20 @@ class Mdl_Payments extends Response_Model
         $this->filter_where('ip_clients.client_id', $client_id);
         return $this;
     }
+
+    public function all_payments(){
+        $this->db->select("
+            SQL_CALC_FOUND_ROWS
+            ip_payments.*,
+            ip_clients.*,
+            ip_payment_methods.*
+            ",false);
+        
+        $this->db->from("ip_payments");
+        $this->db->join("ip_clients","ip_clients.client_id = ip_payments.client_id","left");
+         $this->db->join("ip_payment_methods","ip_payment_methods.payment_method_id = ip_payments.payment_method_id","left");
+        return $this->db->get()->result();    
+    }
+
 
 }
