@@ -19,8 +19,14 @@
         <?php foreach ($all_payments as $payment) { ?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
-                <td><?php //echo date_from_mysql($payment->invoice_date_created); ?></td>
-                <td><?php //echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>
+
+                <?php if(!$payment->invoice_id == null){ ?>
+                    <td><?php echo date_from_mysql($payment->invoice_date_created); ?></td>
+                    <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>
+                <?php } else { ?>
+                    <td></td>
+                    <td></td>
+                <?php } ?>
                 <td>
                     <a href="<?php echo site_url('clients/view/' . $payment->client_id); ?>"
                        title="<?php _trans('view_client'); ?>">
