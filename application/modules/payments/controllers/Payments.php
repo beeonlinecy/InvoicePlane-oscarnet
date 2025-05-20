@@ -32,11 +32,14 @@ class Payments extends Admin_Controller
     public function index($page = 0)
     {
         $this->mdl_payments->paginate(site_url('payments/index'), $page);
-        $payments = $this->mdl_payments->result();
 
+        $payments = $this->mdl_payments->result();
+        $all_payments = $this->mdl_payments->all_payments();
+        //echo json_encode($all_payments);
         $this->layout->set(
             [
                 'payments' => $payments,
+                'all_payments' => $all_payments,
                 'filter_display' => true,
                 'filter_placeholder' => trans('filter_payments'),
                 'filter_method' => 'filter_payments',
