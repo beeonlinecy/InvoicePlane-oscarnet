@@ -129,12 +129,12 @@ class Mdl_Payments extends Response_Model
         // Save the payment
         $id = parent::save($id, $db_array);
 
-        //if(!$invoice == null){
-            // Recalculate invoice amounts
-            $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
+        if(!$db_array['invoice_id'] == null){
+        // Recalculate invoice amounts
+        $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
 
-            // Set proper status for the invoice
-            $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
+        // Set proper status for the invoice
+        $invoice = $this->db->where('invoice_id', $db_array['invoice_id'])->get('ip_invoice_amounts')->row();
 
             // Calculate sum for payments
             if ($invoice == null) {
@@ -152,7 +152,7 @@ class Mdl_Payments extends Response_Model
 
             // Recalculate invoice amounts
             $this->mdl_invoice_amounts->calculate($db_array['invoice_id']);
-        //}
+        }
 
         return $id;
     }
