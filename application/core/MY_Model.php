@@ -284,7 +284,6 @@ class MY_Model extends CI_Model
             }
 
             $this->db->insert($this->table, $db_array);
-
             return $this->db->insert_id();
 
         } else {

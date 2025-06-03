@@ -125,7 +125,7 @@ class Mdl_Payments extends Response_Model
     {
         $db_array = ($db_array) ? $db_array : $this->db_array();
         $this->load->model('invoices/mdl_invoice_amounts');
-
+        
         // Save the payment
         $id = parent::save($id, $db_array);
 
@@ -170,7 +170,6 @@ class Mdl_Payments extends Response_Model
             $group_id = isset($db_array['payment_group_id']) ? $db_array['payment_group_id'] : get_setting('default_payment_group', 0);
             $db_array['receipt_id'] = $this->mdl_invoice_groups->generate_invoice_number($group_id);
         }
-
         $db_array['payment_date'] = date_to_mysql($db_array['payment_date']);
         $db_array['payment_amount'] = standardize_amount($db_array['payment_amount']);
 
