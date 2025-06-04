@@ -4,7 +4,7 @@
         <thead>
         <tr>
             <th><?php _trans('payment_date'); ?></th>
-            <th><?php _trans('invoice_date'); ?></th>
+            <th><?php _trans('receipt_id'); ?></th>
             <th><?php _trans('invoice'); ?></th>
             <th><?php _trans('client'); ?></th>
             <th class="amount last"><?php _trans('amount'); ?></th>
@@ -19,12 +19,10 @@
         <?php foreach ($all_payments as $payment) { ?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
-
+                <td><?php _htmlsc($payment->receipt_id); ?></td>
                 <?php if(!$payment->invoice_id == null){ ?>
-                    <td><?php echo date_from_mysql($payment->invoice_date_created); ?></td>
                     <td><?php echo anchor('invoices/view/' . $payment->invoice_id, $payment->invoice_number); ?></td>
                 <?php } else { ?>
-                    <td></td>
                     <td></td>
                 <?php } ?>
                 <td>
