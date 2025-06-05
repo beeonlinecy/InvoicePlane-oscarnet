@@ -49,7 +49,7 @@
                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
                     </ul>
                 </li>
-
+            <?php if($this->config->item('expenses_enabled')){ ?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;
@@ -73,7 +73,7 @@
                         <li><?php echo anchor('companies/index', trans('view_companies')); ?></li>
                     </ul>
                 </li>
-
+                <?php } ?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;
