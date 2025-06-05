@@ -569,6 +569,6 @@ $config['rewrite_short_tags'] = FALSE;
 $config['proxy_ips'] = env('PROXY_IPS', '');
 
 /* Enable EXPENSES module*/
-$config['expenses_enabled'] = env('EXPENSES_ENABLED','');
+$config['expenses_enabled'] = env_bool('EXPENSES_ENABLED',false);
 
 /* */
