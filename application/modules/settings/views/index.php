@@ -37,9 +37,10 @@
     <li>
         <a data-toggle="tab" href="#settings-projects-tasks"><?php _trans('projects'); ?></a>
     </li>
+    <?php /*
     <li>
         <a data-toggle="tab" href="#settings-updates"><?php _trans('updates'); ?></a>
-    </li>
+    </li> */ ?>
 </ul>
 
 <form method="post" id="form-settings" enctype="multipart/form-data">
