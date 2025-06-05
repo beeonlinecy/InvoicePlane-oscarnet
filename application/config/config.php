@@ -567,3 +567,8 @@ $config['rewrite_short_tags'] = FALSE;
 | Array:		array('10.0.1.200', '192.168.5.0/24')
 */
 $config['proxy_ips'] = env('PROXY_IPS', '');
+
+/* Enable EXPENSES module*/
+$config['expenses_enabled'] = env('EXPENSES_ENABLED','');
+
+/* */

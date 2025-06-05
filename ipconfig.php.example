@@ -51,3 +51,6 @@ ENCRYPTION_CIPHER=AES-256
 
 # Set to true after the initial setup
 SETUP_COMPLETED=false
+
+# Enable Expenses module
+EXPENSES_ENABLED=true
