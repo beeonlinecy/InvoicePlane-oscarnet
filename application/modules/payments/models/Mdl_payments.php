@@ -236,6 +236,7 @@ class Mdl_Payments extends Response_Model
         return $this;
     }
 
+    /*
     public function all_payments(){
         $this->db->select("
             SQL_CALC_FOUND_ROWS
@@ -251,6 +252,22 @@ class Mdl_Payments extends Response_Model
         $this->db->join("ip_payment_methods","ip_payment_methods.payment_method_id = ip_payments.payment_method_id","left");
         return $this->db->get()->result();    
     }
+    */
+    public function all_payments(){
+    $this->db->select("
+        SQL_CALC_FOUND_ROWS
+        ip_payments.*,
+        ip_payment_methods.*,
+        ip_invoices.*,
+        COALESCE(ip_payments.client_id, ip_invoices.client_id) AS client_id,
+        ip_clients.*
+    ", false);
 
+    $this->db->from("ip_payments");
+    $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id', 'left');
+    $this->db->join("ip_payment_methods", "ip_payment_methods.payment_method_id = ip_payments.payment_method_id", "left");
+    $this->db->join("ip_clients", "ip_clients.client_id = COALESCE(ip_payments.client_id, ip_invoices.client_id)", "left");
 
+    return $this->db->get()->result();    
+}
 }

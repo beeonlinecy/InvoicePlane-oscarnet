@@ -35,7 +35,7 @@ class Payments extends Admin_Controller
 
         $payments = $this->mdl_payments->result();
         $all_payments = $this->mdl_payments->all_payments();
-        //echo json_encode($all_payments);
+        
         $this->layout->set(
             [
                 'payments' => $payments,

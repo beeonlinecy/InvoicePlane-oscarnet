@@ -15,7 +15,7 @@
         </thead>
 
         <tbody
-
+        <?php echo json_encode($all_payments); ?>
         <?php foreach ($all_payments as $payment) { ?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
