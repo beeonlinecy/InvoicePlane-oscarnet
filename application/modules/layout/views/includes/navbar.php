@@ -49,7 +49,8 @@
                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
                     </ul>
                 </li>
-            <?php if($this->config->item('expenses_enabled')){ ?>
+            <?php if($this->config->item('expenses_enabled')==true){ ?>
+                <?php echo $this->config->item('expenses_enabled'); ?>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                         <i class="fa fa-caret-down"></i> &nbsp;
