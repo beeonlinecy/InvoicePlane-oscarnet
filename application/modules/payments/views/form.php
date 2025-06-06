@@ -52,6 +52,7 @@
                 <select name="invoice_id" id="invoice_id" class="form-control simple-select">
                 <option value="" ></option>
                     <?php if (!$payment_id) { ?>
+                        <?php if($open_invoices){ ?>
                         <?php foreach ($open_invoices as $invoice) { ?>
                             <option value="<?php echo $invoice->invoice_id; ?>"
                                 <?php check_select($this->mdl_payments->form_value('invoice_id'), $invoice->invoice_id); ?>>
@@ -62,6 +63,7 @@
                         <option value="<?php echo $payment->invoice_id; ?>">
                             <?php echo $payment->invoice_number . ' - ' . format_client($payment) . ' - ' . format_currency($payment->invoice_balance); ?>
                         </option>
+                    <?php } ?>
                     <?php } ?>
                 </select>
             </div>

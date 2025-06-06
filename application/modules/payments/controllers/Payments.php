@@ -73,9 +73,8 @@ class Payments extends Admin_Controller
 
         if ( ! $this->input->post('btn_submit')) {
             $prep_form = $this->mdl_payments->prep_form($id);
-
             if ($id && ! $prep_form) {
-                show_404();
+                //show_404();
             }
 
             $this->load->model('custom_values/mdl_custom_values');

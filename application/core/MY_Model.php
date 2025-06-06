@@ -399,6 +399,7 @@ class MY_Model extends CI_Model
      */
     public function prep_form($id = null)
     {
+        echo $id;
         if (!$_POST && $id) {
             $row = $this->get_by_id($id);
 
