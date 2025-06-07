@@ -41,9 +41,9 @@ class Mdl_Payments extends Response_Model
 
     public function default_join()
     {
-        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id');
-        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id');
-        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id');
+        $this->db->join('ip_invoices', 'ip_invoices.invoice_id = ip_payments.invoice_id','left');
+        $this->db->join('ip_clients', 'ip_clients.client_id = ip_invoices.client_id','left');
+        $this->db->join('ip_invoice_amounts', 'ip_invoice_amounts.invoice_id = ip_invoices.invoice_id','left');
         $this->db->join('ip_payment_methods', 'ip_payment_methods.payment_method_id = ip_payments.payment_method_id', 'left');
     }
 
@@ -230,9 +230,22 @@ class Mdl_Payments extends Response_Model
      * @param $client_id
      * @return $this
      */
+    /*
     public function by_client($client_id)
     {
         $this->filter_where('ip_clients.client_id', $client_id);
+        return $this;
+    } */
+
+    public function by_client($client_id)
+    {
+        if ($client_id !== null) {
+            $this->db->group_start();
+            $this->db->where('ip_clients.client_id', $client_id);
+            $this->db->or_where('ip_payments.client_id', $client_id);
+            $this->db->group_end();
+        }
+
         return $this;
     }
 

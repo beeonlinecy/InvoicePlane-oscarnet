@@ -15,8 +15,8 @@
         </thead>
 
         <tbody
-        <?php echo json_encode($all_payments); ?>
-        <?php foreach ($all_payments as $payment) { ?>
+        <?php if(isset($all_payments)){ $payments = $all_payments; } ?>
+        <?php foreach ($payments as $payment) { ?>
             <tr>
                 <td><?php echo date_from_mysql($payment->payment_date); ?></td>
                 <td><?php _htmlsc($payment->receipt_id); ?></td>
