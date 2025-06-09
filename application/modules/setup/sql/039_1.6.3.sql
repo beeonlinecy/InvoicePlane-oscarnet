@@ -15,4 +15,4 @@ INSERT INTO `ip_invoice_groups` (
   5
 );
 
-INSERT INTO `ip_settings` (`setting_key`, `setting_value`) VALUES ('default_payment_group', 5);
+INSERT INTO `ip_settings` (`setting_key`, `setting_value`) VALUES ('default_payment_group', '5');
