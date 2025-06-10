@@ -188,24 +188,25 @@ class Mdl_Payments extends Response_Model
 
         // Delete the payment
         parent::delete($id);
+        if(!$invoice_id==null){
+            // Recalculate invoice amounts
+            $this->load->model('invoices/mdl_invoice_amounts');
+            $this->mdl_invoice_amounts->calculate($invoice_id);
 
-        // Recalculate invoice amounts
-        $this->load->model('invoices/mdl_invoice_amounts');
-        $this->mdl_invoice_amounts->calculate($invoice_id);
-
-        // Change invoice status back to sent
-        $this->db->select('invoice_status_id');
-        $this->db->where('invoice_id', $invoice_id);
-        $invoice = $this->db->get('ip_invoices')->row();
-
-        if ($invoice->invoice_status_id == 4) {
+            // Change invoice status back to sent
+            $this->db->select('invoice_status_id');
             $this->db->where('invoice_id', $invoice_id);
-            $this->db->set('invoice_status_id', 2);
-            $this->db->update('ip_invoices');
-        }
+            $invoice = $this->db->get('ip_invoices')->row();
 
-        $this->load->helper('orphan');
-        delete_orphans();
+            if ($invoice->invoice_status_id == 4) {
+                $this->db->where('invoice_id', $invoice_id);
+                $this->db->set('invoice_status_id', 2);
+                $this->db->update('ip_invoices');
+            }
+
+            $this->load->helper('orphan');
+            delete_orphans();
+        }
     }
 
     /**

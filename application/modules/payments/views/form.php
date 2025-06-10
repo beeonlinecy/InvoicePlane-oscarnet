@@ -43,7 +43,7 @@
     <div id="content">
 
         <?php $this->layout->load_view('layout/alerts'); ?>
-
+        <?php if(isset($invoice)){ ?>
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
                 <label for="invoice_id" class="control-label"><?php _trans('invoice'); ?></label>
@@ -68,6 +68,7 @@
                 </select>
             </div>
         </div>
+        <?php } ?>
 
         <div class="form-group">
             <div class="col-xs-12 col-sm-2 text-right text-left-xs">
