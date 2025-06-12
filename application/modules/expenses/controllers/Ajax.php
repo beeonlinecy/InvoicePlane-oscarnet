@@ -98,9 +98,9 @@ class Ajax extends Admin_Controller
 
             $db_array = [
                 'expense_number' => $expense_number,
-                'expense_terms' => $this->security->xss_clean($this->input->post('expense_terms')),
+                //'expense_terms' => $this->security->xss_clean($this->input->post('expense_terms')),
                 'expense_date_created' => date_to_mysql($this->input->post('expense_date_created')),
-                'expense_date_due' => date_to_mysql($this->input->post('expense_date_due')),
+                //'expense_date_due' => date_to_mysql($this->input->post('expense_date_due')),
                 'expense_password' => $this->security->xss_clean($this->input->post('expense_password')),
                 'expense_status_id' => $expense_status,
                 'payment_method' => $this->security->xss_clean($this->input->post('payment_method')),

@@ -94,6 +94,13 @@ class Mdl_Setup extends CI_Model
                 'invoice_group_next_id' => 1
             )
         );
+        $this->db->insert('ip_invoice_groups', array(
+                'invoice_group_name' => 'Receipt Default',
+                'invoice_group_prefix' => 'RCPT-',
+                'invoice_group_next_id' => 1,
+                'invoice_group_left_pad' => 5
+            )
+        );
 
         $this->db->insert('ip_payment_methods', array(
             'payment_method_name' => 'Cash',
@@ -101,6 +108,9 @@ class Mdl_Setup extends CI_Model
 
         $this->db->insert('ip_payment_methods', array(
             'payment_method_name' => 'Credit Card',
+        ));
+        $this->db->insert('ip_payment_methods', array(
+            'payment_method_name' => 'Bank Transfer',
         ));
     }
 
@@ -132,6 +142,7 @@ class Mdl_Setup extends CI_Model
             'public_invoice_template' => 'InvoicePlane_Web',
             'public_quote_template' => 'InvoicePlane_Web',
             'disable_sidebar' => 1,
+            'default_payment_group' => 5
         );
 
         foreach ($default_settings as $setting_key => $setting_value) {

@@ -69,13 +69,13 @@ $cv = $this->controller->view_data["custom_values"];
                     expense_id: <?php echo $expense_id; ?>,
                     expense_number: $('#expense_number').val(),
                     expense_date_created: $('#expense_date_created').val(),
-                    expense_date_due: $('#expense_date_due').val(),
+                    //expense_date_due: $('#expense_date_due').val(),
                     expense_status_id: $('#expense_status_id').val(),
                     expense_password: $('#expense_password').val(),
                     items: JSON.stringify(items),
                     expense_discount_amount: $('#expense_discount_amount').val(),
                     expense_discount_percent: $('#expense_discount_percent').val(),
-                    expense_terms: $('#expense_terms').val(),
+                    //expense_terms: $('#expense_terms').val(),
                     custom: $('input[name^=custom],select[name^=custom]').serializeArray(),
                     payment_method: $('#payment_method').val(),
                 },
@@ -480,22 +480,6 @@ if ($this->config->item('disable_read_only') == true) {
                                         } ?>>
                                 </div>
                             </div>
-
-                            <?php if ($expense->expense_status_id != 1) { ?>
-                                <div class="col-xs-12 col-md-6">
-                                    <div class="form-group">
-                                        <label for="expense-guest-url"><?php _trans('guest_url'); ?></label>
-                                        <div class="input-group">
-                                            <input type="text" id="expense-guest-url" readonly class="form-control"
-                                                   value="<?php echo site_url('guest/view/expense/' . $expense->expense_url_key) ?>">
-                                            <span class="input-group-addon to-clipboard cursor-pointer"
-                                                  data-clipboard-target="#expense-guest-url">
-                                                <i class="fa fa-clipboard fa-fw"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                            <?php } ?>
 
                         </div>
                     </div>

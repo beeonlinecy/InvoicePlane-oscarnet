@@ -342,8 +342,8 @@ class Mdl_Expenses extends Response_Model
         //$this->load->model('expense_groups/mdl_expense_groups');
 
         $db_array['expense_date_created'] = date_to_mysql($db_array['expense_date_created']);
-        $db_array['expense_date_due'] = $this->get_date_due($db_array['expense_date_created']);
-        $db_array['expense_terms'] = get_setting('default_expense_terms');
+        //$db_array['expense_date_due'] = $this->get_date_due($db_array['expense_date_created']);
+        //$db_array['expense_terms'] = get_setting('default_expense_terms');
 
         if ( ! isset($db_array['expense_status_id'])) {
             $db_array['expense_status_id'] = 1;
@@ -363,7 +363,7 @@ class Mdl_Expenses extends Response_Model
         $db_array['payment_method'] = (empty($db_array['payment_method']) ? 0 : $db_array['payment_method']);
 
         // Generate the unique url key
-        $db_array['expense_url_key'] = $this->get_url_key();
+        //$db_array['expense_url_key'] = $this->get_url_key();
 
         return $db_array;
     }
@@ -629,7 +629,7 @@ class Mdl_Expenses extends Response_Model
         if ( ! empty($expense) && get_setting('no_update_expense_due_date_mail') == 0 && $expense->is_read_only != 1) {
             $current_date = date_to_mysql(date(date_format_setting()));
             $this->db->where('expense_id', $expense_id);
-            $this->db->set('expense_date_due', $this->get_date_due($current_date));
+            //$this->db->set('expense_date_due', $this->get_date_due($current_date));
             $this->db->update('ip_expenses');
         }
     }
