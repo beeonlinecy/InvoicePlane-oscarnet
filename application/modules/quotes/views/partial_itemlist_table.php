@@ -133,7 +133,7 @@
                     <div class="input-group">
                         <span class="input-group-addon"><?php _trans('price'); ?></span>
                         <input type="text" name="item_price" class="input-sm form-control amount"
-                               value="<?php echo format_currency($item->item_price); ?>">
+                               value="<?php echo format_amount($item->item_price); ?>">
                     </div>
                 </td>
                 <td class="td-amount ">
