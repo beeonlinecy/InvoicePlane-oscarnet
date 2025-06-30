@@ -105,6 +105,8 @@ function generate_invoice_pdf($invoice_id, $stream = true, $invoice_template = n
     ];
 
     $html = $CI->load->view('invoice_templates/pdf/' . $invoice_template, $data, true);
+    //echo $html;
+    //exit;
 
     $CI->load->helper('mpdf');
 

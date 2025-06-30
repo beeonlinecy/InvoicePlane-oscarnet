@@ -226,13 +226,8 @@
             <td <?php echo($show_item_discounts ? 'colspan="5"' : 'colspan="4"'); ?> class="text-right">
                 <b><?php _trans('total'); ?></b>
             </td>
-<<<<<<< HEAD
-            <td class="text-right">                
-                <b><?php echo format_currency($invoice->invoice_total); ?></b>
-=======
             <td class="text-right">
                 <b><?php echo format_currency(htmlsc($invoice->invoice_total)); ?></b>
->>>>>>> 853c2aedbe0048b7449f4b84e3d587c233c62f50
             </td>
         </tr>
 
