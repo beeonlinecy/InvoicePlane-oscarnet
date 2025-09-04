@@ -64,6 +64,25 @@ class Reports extends Admin_Controller
         $this->layout->buffer('content', 'reports/invoices_per_client_index')->render();
     }
 
+    public function invoices_by_client()
+    {
+        if ($this->input->post('btn_submit')) {
+            $data = array(
+                'results' => $this->mdl_reports->invoices_per_client($this->input->post('from_date'), $this->input->post('to_date')),
+                'from_date' => $this->input->post('from_date'),
+                'to_date' => $this->input->post('to_date'),
+            );
+
+            $html = $this->load->view('reports/invoices_by_client', $data, true);
+
+            $this->load->helper('mpdf');
+
+            pdf_create($html, trans('invoices_by_client'), true);
+        }
+
+        $this->layout->buffer('content', 'reports/invoices_by_client_index')->render();
+    }
+
     public function payment_history()
     {
         if ($this->input->post('btn_submit')) {
