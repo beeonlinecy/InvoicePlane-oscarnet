@@ -67,8 +67,9 @@ class Reports extends Admin_Controller
     public function invoices_by_client()
     {
         if ($this->input->post('btn_submit')) {
+
             $data = array(
-                'results' => $this->mdl_reports->invoices_per_client($this->input->post('from_date'), $this->input->post('to_date')),
+                'results' => $this->mdl_reports->invoices_by_client($this->input->post('client_id'), $this->input->post('from_date'), $this->input->post('to_date')),
                 'from_date' => $this->input->post('from_date'),
                 'to_date' => $this->input->post('to_date'),
             );
@@ -80,7 +81,14 @@ class Reports extends Admin_Controller
             pdf_create($html, trans('invoices_by_client'), true);
         }
 
-        $this->layout->buffer('content', 'reports/invoices_by_client_index')->render();
+        $this->load->model('clients/mdl_clients');
+
+        $data = [
+            'client' => $this->mdl_clients->get_by_id($this->input->post('client_id')),
+            'clients' => $this->mdl_clients->get_latest(),
+        ];
+
+        $this->layout->buffer('content', 'reports/invoices_by_client_index', $data)->render();
     }
 
     public function payment_history()

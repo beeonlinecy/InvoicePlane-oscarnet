@@ -287,6 +287,7 @@ $lang = [
     'invoices'                                     => 'Invoices',
     'invoices_due_after'                           => 'Invoices Due After (Days)',
     'invoices_per_client'                          => 'Invoices Per Client',
+    'invoices_by_client'                          => 'Invoices By Client',
     'is_not_writable'                              => 'is not writable',
     'is_writable'                                  => 'is writable',
     'item'                                         => 'Item',
