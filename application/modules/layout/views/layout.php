@@ -14,8 +14,10 @@
     // Get the page head content
     $this->layout->load_view('layout/includes/head');
     ?>
+<script src="https://cdn.jsdelivr.net/npm/intro.js/minified/intro.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/intro.js/minified/introjs.min.css">
 
-    <?php $this->load->view('help/help_js'); ?>
+    
 </head>
 <body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 
@@ -49,6 +51,6 @@ $this->layout->load_view('layout/includes/navbar');
 <?php if (trans('cldr') != 'en') { ?>
     <script src="<?php echo base_url(); ?>assets/core/js/locales/bootstrap-datepicker.<?php _trans('cldr'); ?>.js"></script>
 <?php } ?>
-
+<?php $this->load->view('help/help_js'); ?>
 </body>
 </html>

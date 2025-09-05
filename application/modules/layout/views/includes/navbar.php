@@ -140,8 +140,8 @@
                         <i class="visible-md-inline fa fa-bar-chart"></i>
                     </a>
                     <ul class="dropdown-menu">
-                        <a href="javascript:void(0);" onclick="startHelpTour();">
-                            <i class="fa fa-question-circle"></i>Start help tour</a>
+                        <li id="help-menu-btn"><a href="javascript:void(0);" ><?php _trans('Start help tour'); ?></a></li>
+                        <li id="help-invoiceid"><a href="javascript:void(0);" ><?php _trans('How to set next invoice/receipt id template'); ?></a></li>
                     </ul>
                 </li>
 
@@ -167,7 +167,7 @@
                     </a>
                 </li>
 
-                <li class="dropdown">
+                <li class="dropdown" id="menu-settings">
                     <a href="#" class="tip icon dropdown-toggle" data-toggle="dropdown"
                        title="<?php _trans('settings'); ?>"
                        data-placement="bottom">
@@ -177,7 +177,7 @@
                     <ul class="dropdown-menu">
                         <li><?php echo anchor('custom_fields/index', trans('custom_fields')); ?></li>
                         <li><?php echo anchor('email_templates/index', trans('email_templates')); ?></li>
-                        <li><?php echo anchor('invoice_groups/index', trans('invoice_groups')); ?></li>
+                        <li><?php echo anchor('invoice_groups/index', trans('invoice_groups'), 'id="menu-invoice_groups"'); ?></li>
                         <li><?php echo anchor('invoices/archive', trans('invoice_archive')); ?></li>
                         <!-- // temporarily disabled
                         <li><?php echo anchor('item_lookups/index', trans('item_lookups')); ?></li>
