@@ -133,6 +133,18 @@
                     </ul>
                 </li>
 
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <i class="fa fa-caret-down"></i> &nbsp;
+                        <span class="hidden-md"><?php _trans('Help'); ?></span>
+                        <i class="visible-md-inline fa fa-bar-chart"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <a href="javascript:void(0);" onclick="startHelpTour();">
+                            <i class="fa fa-question-circle"></i>Start help tour</a>
+                    </ul>
+                </li>
+
             </ul>
 
             <?php if (isset($filter_display) and $filter_display == true) { ?>

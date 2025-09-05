@@ -14,6 +14,8 @@
     // Get the page head content
     $this->layout->load_view('layout/includes/head');
     ?>
+
+    <?php $this->load->view('help/help_js'); ?>
 </head>
 <body class="<?php echo get_setting('disable_sidebar') ? 'hidden-sidebar' : ''; ?>">
 
