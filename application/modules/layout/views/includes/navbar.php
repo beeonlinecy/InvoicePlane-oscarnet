@@ -141,7 +141,8 @@
                     </a>
                     <ul class="dropdown-menu">
                         <li id="help-menu-btn"><a href="javascript:void(0);" ><?php _trans('Start help tour'); ?></a></li>
-                        <li id="help-invoiceid"><a href="javascript:void(0);" ><?php _trans('How to set next invoice/receipt id template'); ?></a></li>
+                        <li id="help-invoiceid-location"><a href="javascript:void(0);" ><?php _trans('Where to set invoice number'); ?></a></li>
+                        <li id="help-invoiceid"><a href="javascript:void(0);" ><?php _trans('How to set invoice number'); ?></a></li>
                     </ul>
                 </li>
 
