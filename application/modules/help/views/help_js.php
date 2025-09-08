@@ -19,10 +19,10 @@ function startTourInvoiceGroups(startStep = 0) {
     const tour = introJs();
 
     const steps = [
-        { element: '#menu-settings', intro: 'This is the settings menu of INVONOS.', position: 'right' },
-        { element: '#menu', intro: 'To access invoice ', position: 'right' },
-        { element: '#menu-invoice_groups', intro: 'Это можно сделать в разделе "Группы счетов". Нажмите Next для перехода.', position: 'right' },
-        { intro: 'Теперь вы на странице групп счетов!', position: 'right' }
+        { element: '#menu-settings', intro: 'This is the <b>settings menu</b> of INVONOS.', position: 'right' },
+        { element: '#menu', intro: 'You can change <b>invoice number order</b> and I will show you where', position: 'right' },
+        { element: '#menu-invoice_groups', intro: 'To change invoce number order you have to visit <b>Invoice groups</b> setting.', position: 'right' },
+        { intro: 'Here you can change invoice number order!', position: 'right' }
     ];
 
     tour.setOptions({
