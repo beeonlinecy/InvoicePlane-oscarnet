@@ -117,7 +117,7 @@
         </table>
     </div>
 
-    <h1 class="invoice-title"><?php echo trans('quote') . ' ' . htmlsc($quote->quote_number); ?></h1>
+    <h1 class="invoice-title"><?php echo trans('proforma') . ' ' . htmlsc($quote->quote_number); ?></h1>
 
     <table class="item-table">
         <thead>
