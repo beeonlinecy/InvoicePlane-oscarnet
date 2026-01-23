@@ -22,7 +22,7 @@ class Login extends CI_Controller
             redirect('/companies/demo');
         }
 
-        $this->load->view('login');
+        $this->load->view('auth/login');
     }
 
     /**

@@ -7,7 +7,7 @@ $config['subclass_prefix'] = 'MY_';
 | Base Site URL
 |--------------------------------------------------------------------------
 */
-$config['base_url'] = 'https://invonos.com/auth';  // URL твоего auth
+$config['base_url'] = 'https://invonos.com/auth/';  // URL твоего auth
 
 /*
 |--------------------------------------------------------------------------
