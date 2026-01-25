@@ -1,0 +1,14 @@
+CREATE TABLE audit_logs (
+    id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+
+    actor_user_id INT UNSIGNED NULL,
+
+    action VARCHAR(191) NOT NULL,
+    entity_type VARCHAR(100) NOT NULL,
+    entity_id INT UNSIGNED NULL,
+
+    ip_address VARCHAR(45) NOT NULL,
+    user_agent VARCHAR(255) NULL,
+
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -8,24 +8,14 @@
 
 <h2>Login</h2>
 
-<?php if ($this->session->flashdata('error')): ?>
-    <p style="color:red;">
-        <?= $this->session->flashdata('error') ?>
-    </p>
-<?php endif; ?>
-
-<form method="post" action="/auth/login/auth">
-    <p>
-        <label>Email</label><br>
-        <input type="email" name="email" required>
-    </p>
-
-    <p>
-        <label>Password</label><br>
-        <input type="password" name="password" required>
-    </p>
-
+<form method="post" action="login/auth">
+    <input type="email" name="email" required>
+    <input type="password" name="password" required>
     <button type="submit">Login</button>
+
+    <?php if ($this->session->flashdata('error')): ?>
+        <p><?= $this->session->flashdata('error') ?></p>
+    <?php endif ?>
 </form>
 
 </body>

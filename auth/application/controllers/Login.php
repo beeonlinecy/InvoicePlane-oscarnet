@@ -1,72 +1,67 @@
 <?php
-defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Login extends CI_Controller
+    class Login extends CI_Controller {
+
+        
+    /*
+        public function index()
+        {
+            //$this->load->view('auth/login');
+        }
+
+        public function auth()
+        {
+            echo '<pre>';
+            var_dump($_POST);
+            die('AUTH HIT');
+            $email = trim($this->input->post('email'));
+            $password = $this->input->post('password');
+
+            if (!$email || !$password) {
+                return $this->_fail('Email and password required');
+            }
+
+            $this->load->model('User_model');
+            $user = $this->User_model->findByEmail($email);
+
+            if (!$user || !password_verify($password, $user->password_hash)) {
+                return $this->_fail('Invalid credentials');
+            }
+
+            if ($user->status !== 'active') {
+                return $this->_fail('Account is not active');
+            }
+
+            $this->session->set_userdata([
+                'user_id' => $user->id,
+                'user_email' => $user->email,
+                'logged_in' => true,
+            ]);
+
+            echo("Authenticated successfully");
+            redirect('/dashboard');
+        }
+
+        */
+        public function index()
 {
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->load->database();
-        $this->load->helper(['url', 'form']);
-        $this->load->library(['session']);
-    }
-
-    /**
-     * Форма логина
-     */
-    public function index()
-    {
-        // Уже залогинен — отправляем дальше
-        if ($this->session->userdata('user_id')) {
-            redirect('/companies/demo');
-        }
-
-        $this->load->view('auth/login');
-    }
-
-    /**
-     * Обработка POST логина
-     */
-    public function auth()
-    {
-        $email    = trim($this->input->post('email', true));
-        $password = (string)$this->input->post('password');
-
-        if (!$email || !$password) {
-            $this->session->set_flashdata('error', 'Email and password required');
-            redirect('/auth/login');
-        }
-
-        // ⚠️ пример: таблица ip_users (как в InvoicePlane)
-        $user = $this->db
-            ->where('email', $email)
-            ->where('active', 1)
-            ->get('ip_users')
-            ->row();
-
-        if (!$user || !password_verify($password, $user->password)) {
-            $this->session->set_flashdata('error', 'Invalid credentials');
-            redirect('/auth/login');
-        }
-
-        // ✅ Успешный логин
-        $this->session->set_userdata([
-            'user_id'    => $user->user_id,
-            'user_email' => $user->email,
-            'logged_in'  => true,
-        ]);
-
-        // Куда редиректить после логина
-        redirect('/companies/demo');
-    }
-
-    /**
-     * Logout
-     */
-    public function logout()
-    {
-        $this->session->sess_destroy();
-        redirect('/auth/login');
-    }
+    echo "INDEX HIT";
 }
+
+public function auth()
+{
+    echo "AUTH HIT";
+}
+        private function _fail($message)
+        {
+            $this->session->set_flashdata('error', $message);
+            redirect('/login');
+        }
+
+        public function logout()
+        {
+            $this->session->sess_destroy();
+            redirect('/login');
+        }
+    }
+?>

@@ -1,5 +1,6 @@
 <?php
 class User_model extends CI_Model {
+
   public function validate($data) {
     $this->db->where('email', $data['email']);
     $query = $this->db->get('users');
@@ -9,6 +10,16 @@ class User_model extends CI_Model {
       return false;
     }
   }
+
+  public function findByEmail(string $email)
+    {
+        return $this->db
+            ->where('email', $email)
+            ->limit(1)
+            ->get('users')
+            ->row();
+    }
+    
 }
 
 ?>
