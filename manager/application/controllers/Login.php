@@ -2,22 +2,21 @@
 
     class Login extends CI_Controller {
 
-        
-    /*
+    
         public function index()
         {
-            //$this->load->view('auth/login');
+            $this->load->view('auth/login');
         }
 
         public function auth()
         {
-            echo '<pre>';
-            var_dump($_POST);
-            die('AUTH HIT');
+            log_message('debug', 'AUTH HIT');
             $email = trim($this->input->post('email'));
             $password = $this->input->post('password');
+            log_message('debug', 'EMAIL: ' . $email);
 
             if (!$email || !$password) {
+                log_message('error', 'Empty credentials');
                 return $this->_fail('Email and password required');
             }
 
@@ -25,35 +24,32 @@
             $user = $this->User_model->findByEmail($email);
 
             if (!$user || !password_verify($password, $user->password_hash)) {
+                
                 return $this->_fail('Invalid credentials');
             }
 
             if ($user->status !== 'active') {
                 return $this->_fail('Account is not active');
             }
+            log_message('debug', 'LOGIN OK');
 
             $this->session->set_userdata([
                 'user_id' => $user->id,
                 'user_email' => $user->email,
-                'logged_in' => true,
+                'logged' => true,
             ]);
+
+            // DEBUG:
+            //var_dump($this->session->userdata());
+            //exit;
 
             echo("Authenticated successfully");
             redirect('/dashboard');
         }
 
-        */
-        public function index()
-{
-    echo "INDEX HIT";
-}
-
-public function auth()
-{
-    echo "AUTH HIT";
-}
-        private function _fail($message)
+       private function _fail($message)
         {
+            log_message('error', $message);
             $this->session->set_flashdata('error', $message);
             redirect('/login');
         }
