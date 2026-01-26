@@ -1,138 +1,159 @@
 <div class="table-responsive">
-    <table class="table table-hover table-striped">
-
+    <table class="table table-striped table-hover">
         <thead>
-        <tr>
-            <th><?php _trans('status'); ?></th>
-            <th><?php _trans('expense'); ?></th>
-            <th><?php _trans('created'); ?></th>
-            <th><?php _trans('due_date'); ?></th>
-            <th><?php _trans('company_name'); ?></th>
-            <th class="amount"><?php _trans('amount'); ?></th>
-            <th class="amount last"><?php _trans('balance'); ?></th>
-            <th><?php _trans('options'); ?></th>
-        </tr>
+            <tr>
+                <th class="col-sm-1">
+                    <input type="checkbox" id="select_all">
+                </th>
+                <th class="col-sm-2"><?php _trans('expense_number'); ?></th>
+                <th class="col-sm-2"><?php _trans('category'); ?></th>
+                <th class="col-sm-2"><?php _trans('date'); ?></th>
+                <th class="col-sm-2"><?php _trans('due_date'); ?></th>
+                <th class="col-sm-1"><?php _trans('amount'); ?></th>
+                <th class="col-sm-1"><?php _trans('status'); ?></th>
+                <th class="col-sm-1"><?php _trans('options'); ?></th>
+            </tr>
         </thead>
-
         <tbody>
-        <?php
-        $invoice_idx = 1;
-        $invoice_count = count($expenses);
-        $invoice_list_split = $invoice_count > 3 ? $invoice_count / 2 : 9999;
-        foreach ($expenses as $expense) {
-            // Disable read-only if not applicable
-            if ($this->config->item('disable_read_only') == true) {
-                $expense->is_read_only = 0;
-            }
-            // Convert the dropdown menu to a dropup if invoice is after the invoice split
-            $dropup = $invoice_idx > $invoice_list_split ? true : false;
-            ?>
+            <?php if (!$expenses): ?>
+            <tr>
+                <td colspan="8" class="text-center">
+                    <strong><?php _trans('no_results'); ?></strong>
+                </td>
+            </tr>
+            <?php endif; ?>
+
+            <?php foreach ($expenses as $expense): ?>
             <tr>
                 <td>
-                    <span class="label <?php echo $expense_statuses[$expense->expense_status_id]['class']; ?>">
-                        <?php echo $expense_statuses[$expense->expense_status_id]['label'];
-                        if ($expense->expense_sign == '-1') { ?>
-                            &nbsp;<i class="fa fa-credit-invoice" title="<?php echo _trans('credit_invoice') ?>"></i>
-                        <?php } ?>
-                        <?php if ($expense->is_read_only) { ?>
-                            &nbsp;<i class="fa fa-read-only" title="<?php _trans('read_only') ?>"></i>
-                        <?php } ?>
-                        <?php if ($expense->expense_is_recurring) { ?>
-                            &nbsp;<i class="fa fa-refresh" title="<?php echo _trans('recurring') ?>"></i>
-                        <?php } ?>
-                    </span>
+                    <input type="checkbox" class="expense-checkbox" value="<?php echo $expense->expense_id; ?>">
                 </td>
-
                 <td>
-                    <a href="<?php echo site_url('expenses/view/' . $expense->expense_id); ?>"
-                       title="<?php _trans('edit'); ?>">
-                        <?php echo($expense->expense_id); ?>
+                    <a href="<?php echo site_url('expenses/view/' . $expense->expense_id); ?>" class="expense_number">
+                        <?php echo $expense->expense_number; ?>
                     </a>
                 </td>
-
+                <td>
+                    <span style="color: <?php echo $expense->expense_category_color; ?>">
+                        <i class="<?php echo $expense->expense_category_icon; ?>"></i>
+                        <?php echo $expense->expense_category_name; ?>
+                    </span>
+                </td>
                 <td>
                     <?php echo date_from_mysql($expense->expense_date_created); ?>
                 </td>
-
                 <td>
-                    <span class="<?php //if ($expense->is_overdue) { ?>font-overdue<?php //} ?>">
-                        <?php //echo date_from_mysql($expense->invoice_date_due); ?>
+                    <?php echo date_from_mysql($expense->expense_date_due); ?>
+                    <?php if ($expense->is_overdue && $expense->expense_status_id != 3): ?>
+                        <span class="label label-danger">
+                            <?php _trans('overdue'); ?> 
+                            (<?php echo $expense->days_overdue; ?> <?php _trans('days'); ?>)
+                        </span>
+                    <?php endif; ?>
+                </td>
+                <td>
+                    <?php echo format_amount($expense->expense_total); ?>
+                </td>
+                <td>
+                    <?php 
+                    $status_class = '';
+                    switch ($expense->expense_status_id) {
+                        case 1: $status_class = 'label-warning'; break;
+                        case 2: $status_class = 'label-info'; break;
+                        case 3: $status_class = 'label-success'; break;
+                    }
+                    ?>
+                    <span class="label <?php echo $status_class; ?>">
+                        <?php 
+                        switch ($expense->expense_status_id) {
+                            case 1: _trans('new'); break;
+                            case 2: _trans('confirmed'); break;
+                            case 3: _trans('paid'); break;
+                        }
+                        ?>
                     </span>
                 </td>
-
                 <td>
-                    <a href="<?php echo site_url('companies/view/' . $expense->company_id); ?>"
-                       title="<?php _trans('view_company'); ?>">
-                        <?php _htmlsc($expense->company_name); ?>
-                    </a>
-                </td>
-
-                <td class="amount <?php //if ($expense->invoice_sign == '-1') {
-                    //echo 'text-danger';
-                //}; ?>">
-                    <?php echo format_currency($expense->expense_total); ?>
-                </td>
-
-                <td class="amount last">
-                    <?php //echo format_currency($expense->invoice_balance); ?>
-                </td>
-
-                <td>
-                    <div class="options btn-group<?php echo $dropup ? ' dropup' : ''; ?>">
+                    <div class="options btn-group">
                         <a class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" href="#">
                             <i class="fa fa-cog"></i> <?php _trans('options'); ?>
+                            <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
-                            <?php if ($expense->is_read_only != 1) { ?>
-                                <li>
-                                    <a href="<?php echo site_url('expenses/view/' . $expense->expense_id); ?>">
-                                        <i class="fa fa-edit fa-margin"></i> <?php _trans('edit'); ?>
-                                    </a>
-                                </li>
-                            <?php } ?>
                             <li>
-                                <a href="<?php echo site_url('expenses/generate_pdf/' . $expense->expense_id); ?>"
-                                   target="_blank">
-                                    <i class="fa fa-print fa-margin"></i> <?php _trans('download_pdf'); ?>
+                                <a href="<?php echo site_url('expenses/view/' . $expense->expense_id); ?>">
+                                    <i class="fa fa-eye"></i> <?php _trans('view'); ?>
                                 </a>
                             </li>
                             <li>
-                                <a href="<?php echo site_url('mailer/invoice/' . $expense->expense_id); ?>">
-                                    <i class="fa fa-send fa-margin"></i> <?php _trans('send_email'); ?>
+                                <a href="<?php echo site_url('expenses/edit/' . $expense->expense_id); ?>">
+                                    <i class="fa fa-edit"></i> <?php _trans('edit'); ?>
                                 </a>
                             </li>
+                            <li class="divider"></li>
+                            <?php if ($expense->expense_status_id == 1): ?>
                             <li>
-                                <a href="#" class="invoice-add-payment"
-                                   data-invoice-id="<?php echo $expense->expense_id; ?>"
-                                   data-invoice-balance="<?php //echo $expense->invoice_balance; ?>"
-                                   data-invoice-payment-method="<?php echo $expense->payment_method; ?>">
-                                    <i class="fa fa-money fa-margin"></i>
-                                    <?php _trans('enter_payment'); ?>
+                                <a href="<?php echo site_url('expenses/mark_confirmed/' . $expense->expense_id); ?>" 
+                                   onclick="return confirm('<?php _trans('confirm_expense_status_change'); ?>');">
+                                    <i class="fa fa-check"></i> <?php _trans('mark_confirmed'); ?>
                                 </a>
                             </li>
-                            <?php if (
-                                $expense->expense_status_id == 1 ||
-                                ($this->config->item('enable_invoice_deletion') === true && $expense->is_read_only != 1)
-                            ) { ?>
-                                <li>
-                                    <form action="<?php echo site_url('expenses/delete/' . $expense->expense_id); ?>"
-                                          method="POST">
-                                        <?php _csrf_field(); ?>
-                                        <button type="submit" class="dropdown-button"
-                                                onclick="return confirm('<?php _trans('delete_expense_warning'); ?>');">
-                                            <i class="fa fa-trash-o fa-margin"></i> <?php _trans('delete'); ?>
-                                        </button>
-                                    </form>
-                                </li>
-                            <?php } ?>
+                            <?php endif; ?>
+                            
+                            <?php if ($expense->expense_status_id == 2): ?>
+                            <li>
+                                <a href="<?php echo site_url('expenses/mark_paid/' . $expense->expense_id); ?>" 
+                                   onclick="return confirm('<?php _trans('confirm_expense_status_change'); ?>');">
+                                    <i class="fa fa-money"></i> <?php _trans('mark_paid'); ?>
+                                </a>
+                            </li>
+                            <?php endif; ?>
+                            
+                            <li class="divider"></li>
+                            <li>
+                                <a href="<?php echo site_url('expenses/delete/' . $expense->expense_id); ?>" 
+                                   onclick="return confirm('<?php _trans('confirm_delete'); ?>');">
+                                    <i class="fa fa-trash"></i> <?php _trans('delete'); ?>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </td>
             </tr>
-            <?php
-            $invoice_idx++;
-        } ?>
+            <?php endforeach; ?>
         </tbody>
-
     </table>
 </div>
+
+<script>
+$(document).ready(function() {
+    // Select all checkbox
+    $('#select_all').change(function() {
+        $('.expense-checkbox').prop('checked', $(this).prop('checked'));
+    });
+    
+    // Filter functionality
+    if (typeof filter_method !== 'undefined' && filter_method) {
+        var filter_method = '<?php echo isset($filter_method) ? $filter_method : ''; ?>';
+        if (filter_method) {
+            $('#filter_results input[name="' + filter_method + '"]').keyup(function() {
+                filter_table($(this).val());
+            });
+        }
+    }
+});
+
+function filter_table(query) {
+    var $table = $('#filter_results');
+    var $rows = $table.find('tbody tr');
+    
+    if (query.length > 0) {
+        $rows.hide();
+        $rows.filter(function() {
+            return $(this).text().toLowerCase().indexOf(query.toLowerCase()) != -1;
+        }).show();
+    } else {
+        $rows.show();
+    }
+}
+</script>
