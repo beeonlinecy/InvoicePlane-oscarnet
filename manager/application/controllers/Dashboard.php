@@ -17,9 +17,21 @@ class Dashboard extends CI_Controller {
             redirect('login');
         }
 
+        // Загружаем базу данных, если она еще не загружена
+        $this->load->database();
+
+        // Получаем список компаний пользователя
+        $companies = $this->db->select('c.*, uc.role')
+            ->from('companies c')
+            ->join('user_companies uc', 'uc.company_id = c.id')
+            ->where('uc.user_id', $this->session->userdata('user_id'))
+            ->get()
+            ->result();
+
         $data = [
             'user_id' => $this->session->userdata('user_id'),
             'username' => $this->session->userdata('email'),
+            'companies' => $companies,
         ];
         $this->load->view('dashboard/index', $data);
     }
