@@ -20,6 +20,11 @@ class Company_model extends CI_Model {
     $query = $this->db->get_where('companies', array('id' => $company_id));
     return $query->row_array();
   }
+
+  public function getBySlug($slug) {
+      $query = $this->db->get_where('companies', array('slug' => $slug));
+      return $query->row_array();
+  }
 }
 
 ?>

@@ -23,7 +23,7 @@ class Dashboard extends CI_Controller {
         // Получаем список компаний пользователя
         $companies = $this->db->select('c.*, uc.role')
             ->from('companies c')
-            ->join('user_companies uc', 'uc.company_id = c.id')
+            ->join('company_users uc', 'uc.company_id = c.id')
             ->where('uc.user_id', $this->session->userdata('user_id'))
             ->get()
             ->result();
