@@ -57,7 +57,14 @@ class Dashboard extends CI_Controller {
         $this->Sso_model->createToken($this->session->userdata('user_id'), $company['id'], $token, $expires);
 
         // Редирект в IP
-        redirect(base_url('../companies/'.$company['db_name'].'/sso?token='.$token));
+        // Разбиваем URL на части и удаляем 'manager', если он есть в конце
+        $base_parts = explode('/', rtrim(base_url(), '/'));
+        if (strtolower(end($base_parts)) === 'manager') {
+            array_pop($base_parts);
+        }
+        $root_url = implode('/', $base_parts);
+
+        redirect($root_url . '/companies/' . $company['db_name'] . '/sso?token=' . $token);
     }
 }
 
