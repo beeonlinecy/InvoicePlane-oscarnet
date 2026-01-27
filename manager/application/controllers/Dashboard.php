@@ -34,10 +34,15 @@ class Dashboard extends CI_Controller {
             show_error('Company not found', 404);
         }
 
+        // Убедимся, что для компании настроен пользователь для SSO
+        if (empty($company['system_user_id'])) {
+            show_error('Company is not configured for SSO (missing system_user_id)', 500);
+        }
+
         $token = bin2hex(random_bytes(16));
         $expires = date('Y-m-d H:i:s', time() + 120); // 2 минуты
 
-        $this->Sso_model->createToken($this->session->userdata('user_id'), $company['id'], $token, $expires);
+        $this->Sso_model->createToken($this->session->userdata('user_id'), $company['id'], $token, $expires, $company['system_user_id']);
 
         // Редирект в IP
         redirect(base_url('../companies/'.$company['db_name'].'/sso?token='.$token));
@@ -46,4 +51,3 @@ class Dashboard extends CI_Controller {
 
 
 ?>
-
