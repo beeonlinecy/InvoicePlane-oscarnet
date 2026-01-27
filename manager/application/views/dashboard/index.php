@@ -4,17 +4,17 @@
 
 <hr>
 
-<h3>Мои компании</h3>
+<h3>My companies</h3>
 
 <?php if (empty($companies)): ?>
-    <div class="alert alert-info">У вас нет доступных компаний.</div>
+    <div class="alert alert-info">You have no companies yet.</div>
 <?php else: ?>
     <table class="table table-striped">
         <thead>
             <tr>
-                <th>Название</th>
-                <th>Роль</th>
-                <th>Действия</th>
+                <th>Title</th>
+                <th>Role</th>
+                <th>Actions</th>
             </tr>
         </thead>
         <tbody>
@@ -24,7 +24,7 @@
                 <td><?= html_escape($company->role) ?></td>
                 <td>
                     <a href="<?= site_url('dashboard/sso/' . $company->slug) ?>" class="btn btn-primary btn-sm" target="_blank">
-                        Войти <i class="fa fa-external-link"></i>
+                        Log in <i class="fa fa-external-link"></i>
                     </a>
                 </td>
             </tr>
