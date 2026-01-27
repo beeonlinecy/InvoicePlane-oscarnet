@@ -8,8 +8,7 @@ class Sso extends Admin_Controller {
         $token = $this->input->get('token');
         if (!$token)
         {
-
-        log_message('error', 'SSO Login failed: Token missing from request.');
+            log_message('error', 'SSO Login failed: Token missing from request.');
             $this->session->set_flashdata('alert_danger', 'Токен авторизации отсутствует.');
             redirect('sessions/login');
         }
