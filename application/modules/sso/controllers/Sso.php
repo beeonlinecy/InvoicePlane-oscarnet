@@ -51,15 +51,17 @@ class Sso extends Base_Controller {
             ->update('sso_tokens', ['used' => 1]);
 
         // Загружаем пользователя InvoicePlane по ID, сохраненному в токене
-        $this->load->model('users/mdl_users');
-        $user = (isset($row->ip_user_id)) ? $this->mdl_users->get_by_id($row->ip_user_id) : null;
+        $this->load->model('sso_model');
+        
+        $ip_user_id = isset($row->user_id) ? (int) $row->user_id : 0;
+        $user = ($ip_user_id > 0) ? $this->sso_model->get_user_by_id($ip_user_id) : null;
 
         if (!$user) {
-            $log_user_id = (isset($row->ip_user_id)) ? $row->ip_user_id : 'none';
+            $log_user_id = isset($row->user_id) ? $row->user_id : 'none';
             log_message('error', 'SSO Login failed: Linked InvoicePlane user not found (ID: ' . $log_user_id . ')');
-            die('SSO Login failed: Linked InvoicePlane user not found.');
+            die('SSO Login failed: Linked InvoicePlane user not found. User ID:' . $ip_user_id);
             $this->session->set_flashdata('alert_danger', 'Связанный пользователь InvoicePlane не найден.');
-            //redirect('sessions/login');
+            redirect('sessions/login');
         }
 
         // IP-логин (как делает sessions)
