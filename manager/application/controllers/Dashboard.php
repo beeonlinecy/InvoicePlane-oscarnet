@@ -64,7 +64,7 @@ class Dashboard extends CI_Controller {
         }
         $root_url = implode('/', $base_parts);
 
-        redirect($root_url . '/companies/' . $company['db_name'] . '/sso?token=' . $token);
+        redirect('https://invonos.com/companies/' .$company['path'] . '/sso?token=' . $token);
     }
 }
 

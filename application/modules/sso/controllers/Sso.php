@@ -1,16 +1,17 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Sso extends Admin_Controller {
+class Sso extends Base_Controller {
 
-    public function login()
+    public function index()
     {
         $token = $this->input->get('token');
         if (!$token)
         {
-            log_message('error', 'SSO Login failed: Token missing from request.');
-            $this->session->set_flashdata('alert_danger', 'Токен авторизации отсутствует.');
-            redirect('sessions/login');
+            //log_message('error', 'SSO Login failed: Token missing from request.');
+            die('SSO Login failed: Token missing from request.');
+            //$this->session->set_flashdata('alert_danger', 'Токен авторизации отсутствует.');
+            //redirect('sessions/login');
         }
 
         // подключаем manager БД
@@ -23,9 +24,10 @@ class Sso extends Admin_Controller {
         $company = $manager_db->where('db_name', $company_db_name)->get('companies')->row();
 
         if (!$company) {
-            log_message('error', 'SSO Login failed: Company not found in manager DB for database ' . $company_db_name);
-            $this->session->set_flashdata('alert_danger', 'Компания не найдена в системе управления.');
-            redirect('sessions/login');
+            //log_message('error', 'SSO Login failed: Company not found in manager DB for database ' . $company_db_name);
+            die('SSO Login failed: Company not found in manager DB for database ' . $company_db_name);
+            //$this->session->set_flashdata('alert_danger', 'Компания не найдена в системе управления.');
+            //redirect('sessions/login');
         }
 
         $row = $manager_db
@@ -38,8 +40,9 @@ class Sso extends Admin_Controller {
 
         if (!$row) {
             log_message('error', 'SSO Login failed: Invalid or expired token (' . $token . ') for company ID ' . $company->id);
+            die('SSO Login failed: Invalid or expired token.');
             $this->session->set_flashdata('alert_danger', 'Неверный или просроченный токен авторизации.');
-            redirect('sessions/login');
+            //redirect('sessions/login');
         }
 
         // помечаем токен использованным
@@ -49,12 +52,14 @@ class Sso extends Admin_Controller {
 
         // Загружаем пользователя InvoicePlane по ID, сохраненному в токене
         $this->load->model('users/mdl_users');
-        $user = $this->mdl_users->get_by_id($row->ip_user_id);
+        $user = (isset($row->ip_user_id)) ? $this->mdl_users->get_by_id($row->ip_user_id) : null;
 
         if (!$user) {
-            log_message('error', 'SSO Login failed: Linked InvoicePlane user not found (ID: ' . $row->ip_user_id . ')');
+            $log_user_id = (isset($row->ip_user_id)) ? $row->ip_user_id : 'none';
+            log_message('error', 'SSO Login failed: Linked InvoicePlane user not found (ID: ' . $log_user_id . ')');
+            die('SSO Login failed: Linked InvoicePlane user not found.');
             $this->session->set_flashdata('alert_danger', 'Связанный пользователь InvoicePlane не найден.');
-            redirect('sessions/login');
+            //redirect('sessions/login');
         }
 
         // IP-логин (как делает sessions)
@@ -65,6 +70,6 @@ class Sso extends Admin_Controller {
             'logged_in' => true
         ]);
 
-        redirect('dashboard');
+        //redirect('dashboard');
     }
 }
