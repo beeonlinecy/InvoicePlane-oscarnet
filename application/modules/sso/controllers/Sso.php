@@ -10,8 +10,8 @@ class Sso extends Base_Controller {
         {
             //log_message('error', 'SSO Login failed: Token missing from request.');
             die('SSO Login failed: Token missing from request.');
-            //$this->session->set_flashdata('alert_danger', 'Токен авторизации отсутствует.');
-            //redirect('sessions/login');
+            $this->session->set_flashdata('alert_danger', 'Токен авторизации отсутствует.');
+            redirect('sessions/login');
         }
 
         // подключаем manager БД
@@ -25,9 +25,9 @@ class Sso extends Base_Controller {
 
         if (!$company) {
             //log_message('error', 'SSO Login failed: Company not found in manager DB for database ' . $company_db_name);
-            die('SSO Login failed: Company not found in manager DB for database ' . $company_db_name);
+            //die('SSO Login failed: Company not found in manager DB for database ' . $company_db_name);
             //$this->session->set_flashdata('alert_danger', 'Компания не найдена в системе управления.');
-            //redirect('sessions/login');
+            redirect('https://invonos.com/manager');
         }
 
         $row = $manager_db
@@ -42,7 +42,7 @@ class Sso extends Base_Controller {
             log_message('error', 'SSO Login failed: Invalid or expired token (' . $token . ') for company ID ' . $company->id);
             die('SSO Login failed: Invalid or expired token.');
             $this->session->set_flashdata('alert_danger', 'Неверный или просроченный токен авторизации.');
-            //redirect('sessions/login');
+            redirect('https://invonos.com/manager');
         }
 
         // помечаем токен использованным
@@ -61,7 +61,7 @@ class Sso extends Base_Controller {
             log_message('error', 'SSO Login failed: Linked InvoicePlane user not found (ID: ' . $log_user_id . ')');
             die('SSO Login failed: Linked InvoicePlane user not found. User ID:' . $ip_user_id);
             $this->session->set_flashdata('alert_danger', 'Связанный пользователь InvoicePlane не найден.');
-            redirect('sessions/login');
+            redirect('https://invonos.com/manager');
         }
 
         // IP-логин (как делает sessions)
@@ -72,6 +72,6 @@ class Sso extends Base_Controller {
             'logged_in' => true
         ]);
 
-        //redirect('dashboard');
+        redirect('dashboard');
     }
 }

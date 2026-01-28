@@ -1,9 +1,9 @@
 <?php
     class Sso_model extends CI_Model {
 
-        public function createToken($user_id, $company_id, $token, $expires) {
+        public function createToken($ip_user_id, $company_id, $token, $expires) {
             $data = [
-                'user_id' => $user_id,
+                'ip_user_id' => $ip_user_id,
                 'company_id' => $company_id,
                 'token' => $token,
                 'expires_at' => $expires,

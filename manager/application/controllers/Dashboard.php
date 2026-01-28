@@ -51,10 +51,20 @@ class Dashboard extends CI_Controller {
             show_error('Access denied', 403);
         }
 
+        // Получаем ip_user_id для SSO
+        $company_user = $this->db->where('user_id', $this->session->userdata('user_id'))
+            ->where('company_id', $company['id'])
+            ->get('company_users')
+            ->row();
+
+        if (!$company_user || !isset($company_user->ip_user_id)) {
+            show_error('SSO configuration error: ip_user_id not found for this user and company.', 500);
+        }
+
         $token = bin2hex(random_bytes(16));
         $expires = date('Y-m-d H:i:s', time() + 120); // 2 минуты
 
-        $this->Sso_model->createToken($this->session->userdata('user_id'), $company['id'], $token, $expires);
+        $this->Sso_model->createToken($company_user->ip_user_id, $company['id'], $token, $expires);
 
         // Редирект в IP
         // Разбиваем URL на части и удаляем 'manager', если он есть в конце
