@@ -88,8 +88,13 @@ class Validator extends MY_Model
      */
     public function validate_multiplechoice($value, $id)
     {
-        if ($value == "") {
+        if ($value === "" || $value === null) {
             return null;
+        }
+
+        //Normalize to array
+        if (!is_array($value)) {
+            $value = [$value];
         }
 
         $this->load->model('custom_values/mdl_custom_values', 'custom_value');
