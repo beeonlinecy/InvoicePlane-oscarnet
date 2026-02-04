@@ -24,6 +24,26 @@
                         <input type="hidden" name="<?php echo $this->config->item('csrf_token_name'); ?>"
                                value="<?php echo $this->security->get_csrf_hash() ?>">
 
+                        <div class="form-group">
+                            <label><?php _trans('quarters'); ?></label>
+                            <div class="form-inline">
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-default" id="btn-q1"><?php _trans('q1'); ?></button>
+                                    <button type="button" class="btn btn-default" id="btn-q2"><?php _trans('q2'); ?></button>
+                                    <button type="button" class="btn btn-default" id="btn-q3"><?php _trans('q3'); ?></button>
+                                    <button type="button" class="btn btn-default" id="btn-q4"><?php _trans('q4'); ?></button>
+                                </div>
+                                <select id="year-select" class="form-control">
+                                    <?php
+                                    $currentYear = date('Y');
+                                    for ($i = $currentYear; $i >= $currentYear - 10; $i--) {
+                                        echo '<option value="' . $i . '">' . $i . '</option>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                        </div>
+
                         <div class="form-group has-feedback">
                             <label for="from_date">
                                 <?php _trans('from_date'); ?>
@@ -64,3 +84,28 @@
     </div>
 
 </div>
+
+<script>
+    $(function () {
+        $('#btn-q1').click(function () {
+            const year = $('#year-select').val();
+            $('#from_date').datepicker('setDate', new Date(year, 0, 1));
+            $('#to_date').datepicker('setDate', new Date(year, 2, 31));
+        });
+        $('#btn-q2').click(function () {
+            const year = $('#year-select').val();
+            $('#from_date').datepicker('setDate', new Date(year, 3, 1));
+            $('#to_date').datepicker('setDate', new Date(year, 5, 30));
+        });
+        $('#btn-q3').click(function () {
+            const year = $('#year-select').val();
+            $('#from_date').datepicker('setDate', new Date(year, 6, 1));
+            $('#to_date').datepicker('setDate', new Date(year, 8, 30));
+        });
+        $('#btn-q4').click(function () {
+            const year = $('#year-select').val();
+            $('#from_date').datepicker('setDate', new Date(year, 9, 1));
+            $('#to_date').datepicker('setDate', new Date(year, 11, 31));
+        });
+    });
+</script>

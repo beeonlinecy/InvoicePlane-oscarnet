@@ -430,10 +430,11 @@ $lang = [
     'properties'                                   => 'Properties',
     'provider_name'                                => 'Provider Name',
     'purchase_price'                               => 'Purchase price',
-    'Q1'                                           => 'Q1',
-    'Q2'                                           => 'Q2',
-    'Q3'                                           => 'Q3',
-    'Q4'                                           => 'Q4',
+    'q1'                                           => 'Q1',
+    'q2'                                           => 'Q2',
+    'q3'                                           => 'Q3',
+    'q4'                                           => 'Q4',
+    'quarters'                                     => 'Quarters',
     'qr_code_settings'                             => 'QR Code Settings',
     'qr_code_settings_bic'                         => 'BIC',
     'qr_code_settings_enable'                      => 'Enable QR Code',
@@ -759,4 +760,7 @@ $lang = [
     // Types
     'true'  => 'True',
     'false' => 'False',
+    'year' => 'Year',
+    'this_year' => 'This Year',
+    'last_year' => 'Last Year',
 ];

@@ -419,10 +419,11 @@ $lang = array(
     'properties'                                   => 'Свойства',
     'provider_name'                                => 'Название Поставщика',
     'purchase_price'                               => 'Закупочная цена',
-    'Q1'                                           => 'Q1',
-    'Q2'                                           => 'Q2',
-    'Q3'                                           => 'Q3',
-    'Q4'                                           => 'Q4',
+    'q1'                                           => 'К1',
+    'q2'                                           => 'К2',
+    'q3'                                           => 'К3',
+    'q4'                                           => 'К4',
+    'quarters'                                     => 'Кварталы',
     'qr_code_settings'                             => 'Настройки QR кодов',
     'qr_code_settings_bic'                         => 'BIC',
     'qr_code_settings_enable'                      => 'Включить QR коды',
@@ -433,7 +434,7 @@ $lang = array(
     'qr_code_settings_remittance_text_tags'        => 'Remittance Text Tags',
     'qty'                                          => 'Qty',
     'quantity'                                     => 'Количество',
-    'quarter'                                      => 'Четверть',
+    'quarter'                                      => 'Квартал',
     'quick_actions'                                => 'Быстрые Действия',
     'quote'                                        => 'Предложение',
     'quote_approved'                               => 'Это предложение было принято',
@@ -738,5 +739,8 @@ $lang = array(
 
     // Types
     'true'                                         => 'Да',
-    'false'                                        => 'Нет'
+    'false'                                        => 'Нет',
+    'year'                                         => 'Год',
+    'this_year'                                    => 'Текущий год',
+    'last_year'                                    => 'Прошлый год'
 );
