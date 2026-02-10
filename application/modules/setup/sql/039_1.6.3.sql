@@ -135,23 +135,56 @@ CREATE TABLE `ip_expense_tax_rates` (
   `expense_tax_rate_amount` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
-CREATE TABLE `ip_expenses` (
+CREATE TABLE IF NOT EXISTS `ip_expenses` (
   `expense_id` int(11) NOT NULL AUTO_INCREMENT,
+  `expense_number` varchar(255) DEFAULT '',
+  `expense_category_id` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
-  `company_id` int(11) NOT NULL,
   `expense_date_created` date NOT NULL,
   `expense_time_created` time NOT NULL,
-  `expense_date_modified` datetime NOT NULL,
-  `payment_method` int(11) NOT NULL,
-  `photo_url` char(32) NOT NULL,
-  `is_read_only` tinyint(1) NOT NULL,
-  `expense_status_id` tinyint(2) NOT NULL,
-  `creditexpense_parent_i` int(11) NOT NULL,
-  `expense_password` varchar(60) NOT NULL,
-  `expense_discount_amount` decimal(20,2) NOT NULL,
-  `expense_discount_percent` decimal(20,2) NOT NULL,
   `expense_date_due` date NOT NULL,
-  `expense_number` varchar(100) NOT NULL,
-  `creditexpense_parent_id` int(11) NOT NULL,
-  PRIMARY KEY (`expense_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+  `expense_currency_id` int(11) DEFAULT NULL,
+  `expense_currency_code` varchar(3) DEFAULT 'USD',
+  `expense_rate` decimal(15,4) DEFAULT '1.0000',
+  `expense_status_id` tinyint(1) DEFAULT 1 COMMENT '1=новый, 2=подтвержденный, 3=оплаченный',
+  `expense_is_read_only` tinyint(1) DEFAULT 0,
+  `expense_password` varchar(255) DEFAULT NULL,
+  `expense_url_key` varchar(32) NOT NULL,
+  `expense_terms` text,
+  `expense_notes` text,
+  `expense_date_modified` datetime DEFAULT NULL,
+  `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`expense_id`),
+  KEY `expense_category_id` (`expense_category_id`),
+  KEY `user_id` (`user_id`),
+  KEY `expense_date_created` (`expense_date_created`),
+  KEY `expense_status_id` (`expense_status_id`),
+  FOREIGN KEY (`expense_category_id`) REFERENCES `ip_expense_categories` (`expense_category_id`) ON DELETE RESTRICT,
+  FOREIGN KEY (`user_id`) REFERENCES `ip_users` (`user_id`) ON DELETE RESTRICT
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+-- ==========================================
+-- Таблица категорий расходов (пока статическая, потом можно сделать редактируемой)
+-- ==========================================
+CREATE TABLE IF NOT EXISTS `ip_expense_categories` (
+  `expense_category_id` int(11) NOT NULL AUTO_INCREMENT,
+  `expense_category_name` varchar(255) NOT NULL,
+  `expense_category_description` text,
+  `expense_category_color` varchar(7) DEFAULT '#007bff',
+  `expense_category_icon` varchar(50) DEFAULT 'fa fa-shopping-cart',
+  `is_active` tinyint(1) DEFAULT 1,
+  PRIMARY KEY (`expense_category_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+-- Вставка тестовых категорий
+INSERT INTO `ip_expense_categories` (`expense_category_name`, `expense_category_description`, `expense_category_color`, `expense_category_icon`) VALUES
+('Канцелярские товары', 'Бумага, ручки, папки, офисная мебель', '#007bff', 'fa fa-pencil'),
+('Транспорт', 'Топливо, общественный транспорт, такси, ремонт автомобиля', '#28a745', 'fa fa-car'),
+('Питание', 'Представительские расходы, обеды, ужины с клиентами', '#dc3545', 'fa fa-utensils'),
+('IT и ПО', 'Компьютерное оборудование, программное обеспечение, интернет', '#6f42c1', 'fa fa-laptop'),
+('Маркетинг и реклама', 'Печать, баннеры, онлайн реклама, промо материалы', '#fd7e14', 'fa fa-bullhorn'),
+('Коммунальные услуги', 'Электричество, отопление, телефон, интернет', '#20c997', 'fa fa-home'),
+('Командировки', 'Отели, авиабилеты, визы, суточные расходы', '#17a2b8', 'fa fa-plane'),
+('Образование', 'Курсы, конференции, книги, семинары', '#6c757d', 'fa fa-graduation-cap'),
+('Медицина', 'Медицинские услуги, лекарства, страховка', '#e83e8c', 'fa fa-heartbeat'),
+('Прочее', 'Прочие расходы, которые не подходят под другие категории', '#495057', 'fa fa-ellipsis-h');
