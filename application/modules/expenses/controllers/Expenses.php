@@ -118,6 +118,27 @@ class Expenses extends Admin_Controller
             if ($this->mdl_expenses->run_validation()) {
                 $expense_id = $this->mdl_expenses->save();
 
+                // Handle file upload for receipt
+                if (isset($_FILES['expense_receipt']) && $_FILES['expense_receipt']['name'] != '') {
+                    $config['upload_path']   = './uploads/expenses/';
+                    $config['allowed_types'] = 'gif|jpg|jpeg|png|pdf';
+                    $config['encrypt_name']  = true;
+
+                    if (!is_dir($config['upload_path'])) {
+                        mkdir($config['upload_path'], 0777, true);
+                    }
+
+                    $this->load->library('upload', $config);
+
+                    if ($this->upload->do_upload('expense_receipt')) {
+                        $upload_data = $this->upload->data();
+                        $this->db->where('expense_id', $expense_id);
+                        $this->db->update('ip_expenses', ['photo_url' => $upload_data['file_name']]);
+                    } else {
+                        $this->session->set_flashdata('alert_error', $this->upload->display_errors());
+                    }
+                }
+
                 // Save expense items
                 $this->load->helper('expense');
                 $items = $this->input->post('items');
@@ -215,6 +236,33 @@ class Expenses extends Admin_Controller
         if ($this->input->post('btn_submit')) {
             if ($this->mdl_expenses->run_validation()) {
                 $this->mdl_expenses->save($expense_id);
+
+                // Handle file upload for receipt
+                if (isset($_FILES['expense_receipt']) && $_FILES['expense_receipt']['name'] != '') {
+                    $old_expense = $this->mdl_expenses->get_by_id($expense_id);
+                    $old_file = $old_expense->photo_url;
+
+                    $config['upload_path']   = './uploads/expenses/';
+                    $config['allowed_types'] = 'gif|jpg|jpeg|png|pdf';
+                    $config['encrypt_name']  = true;
+
+                    if (!is_dir($config['upload_path'])) {
+                        mkdir($config['upload_path'], 0777, true);
+                    }
+
+                    $this->load->library('upload', $config);
+
+                    if ($this->upload->do_upload('expense_receipt')) {
+                        if ($old_file && file_exists($config['upload_path'] . $old_file)) {
+                            unlink($config['upload_path'] . $old_file);
+                        }
+                        $upload_data = $this->upload->data();
+                        $this->db->where('expense_id', $expense_id);
+                        $this->db->update('ip_expenses', ['photo_url' => $upload_data['file_name']]);
+                    } else {
+                        $this->session->set_flashdata('alert_error', $this->upload->display_errors());
+                    }
+                }
 
                 // Save expense items
                 $this->load->helper('expense');

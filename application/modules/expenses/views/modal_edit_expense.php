@@ -317,23 +317,23 @@
                     </div>
 
                 </div>
-            </div>
-        </div>
-        <div class="col-md-4">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title"><?php _trans('attachment'); ?></h3>
-                </div>
-                <div class="panel-body">
-                    <?php if ($expense->photo_url && file_exists('./uploads/expenses/' . $expense->photo_url)): ?>
-                        <div class="form-group">
-                            <a href="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" target="_blank">
-                                <img src="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" class="img-responsive img-thumbnail">
-                            </a>
+                <div class="col-md-4">
+                    <div class="panel panel-default">
+                        <div class="panel-heading">
+                            <h3 class="panel-title"><?php _trans('attachment'); ?></h3>
                         </div>
-                    <?php else: ?>
-                        <p class="text-muted"><?php _trans('no_results'); ?></p>
-                    <?php endif; ?>
+                        <div class="panel-body">
+                            <?php if (isset($expense->photo_url) && $expense->photo_url && file_exists('./uploads/expenses/' . $expense->photo_url)): ?>
+                                <div class="form-group">
+                                    <a href="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" target="_blank">
+                                        <img src="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" class="img-responsive img-thumbnail">
+                                    </a>
+                                </div>
+                            <?php else: ?>
+                                <p class="text-muted"><?php _trans('no_results'); ?></p>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
