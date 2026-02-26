@@ -139,7 +139,10 @@ CREATE TABLE IF NOT EXISTS `ip_expenses` (
   `expense_id` int(11) NOT NULL AUTO_INCREMENT,
   `expense_number` varchar(255) DEFAULT '',
   `expense_category_id` int(11) NOT NULL,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) UNSIGNED NOT NULL,
+  `company_id` int(11) NOT NULL,
+  `payment_method` int(11) NOT NULL,
+  `photo_url` char(32) NOT NULL,
   `expense_date_created` date NOT NULL,
   `expense_time_created` time NOT NULL,
   `expense_date_due` date NOT NULL,
@@ -156,12 +159,10 @@ CREATE TABLE IF NOT EXISTS `ip_expenses` (
   `created_at` timestamp DEFAULT CURRENT_TIMESTAMP,
   `updated_at` timestamp DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`expense_id`),
-  KEY `expense_category_id` (`expense_category_id`),
-  KEY `user_id` (`user_id`),
-  KEY `expense_date_created` (`expense_date_created`),
-  KEY `expense_status_id` (`expense_status_id`),
-  FOREIGN KEY (`expense_category_id`) REFERENCES `ip_expense_categories` (`expense_category_id`) ON DELETE RESTRICT,
-  FOREIGN KEY (`user_id`) REFERENCES `ip_users` (`user_id`) ON DELETE RESTRICT
+  KEY `idx_expense_category_id` (`expense_category_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_expense_date_created` (`expense_date_created`),
+  KEY `idx_expense_status_id` (`expense_status_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ==========================================
 -- Таблица категорий расходов (пока статическая, потом можно сделать редактируемой)
