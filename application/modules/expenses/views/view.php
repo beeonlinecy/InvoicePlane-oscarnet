@@ -182,13 +182,14 @@
                             <div class="table-responsive">
                                 <table class="table">
                                     <tbody>
+                                        <?php $expense_amounts = $this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row(); ?>
                                         <tr>
                                             <td class="text-right"><strong><?php _trans('subtotal'); ?>:</strong></td>
-                                            <td class="text-right"><?php echo format_amount($this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row()->expense_item_subtotal); ?></td>
+                                            <td class="text-right"><?php echo format_amount($expense_amounts ? $expense_amounts->expense_item_subtotal : 0); ?></td>
                                         </tr>
                                         <tr>
                                             <td class="text-right"><strong><?php _trans('item_tax_total'); ?>:</strong></td>
-                                            <td class="text-right"><?php echo format_amount($this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row()->expense_item_tax_total); ?></td>
+                                            <td class="text-right"><?php echo format_amount($expense_amounts ? $expense_amounts->expense_item_tax_total : 0); ?></td>
                                         </tr>
                                         <?php if ($expense_tax_rates): ?>
                                         <?php foreach ($expense_tax_rates as $tax_rate): ?>
@@ -206,20 +207,20 @@
                                         <?php endforeach; ?>
                                         <tr>
                                             <td class="text-right"><strong><?php _trans('expense_tax_total'); ?>:</strong></td>
-                                            <td class="text-right"><?php echo format_amount($this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row()->expense_tax_total); ?></td>
+                                            <td class="text-right"><?php echo format_amount($expense_amounts ? $expense_amounts->expense_tax_total : 0); ?></td>
                                         </tr>
                                         <?php endif; ?>
                                         <tr class="active">
                                             <td class="text-right"><strong><?php _trans('total'); ?>:</strong></td>
-                                            <td class="text-right"><strong><?php echo format_amount($this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row()->expense_total); ?></strong></td>
+                                            <td class="text-right"><strong><?php echo format_amount($expense_amounts ? $expense_amounts->expense_total : 0); ?></strong></td>
                                         </tr>
                                         <tr>
                                             <td class="text-right"><strong><?php _trans('paid'); ?>:</strong></td>
-                                            <td class="text-right"><?php echo format_amount($this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row()->expense_paid); ?></td>
+                                            <td class="text-right"><?php echo format_amount($expense_amounts ? $expense_amounts->expense_paid : 0); ?></td>
                                         </tr>
                                         <tr class="warning">
                                             <td class="text-right"><strong><?php _trans('balance'); ?>:</strong></td>
-                                            <td class="text-right"><strong><?php echo format_amount($this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row()->expense_balance); ?></strong></td>
+                                            <td class="text-right"><strong><?php echo format_amount($expense_amounts ? $expense_amounts->expense_balance : 0); ?></strong></td>
                                         </tr>
                                     </tbody>
                                 </table>

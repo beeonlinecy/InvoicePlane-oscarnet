@@ -122,40 +122,6 @@
                                         </tr>
                                     </thead>
                                     <tbody id="items-tbody">
-                                        <tr class="item-row">
-                                            <td>
-                                                <input type="text" name="items[1][item_name]" class="form-control" required>
-                                            </td>
-                                            <td>
-                                                <textarea name="items[1][item_description]" class="form-control" rows="2"></textarea>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="items[1][item_quantity]" class="form-control" 
-                                                       value="1" step="1" min="1">
-                                            </td>
-                                            <td>
-                                                <input type="number" name="items[1][item_price]" class="form-control" 
-                                                       value="0" step="0.01" min="0">
-                                            </td>
-                                            <td>
-                                                <select name="items[1][item_tax_rate_id]" class="form-control item-tax-select">
-                                                    <option value="0"><?php _trans('none'); ?></option>
-                                                    <?php foreach ($tax_rates as $tax_rate): ?>
-                                                    <option value="<?php echo $tax_rate->tax_rate_id; ?>" data-percent="<?php echo $tax_rate->tax_rate_percent; ?>">
-                                                        <?php echo $tax_rate->tax_rate_name; ?> (<?php echo $tax_rate->tax_rate_percent; ?>%)
-                                                    </option>
-                                                    <?php endforeach; ?>
-                                                </select>
-                                            </td>
-                                            <td>
-                                                <span class="item-total">0.00</span>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
                                     </tbody>
                                 </table>
                             </div>
@@ -231,7 +197,7 @@
 </div>
 
 <script>
-var itemCounter = 1;
+var itemCounter = 0;
 var taxCounter = 0;
 
 function addItem() {
@@ -388,7 +354,5 @@ $(document).ready(function() {
         calculateTotals();
     });
     
-    // Initial calculation
-    calculateTotals();
 });
 </script>
