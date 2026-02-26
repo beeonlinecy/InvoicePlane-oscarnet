@@ -7,11 +7,11 @@
             <h4 class="modal-title"><?php echo sprintf(trans('edit_expense') . ' #%s', $expense->expense_number); ?></h4>
         </div>
 
-        <?php echo form_open(); ?>
+        <?php echo form_open_multipart(site_url('expenses/edit/' . $expense->expense_id), ['id' => 'expense-form-edit']); ?>
 
         <div class="modal-body">
             <div class="row">
-                <div class="col-md-12">
+                <div class="col-md-8">
 
                     <!-- Basic Info -->
                     <div class="panel panel-default">
@@ -20,13 +20,6 @@
                         </div>
                         <div class="panel-body">
                             <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="expense_number"><?php _trans('expense_number'); ?></label>
-                                        <input type="text" name="expense_number" id="expense_number" 
-                                               class="form-control" value="<?php echo $expense->expense_number; ?>">
-                                    </div>
-                                </div>
                                 <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="expense_category_id"><?php _trans('expense_category'); ?> *</label>
@@ -104,15 +97,26 @@
                                 </div>
                             </div>
 
+                            <?php $expense_amounts = $this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row(); ?>
+
                             <div class="row">
-                                <div class="col-md-6">
+                                <div class="col-md-4">
+                                    <div class="form-group">
+                                        <label for="expense_total"><?php _trans('total'); ?></label>
+                                        <input type="number" name="expense_total" id="expense_total"
+                                               class="form-control"
+                                               value="<?php echo $expense_amounts ? $expense_amounts->expense_total : '0.00'; ?>"
+                                               step="0.01" min="0">
+                                    </div>
+                                </div>
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="expense_currency_code"><?php _trans('currency'); ?></label>
                                         <input type="text" name="expense_currency_code" id="expense_currency_code" 
                                                class="form-control" value="<?php echo $expense->expense_currency_code; ?>" maxlength="3">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-4">
                                     <div class="form-group">
                                         <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>
                                         <input type="number" name="expense_rate" id="expense_rate" 
@@ -121,6 +125,11 @@
                                     </div>
                                 </div>
                             </div>
+
+                            <div class="form-group">
+                                <label for="expense_receipt"><?php _trans('attachment'); ?></label>
+                                <input type="file" name="expense_receipt" id="expense_receipt" class="form-control">
+                            </div>
                         </div>
                     </div>
 
@@ -128,10 +137,11 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <?php _trans('expense_items'); ?>
-                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addItem()">
+                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addItem()"
+                                        style="margin-top: -4px;">
                                     <i class="fa fa-plus"></i> <?php _trans('add_item'); ?>
                                 </button>
+                                <?php _trans('expense_items'); ?>
                             </h3>
                         </div>
                         <div class="panel-body">
@@ -141,9 +151,10 @@
                                         <tr>
                                             <th><?php _trans('item'); ?></th>
                                             <th><?php _trans('description'); ?></th>
-                                            <th style="width: 10%;"><?php _trans('quantity'); ?></th>
-                                            <th style="width: 15%;"><?php _trans('price'); ?></th>
-                                            <th style="width: 15%;"><?php _trans('total'); ?></th>
+                                            <th style="width: 8%;"><?php _trans('quantity'); ?></th>
+                                            <th style="width: 12%;"><?php _trans('price'); ?></th>
+                                            <th style="width: 15%;"><?php _trans('tax_rate'); ?></th>
+                                            <th style="width: 10%;"><?php _trans('total'); ?></th>
                                             <th style="width: 5%;"></th>
                                         </tr>
                                     </thead>
@@ -153,32 +164,7 @@
                                         $items = $this->mdl_expense_items->where('expense_id', $expense->expense_id)->get()->result();
                                         $itemCounter = 0;
                                         
-                                        if (!$items): ?>
-                                        <tr class="item-row">
-                                            <td>
-                                                <input type="text" name="items[1][item_name]" class="form-control" required>
-                                            </td>
-                                            <td>
-                                                <textarea name="items[1][item_description]" class="form-control" rows="2"></textarea>
-                                            </td>
-                                            <td>
-                                                <input type="number" name="items[1][item_quantity]" class="form-control" 
-                                                       value="1" step="0.01" min="0">
-                                            </td>
-                                            <td>
-                                                <input type="number" name="items[1][item_price]" class="form-control" 
-                                                       value="0" step="0.01" min="0">
-                                            </td>
-                                            <td>
-                                                <span class="item-total">0.00</span>
-                                            </td>
-                                            <td>
-                                                <button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <?php else: 
+                                        if ($items):
                                             foreach ($items as $item): 
                                             $itemCounter++;
                                             $itemAmount = $this->db->where('expense_item_id', $item->expense_item_id)->get('ip_expense_item_amounts')->row();
@@ -197,16 +183,29 @@
                                             </td>
                                             <td>
                                                 <input type="number" name="items[<?php echo $itemCounter; ?>][item_quantity]" 
-                                                       class="form-control" value="<?php echo $item->item_quantity; ?>" 
-                                                       step="0.01" min="0">
+                                                       class="form-control" value="<?php echo format_amount($item->item_quantity); ?>"
+                                                       step="1" min="1">
                                             </td>
                                             <td>
                                                 <input type="number" name="items[<?php echo $itemCounter; ?>][item_price]" 
-                                                       class="form-control" value="<?php echo $item->item_price; ?>" 
+                                                       class="form-control" value="<?php echo format_amount($item->item_price); ?>"
                                                        step="0.01" min="0">
                                             </td>
                                             <td>
-                                                <span class="item-total"><?php echo number_format($itemAmount->item_total, 2); ?></span>
+                                                <select name="items[<?php echo $itemCounter; ?>][item_tax_rate_id]"
+                                                        class="form-control item-tax-select">
+                                                    <option value="0"><?php _trans('none'); ?></option>
+                                                    <?php foreach ($tax_rates as $tax_rate): ?>
+                                                        <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                                                data-percent="<?php echo $tax_rate->tax_rate_percent; ?>" <?php if ($item->item_tax_rate_id == $tax_rate->tax_rate_id) echo 'selected'; ?>>
+                                                            <?php echo $tax_rate->tax_rate_name; ?>
+                                                            (<?php echo format_amount($tax_rate->tax_rate_percent); ?>%)
+                                                        </option>
+                                                    <?php endforeach; ?>
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="item-total"><?php echo format_amount($itemAmount ? $itemAmount->item_total : 0); ?></span>
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="removeItem(this)">
@@ -228,10 +227,11 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <?php _trans('expense_taxes'); ?>
-                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addTax()">
+                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addTax()"
+                                        style="margin-top: -4px;">
                                     <i class="fa fa-plus"></i> <?php _trans('add_tax'); ?>
                                 </button>
+                                <?php _trans('expense_taxes'); ?>
                             </h3>
                         </div>
                         <div class="panel-body">
@@ -248,6 +248,8 @@
                                     </thead>
                                     <tbody id="tax-tbody">
                                         <?php 
+                                        $this->load->model('expenses/mdl_expense_tax_rates');
+                                        $expense_tax_rates = $this->mdl_expense_tax_rates->where('expense_id', $expense->expense_id)->get()->result();
                                         $taxCounter = 0;
                                         if ($expense_tax_rates): 
                                             foreach ($expense_tax_rates as $expense_tax_rate): 
@@ -258,7 +260,8 @@
                                                 <select name="tax_rates[<?php echo $taxCounter; ?>][tax_rate_id]" class="form-control" required>
                                                     <option value=""><?php _trans('select_tax_rate'); ?></option>
                                                     <?php foreach ($tax_rates as $tax_rate): ?>
-                                                    <option value="<?php echo $tax_rate->tax_rate_id; ?>" 
+                                                    <option value="<?php echo $tax_rate->tax_rate_id; ?>"
+                                                            data-percent="<?php echo $tax_rate->tax_rate_percent; ?>"
                                                             <?php echo ($expense_tax_rate->tax_rate_id == $tax_rate->tax_rate_id) ? 'selected' : ''; ?>>
                                                         <?php echo $tax_rate->tax_rate_name; ?>
                                                     </option>
@@ -276,7 +279,7 @@
                                                        value="1" <?php echo $expense_tax_rate->include_tax ? 'checked' : ''; ?>>
                                             </td>
                                             <td>
-                                                <span class="tax-amount"><?php echo number_format($expense_tax_rate->expense_tax_rate_amount, 2); ?></span>
+                                                <span class="tax-amount"><?php echo format_amount($expense_tax_rate->expense_tax_rate_amount); ?></span>
                                             </td>
                                             <td>
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="removeTax(this)">
@@ -316,6 +319,24 @@
                 </div>
             </div>
         </div>
+        <div class="col-md-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title"><?php _trans('attachment'); ?></h3>
+                </div>
+                <div class="panel-body">
+                    <?php if ($expense->photo_url && file_exists('./uploads/expenses/' . $expense->photo_url)): ?>
+                        <div class="form-group">
+                            <a href="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" target="_blank">
+                                <img src="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" class="img-responsive img-thumbnail">
+                            </a>
+                        </div>
+                    <?php else: ?>
+                        <p class="text-muted"><?php _trans('no_results'); ?></p>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </div>
 
         <div class="modal-footer">
             <div class="btn-group">
@@ -339,6 +360,11 @@ var taxCounter = <?php echo $taxCounter; ?>;
 
 function addItem() {
     itemCounter++;
+    var taxOptions = '';
+    <?php foreach ($tax_rates as $tax_rate): ?>
+    taxOptions += '<option value="<?php echo $tax_rate->tax_rate_id; ?>" data-percent="<?php echo $tax_rate->tax_rate_percent; ?>"><?php echo $tax_rate->tax_rate_name; ?> (<?php echo $tax_rate->tax_rate_percent; ?>%)</option>';
+    <?php endforeach; ?>
+
     var row = `
         <tr class="item-row">
             <td>
@@ -348,12 +374,18 @@ function addItem() {
                 <textarea name="items[${itemCounter}][item_description]" class="form-control" rows="2"></textarea>
             </td>
             <td>
-                <input type="number" name="items[${itemCounter}][item_quantity]" class="form-control" 
-                       value="1" step="0.01" min="0">
+                <input type="number" name="items[${itemCounter}][item_quantity]" class="form-control"
+                       value="1" step="1" min="1">
             </td>
             <td>
-                <input type="number" name="items[${itemCounter}][item_price]" class="form-control" 
+                <input type="number" name="items[${itemCounter}][item_price]" class="form-control"
                        value="0" step="0.01" min="0">
+            </td>
+            <td>
+                <select name="items[${itemCounter}][item_tax_rate_id]" class="form-control item-tax-select">
+                    <option value="0"><?php _trans('none'); ?></option>
+                    ${taxOptions}
+                </select>
             </td>
             <td>
                 <span class="item-total">0.00</span>
@@ -366,8 +398,7 @@ function addItem() {
         </tr>
     `;
     $('#items-tbody').append(row);
-    
-    // Recalculate totals
+
     calculateTotals();
 }
 
@@ -378,16 +409,17 @@ function removeItem(button) {
 
 function addTax() {
     taxCounter++;
+    var taxOptions = '';
+    <?php foreach ($tax_rates as $tax_rate): ?>
+    taxOptions += '<option value="<?php echo $tax_rate->tax_rate_id; ?>" data-percent="<?php echo $tax_rate->tax_rate_percent; ?>"><?php echo $tax_rate->tax_rate_name; ?> (<?php echo $tax_rate->tax_rate_percent; ?>%)</option>';
+    <?php endforeach; ?>
+
     var row = `
         <tr class="tax-row">
             <td>
                 <select name="tax_rates[${taxCounter}][tax_rate_id]" class="form-control" required>
                     <option value=""><?php _trans('select_tax_rate'); ?></option>
-                    <?php foreach ($tax_rates as $tax_rate): ?>
-                    <option value="<?php echo $tax_rate->tax_rate_id; ?>">
-                        <?php echo $tax_rate->tax_rate_name; ?>
-                    </option>
-                    <?php endforeach; ?>
+                    ${taxOptions}
                 </select>
             </td>
             <td class="text-center">
@@ -407,6 +439,7 @@ function addTax() {
         </tr>
     `;
     $('#tax-tbody').append(row);
+    calculateTotals();
 }
 
 function removeTax(button) {
@@ -416,17 +449,49 @@ function removeTax(button) {
 
 function calculateTotals() {
     var subtotal = 0;
-    $('.item-row').each(function() {
-        var quantity = parseFloat($(this).find('input[name*="[item_quantity]"]').val()) || 0;
+    var itemTaxTotal = 0;
+
+    $('.item-row').each(function () {
+        var quantity = parseInt($(this).find('input[name*="[item_quantity]"]').val()) || 0;
         var price = parseFloat($(this).find('input[name*="[item_price]"]').val()) || 0;
-        var total = quantity * price;
-        
-        $(this).find('.item-total').text(total.toFixed(2));
-        subtotal += total;
+        var itemSubtotal = quantity * price;
+
+        // Get item tax
+        var taxSelect = $(this).find('.item-tax-select');
+        var taxPercent = parseFloat(taxSelect.find(':selected').data('percent')) || 0;
+        var itemTax = itemSubtotal * (taxPercent / 100);
+        var itemTotal = itemSubtotal + itemTax;
+
+        $(this).find('.item-total').text(itemTotal.toFixed(2));
+        subtotal += itemSubtotal;
+        itemTaxTotal += itemTax;
     });
-    
-    // Update total display (this would need to be implemented on the server)
-    console.log('Subtotal:', subtotal.toFixed(2));
+
+    // Calculate expense-level taxes
+    var expenseTaxTotal = 0;
+    var baseForGrandTotal = subtotal + itemTaxTotal;
+
+    $('.tax-row').each(function () {
+        var taxSelect = $(this).find('select[name*="[tax_rate_id]"]');
+        var taxPercent = parseFloat(taxSelect.find(':selected').data('percent')) || 0;
+        var includeItemTax = $(this).find('input[name*="[include_item_tax]"]').is(':checked');
+        var includeTax = $(this).find('input[name*="[include_tax]"]').is(':checked');
+
+        var taxBase = includeItemTax ? (subtotal + itemTaxTotal) : subtotal;
+        var taxAmount;
+
+        if (includeTax) {
+            taxAmount = taxBase - (taxBase / (1 + taxPercent / 100));
+        } else {
+            taxAmount = taxBase * (taxPercent / 100);
+            expenseTaxTotal += taxAmount;
+        }
+
+        $(this).find('.tax-amount').text(taxAmount.toFixed(2));
+    });
+
+    var grandTotal = baseForGrandTotal + expenseTaxTotal;
+    $('#expense_total').val(grandTotal.toFixed(2));
 }
 
 // Initialize datepickers
@@ -437,8 +502,15 @@ $(document).ready(function() {
     });
     
     // Calculate totals when inputs change
-    $(document).on('change', 'input[name*="[item_quantity]"], input[name*="[item_price]"]', function() {
+    $(document).on('input change', 'input[name*="[item_quantity]"], input[name*="[item_price]"], .item-tax-select, select[name*="[tax_rate_id]"]', function () {
         calculateTotals();
     });
+
+    // Handle checkbox click separately
+    $(document).on('click', 'input[name*="[include_item_tax]"], input[name*="[include_tax]"]', function () {
+        calculateTotals();
+    });
+
+    calculateTotals();
 });
 </script>
