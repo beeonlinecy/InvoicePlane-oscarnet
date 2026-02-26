@@ -7,7 +7,7 @@
             <h4 class="modal-title"><?php _trans('create_expense'); ?></h4>
         </div>
 
-        <?php echo form_open(); ?>
+        <?php echo form_open_multipart(); ?>
 
         <div class="modal-body">
             <div class="row">
@@ -24,10 +24,10 @@
                                     <div class="form-group">
                                         <label for="expense_category_id"><?php _trans('expense_category'); ?> *</label>
                                         <select name="expense_category_id" id="expense_category_id" class="form-control" required>
-                                            <option value=""><?php _trans('select_category'); ?></option>
                                             <?php foreach ($expense_categories as $category): ?>
                                             <option value="<?php echo $category->expense_category_id; ?>" 
-                                                    style="color: <?php echo $category->expense_category_color; ?>">
+                                                    style="color: <?php echo $category->expense_category_color; ?>"
+                                                    <?php if($category->expense_category_name == 'Прочее' || $category->expense_category_name == 'Other') echo 'selected'; ?>>
                                                 <i class="<?php echo $category->expense_category_icon; ?>"></i>
                                                 <?php echo $category->expense_category_name; ?>
                                             </option>
@@ -41,7 +41,8 @@
                                         <select name="user_id" id="user_id" class="form-control" required>
                                             <option value=""><?php _trans('select_user'); ?></option>
                                             <?php foreach ($users as $user): ?>
-                                            <option value="<?php echo $user->user_id; ?>">
+                                            <option value="<?php echo $user->user_id; ?>" 
+                                                    <?php if($this->session->userdata('user_id') == $user->user_id) echo 'selected'; ?>>
                                                 <?php echo $user->user_name; ?>
                                             </option>
                                             <?php endforeach; ?>
@@ -65,22 +66,17 @@
                                     </div>
                                 </div>
                                 <div class="col-md-6">
+                                    <input type="hidden" name="expense_date_due" value="<?php echo date('Y-m-d', strtotime('+30 days')); ?>">
+                                    
                                     <div class="form-group">
-                                        <label for="expense_date_due"><?php _trans('due_date'); ?> *</label>
-                                        <div class="input-group">
-                                            <input type="text" name="expense_date_due" id="expense_date_due" 
-                                                   class="form-control datepicker" required
-                                                   value="<?php echo date('Y-m-d', strtotime('+30 days')); ?>">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
+                                        <label for="expense_receipt"><?php _trans('attachment'); ?></label>
+                                        <input type="file" name="expense_receipt" id="expense_receipt" class="form-control">
                                     </div>
                                 </div>
                             </div>
 
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="expense_total"><?php _trans('total'); ?></label>
                                         <input type="number" name="expense_total" id="expense_total" 
@@ -89,20 +85,14 @@
                                         <small class="text-muted"><?php _trans('quick_total_hint'); ?></small>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <div class="form-group">
                                         <label for="expense_currency_code"><?php _trans('currency'); ?></label>
                                         <input type="text" name="expense_currency_code" id="expense_currency_code" 
-                                               class="form-control" value="USD" maxlength="3">
+                                               class="form-control" value="<?php echo get_setting('currency_code'); ?>" maxlength="3">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>
-                                        <input type="number" name="expense_rate" id="expense_rate" 
-                                               class="form-control" value="1.0000" step="0.0001" min="0">
-                                    </div>
-                                </div>
+                                <input type="hidden" name="expense_rate" value="1.0000">
                             </div>
                         </div>
                     </div>
@@ -111,10 +101,10 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <?php _trans('expense_items'); ?>
-                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addItem()">
+                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addItem()" style="margin-top: -4px;">
                                     <i class="fa fa-plus"></i> <?php _trans('add_item'); ?>
                                 </button>
+                                <?php _trans('expense_items'); ?>
                             </h3>
                         </div>
                         <div class="panel-body">
@@ -176,10 +166,10 @@
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title">
-                                <?php _trans('expense_taxes'); ?>
-                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addTax()">
+                                <button type="button" class="btn btn-sm btn-primary pull-right" onclick="addTax()" style="margin-top: -4px;">
                                     <i class="fa fa-plus"></i> <?php _trans('add_tax'); ?>
                                 </button>
+                                <?php _trans('expense_taxes'); ?>
                             </h3>
                         </div>
                         <div class="panel-body">
