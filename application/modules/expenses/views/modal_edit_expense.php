@@ -116,7 +116,7 @@
                                                class="form-control" value="<?php echo $expense->expense_currency_code; ?>" maxlength="3">
                                     </div>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-4" id="exchange-rate-group">
                                     <div class="form-group">
                                         <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>
                                         <input type="number" name="expense_rate" id="expense_rate" 
@@ -526,5 +526,22 @@ $(document).ready(function() {
     });
 
     calculateTotals();
+
+    // Handle exchange rate visibility
+    var defaultCurrency = '<?php echo get_setting('currency_code'); ?>';
+    var expenseCurrencyInput = $('#expense_currency_code');
+    var exchangeRateGroup = $('#exchange-rate-group');
+
+    function toggleExchangeRate() {
+        if (expenseCurrencyInput.val().toUpperCase() === defaultCurrency.toUpperCase() || expenseCurrencyInput.val() === '') {
+            exchangeRateGroup.hide();
+            $('#expense_rate').val(1); // Reset to 1 if default currency
+        } else {
+            exchangeRateGroup.show();
+        }
+    }
+
+    expenseCurrencyInput.on('keyup change', toggleExchangeRate);
+    toggleExchangeRate(); // Initial check
 });
 </script>

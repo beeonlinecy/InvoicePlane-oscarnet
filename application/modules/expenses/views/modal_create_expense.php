@@ -92,7 +92,16 @@
                                                class="form-control" value="<?php echo get_setting('currency_code'); ?>" maxlength="3">
                                     </div>
                                 </div>
-                                <input type="hidden" name="expense_rate" value="1.0000">
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6" id="exchange-rate-group-create" style="display: none;">
+                                    <div class="form-group">
+                                        <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>
+                                        <input type="number" name="expense_rate" id="expense_rate"
+                                               class="form-control" value="1.0000"
+                                               step="0.0001" min="0">
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -354,5 +363,22 @@ $(document).ready(function() {
         calculateTotals();
     });
     
+    // Handle exchange rate visibility for create form
+    var defaultCurrency = '<?php echo get_setting('currency_code'); ?>';
+    var expenseCurrencyInput = $('#expense_currency_code');
+    var exchangeRateGroup = $('#exchange-rate-group-create');
+
+    function toggleExchangeRateCreate() {
+        if (expenseCurrencyInput.val().toUpperCase() === defaultCurrency.toUpperCase() || expenseCurrencyInput.val() === '') {
+            exchangeRateGroup.hide();
+            $('#expense_rate').val(1);
+        } else {
+            exchangeRateGroup.show();
+        }
+    }
+
+    expenseCurrencyInput.on('keyup change', toggleExchangeRateCreate);
+    toggleExchangeRateCreate(); // Initial check
+
 });
 </script>
