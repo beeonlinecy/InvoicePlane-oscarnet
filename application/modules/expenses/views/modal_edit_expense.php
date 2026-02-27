@@ -323,11 +323,25 @@
                             <h3 class="panel-title"><?php _trans('attachment'); ?></h3>
                         </div>
                         <div class="panel-body">
-                            <?php if (isset($expense->photo_url) && $expense->photo_url && file_exists('./uploads/expenses/' . $expense->photo_url)): ?>
+                            <?php if (isset($expense->photo_url) && $expense->photo_url): ?>
+                                <?php
+                                    $ext = strtolower(pathinfo($expense->photo_url, PATHINFO_EXTENSION));
+                                    $is_image = in_array($ext, ['jpg', 'jpeg', 'png', 'gif']);
+                                    $is_pdf = ($ext == 'pdf');
+                                    $file_url = base_url('uploads/expenses/' . $expense->photo_url);
+                                ?>
                                 <div class="form-group">
-                                    <a href="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" target="_blank">
-                                        <img src="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" class="img-responsive img-thumbnail">
-                                    </a>
+                                    <?php if ($is_image): ?>
+                                        <a href="<?php echo $file_url; ?>" target="_blank">
+                                            <img src="<?php echo $file_url . '?t=' . time(); ?>" class="img-responsive img-thumbnail" style="width: 100%;">
+                                        </a>
+                                    <?php elseif ($is_pdf): ?>
+                                        <iframe src="<?php echo $file_url; ?>" style="width: 100%; height: 400px;" frameborder="0"></iframe>
+                                    <?php else: ?>
+                                        <a href="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" target="_blank" class="btn btn-default btn-block">
+                                            <i class="fa fa-file-o"></i> <?php echo basename($expense->photo_url); ?>
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             <?php else: ?>
                                 <p class="text-muted"><?php _trans('no_results'); ?></p>

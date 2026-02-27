@@ -120,20 +120,54 @@ class Expenses extends Admin_Controller
 
                 // Handle file upload for receipt
                 if (isset($_FILES['expense_receipt']) && $_FILES['expense_receipt']['name'] != '') {
-                    $config['upload_path']   = './uploads/expenses/';
-                    $config['allowed_types'] = 'gif|jpg|jpeg|png|pdf';
-                    $config['encrypt_name']  = true;
+                    // Определяем путь: uploads/expenses/YYYY/MM/
+                    $date_created = $this->input->post('expense_date_created') ? $this->input->post('expense_date_created') : date('Y-m-d');
+                    $year = date('Y', strtotime($date_created));
+                    $month = date('m', strtotime($date_created));
+                    $day = date('d', strtotime($date_created));
+                    
+                    // Нормализуем путь и гарантируем наличие слеша в конце
+                    $upload_path = str_replace('\\', '/', FCPATH) . 'uploads/expenses/' . $year . '/' . $month . '/';
 
-                    if (!is_dir($config['upload_path'])) {
-                        mkdir($config['upload_path'], 0777, true);
+                    if (!is_dir($upload_path)) {
+                        mkdir($upload_path, 0777, true); // Рекурсивное создание
                     }
 
+                    $config = [
+                        'upload_path'   => $upload_path,
+                        'allowed_types' => 'gif|jpg|jpeg|png|pdf',
+                        'max_size'      => 10240, // 10MB
+                        'encrypt_name'  => false, // Отключаем рандомное имя от CI, задаем свое
+                        'overwrite'     => true   // Разрешаем перезапись для соблюдения именования
+                    ];
+
+                    // Генерируем имя: dd-id.ext
+                    $path_parts = pathinfo($_FILES['expense_receipt']['name']);
+                    $ext = isset($path_parts['extension']) ? '.' . strtolower($path_parts['extension']) : '';
+
+                    // Если расширение не определилось, пробуем по mime-type
+                    if (empty($ext)) {
+                        $mime_map = [
+                            'image/jpeg' => '.jpg', 'image/pjpeg' => '.jpg',
+                            'image/png' => '.png', 'image/gif' => '.gif',
+                            'application/pdf' => '.pdf'
+                        ];
+                        if (isset($mime_map[$_FILES['expense_receipt']['type']])) {
+                            $ext = $mime_map[$_FILES['expense_receipt']['type']];
+                        }
+                    }
+                    $config['file_name'] = $day . '-' . $expense_id . $ext;
+
                     $this->load->library('upload', $config);
+                    $this->upload->initialize($config);
 
                     if ($this->upload->do_upload('expense_receipt')) {
                         $upload_data = $this->upload->data();
+                        // Сохраняем относительный путь: YYYY/MM/filename.ext
+                        $db_path = $year . '/' . $month . '/' . $upload_data['file_name'];
+                        
                         $this->db->where('expense_id', $expense_id);
-                        $this->db->update('ip_expenses', ['photo_url' => $upload_data['file_name']]);
+                        $this->db->update('ip_expenses', ['photo_url' => $db_path]);
                     } else {
                         $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     }
@@ -242,23 +276,58 @@ class Expenses extends Admin_Controller
                     $old_expense = $this->mdl_expenses->get_by_id($expense_id);
                     $old_file = $old_expense->photo_url;
 
-                    $config['upload_path']   = './uploads/expenses/';
-                    $config['allowed_types'] = 'gif|jpg|jpeg|png|pdf';
-                    $config['encrypt_name']  = true;
+                    // Определяем путь: uploads/expenses/YYYY/MM/
+                    $date_created = $this->input->post('expense_date_created') ? $this->input->post('expense_date_created') : date('Y-m-d');
+                    $year = date('Y', strtotime($date_created));
+                    $month = date('m', strtotime($date_created));
+                    $day = date('d', strtotime($date_created));
+                    
+                    // Нормализуем путь и гарантируем наличие слеша в конце
+                    $upload_path = str_replace('\\', '/', FCPATH) . 'uploads/expenses/' . $year . '/' . $month . '/';
 
-                    if (!is_dir($config['upload_path'])) {
-                        mkdir($config['upload_path'], 0777, true);
+                    if (!is_dir($upload_path)) {
+                        mkdir($upload_path, 0777, true); // Рекурсивное создание
                     }
 
+                    $config = [
+                        'upload_path'   => $upload_path,
+                        'allowed_types' => 'gif|jpg|jpeg|png|pdf',
+                        'max_size'      => 10240,
+                        'encrypt_name'  => false,
+                        'overwrite'     => true
+                    ];
+
+                    $path_parts = pathinfo($_FILES['expense_receipt']['name']);
+                    $ext = isset($path_parts['extension']) ? '.' . strtolower($path_parts['extension']) : '';
+
+                    // Если расширение не определилось, пробуем по mime-type
+                    if (empty($ext)) {
+                        $mime_map = [
+                            'image/jpeg' => '.jpg', 'image/pjpeg' => '.jpg',
+                            'image/png' => '.png', 'image/gif' => '.gif',
+                            'application/pdf' => '.pdf'
+                        ];
+                        if (isset($mime_map[$_FILES['expense_receipt']['type']])) {
+                            $ext = $mime_map[$_FILES['expense_receipt']['type']];
+                        }
+                    }
+                    $config['file_name'] = $day . '-' . $expense_id . $ext;
+
                     $this->load->library('upload', $config);
+                    $this->upload->initialize($config);
 
                     if ($this->upload->do_upload('expense_receipt')) {
-                        if ($old_file && file_exists($config['upload_path'] . $old_file)) {
-                            unlink($config['upload_path'] . $old_file);
+                        // Удаляем старый файл, если он есть
+                        $old_file_path = str_replace('\\', '/', FCPATH) . 'uploads/expenses/' . $old_file;
+                        if ($old_file && file_exists($old_file_path)) {
+                            unlink($old_file_path);
                         }
+
                         $upload_data = $this->upload->data();
+                        $db_path = $year . '/' . $month . '/' . $upload_data['file_name'];
+                        
                         $this->db->where('expense_id', $expense_id);
-                        $this->db->update('ip_expenses', ['photo_url' => $upload_data['file_name']]);
+                        $this->db->update('ip_expenses', ['photo_url' => $db_path]);
                     } else {
                         $this->session->set_flashdata('alert_error', $this->upload->display_errors());
                     }
