@@ -117,6 +117,10 @@
                                         <label><?php _trans('currency'); ?></label>
                                         <p><?php echo $expense->expense_currency_code; ?></p>
                                     </div>
+                                    <div class="form-group">
+                                        <label><?php _trans('payment_method'); ?></label>
+                                        <p><?php echo $payment_method ? $payment_method->payment_method_name : _trans('none'); ?></p>
+                                    </div>
                                 </div>
                             </div>
                         </div>

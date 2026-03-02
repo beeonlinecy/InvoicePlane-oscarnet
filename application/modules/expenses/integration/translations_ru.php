@@ -72,3 +72,4 @@ $lang['due_date'] = 'Срок оплаты';
 $lang['items_found'] = 'найдено позиций';
 $lang['included'] = 'включено';
 $lang['confirm_delete'] = 'Вы уверены, что хотите удалить?';
+$lang['payment_method'] = 'Способ оплаты';

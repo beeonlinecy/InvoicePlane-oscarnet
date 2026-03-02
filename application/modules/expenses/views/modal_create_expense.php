@@ -94,6 +94,21 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="payment_method_id"><?php _trans('payment_method'); ?></label>
+                                        <select name="payment_method_id" id="payment_method_id" class="form-control">
+                                            <option value=""><?php _trans('none'); ?></option>
+                                            <?php foreach ($payment_methods as $payment_method): ?>
+                                            <option value="<?php echo $payment_method->payment_method_id; ?>">
+                                                <?php echo $payment_method->payment_method_name; ?>
+                                            </option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-md-6" id="exchange-rate-group-create" style="display: none;">
                                     <div class="form-group">
                                         <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>

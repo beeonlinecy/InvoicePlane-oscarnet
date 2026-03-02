@@ -106,6 +106,7 @@ class Expenses extends Admin_Controller
         $this->load->model('tax_rates/mdl_tax_rates');
         $this->load->model('expenses/mdl_expense_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
+        $this->load->model('payment_methods/mdl_payment_methods');
 
         // Handle form submission
         if ($this->input->post('btn_cancel')) {
@@ -243,6 +244,7 @@ class Expenses extends Admin_Controller
                 'tax_rates'          => $tax_rates,
                 'custom_fields'      => $custom_fields,
                 'custom_values'      => $custom_values,
+                'payment_methods'    => $this->mdl_payment_methods->get()->result(),
                 'expense_statuses'   => $this->mdl_expenses->statuses(),
                 'expense_id'         => null,
             ]
@@ -261,6 +263,7 @@ class Expenses extends Admin_Controller
         $this->load->model('expenses/mdl_expense_tax_rates');
         $this->load->model('custom_fields/mdl_custom_fields');
         $this->load->model('custom_fields/mdl_expense_custom');
+        $this->load->model('payment_methods/mdl_payment_methods');
 
         // Handle form submission
         if ($this->input->post('btn_cancel')) {
@@ -391,6 +394,7 @@ class Expenses extends Admin_Controller
                 'tax_rates'          => $tax_rates,
                 'custom_fields'      => $custom_fields,
                 'custom_values'      => $custom_values,
+                'payment_methods'    => $this->mdl_payment_methods->get()->result(),
                 'expense_statuses'   => $this->mdl_expenses->statuses(),
                 'expense_id'         => $expense_id,
                 'expense'            => $expense,
@@ -416,6 +420,7 @@ class Expenses extends Admin_Controller
         $this->load->model('custom_values/mdl_custom_values');
         $this->load->model('custom_fields/mdl_expense_custom');
         $this->load->model('expenses/mdl_expense_amounts');
+        $this->load->model('payment_methods/mdl_payment_methods');
 
         $fields = $this->mdl_expense_custom->by_id($expense_id)->get()->result();
         $expense = $this->mdl_expenses->get_by_id($expense_id);
@@ -445,6 +450,11 @@ class Expenses extends Admin_Controller
             }
         }
 
+        $payment_method = null;
+        if (isset($expense->payment_method_id) && $expense->payment_method_id) {
+            $payment_method = $this->mdl_payment_methods->get_by_id($expense->payment_method_id);
+        }
+
         $this->layout->set(
             [
                 'expense'           => $expense,
@@ -452,6 +462,7 @@ class Expenses extends Admin_Controller
                 'expense_id'        => $expense_id,
                 'tax_rates'         => $this->mdl_tax_rates->get()->result(),
                 'expense_tax_rates' => $this->mdl_expense_tax_rates->where('expense_id', $expense_id)->get()->result(),
+                'payment_method'    => $payment_method,
                 'custom_fields'     => $custom_fields,
                 'custom_values'     => $custom_values,
                 'custom_js_vars'    => [

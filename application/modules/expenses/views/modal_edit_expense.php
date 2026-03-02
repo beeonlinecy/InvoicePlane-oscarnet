@@ -99,6 +99,19 @@
                                        class="form-control" value="<?php echo $expense->expense_currency_code; ?>" maxlength="3">
                             </div>
 
+                            <div class="form-group">
+                                <label for="payment_method_id"><?php _trans('payment_method'); ?></label>
+                                <select name="payment_method_id" id="payment_method_id" class="form-control">
+                                    <option value=""><?php _trans('none'); ?></option>
+                                    <?php foreach ($payment_methods as $payment_method): ?>
+                                    <option value="<?php echo $payment_method->payment_method_id; ?>"
+                                        <?php echo (isset($expense->payment_method_id) && $expense->payment_method_id == $payment_method->payment_method_id) ? 'selected' : ''; ?>>
+                                        <?php echo $payment_method->payment_method_name; ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
                             <div class="form-group" id="exchange-rate-group">
                                 <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>
                                 <input type="number" name="expense_rate" id="expense_rate"
