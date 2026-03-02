@@ -22,6 +22,6 @@ class Mdl_Expense_Item_Amounts extends Response_Model
 
     public function default_join()
     {
-        $this->db->join('ip_expense_items', 'ip_expense_items.expense_item_id = ip_expense_item_amounts.expense_item_id');
+        $this->db->join('ip_expense_items', 'ip_expense_items.item_id = ip_expense_item_amounts.item_id');
     }
 }

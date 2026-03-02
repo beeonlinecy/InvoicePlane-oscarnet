@@ -18,7 +18,7 @@ class Mdl_Expense_Items extends Response_Model
 {
     public $table = 'ip_expense_items';
 
-    public $primary_key = 'ip_expense_items.expense_item_id';
+    public $primary_key = 'ip_expense_items.item_id';
 
     public function default_order_by()
     {
@@ -117,14 +117,14 @@ class Mdl_Expense_Items extends Response_Model
 
         // Update or insert item amount record
         $item_amount_data = array(
-            'expense_item_id' => $expense_item_id,
+            'item_id' => $expense_item_id,
             'item_subtotal' => $item_subtotal,
             'item_tax_total' => $item_tax,
             'item_total' => $item_total,
             'item_discount' => $item_discount
         );
 
-        $this->db->where('expense_item_id', $expense_item_id);
+        $this->db->where('item_id', $expense_item_id);
 
         if ($this->db->get('ip_expense_item_amounts')->num_rows()) {
             $this->db->update('ip_expense_item_amounts', $item_amount_data);
@@ -146,7 +146,7 @@ class Mdl_Expense_Items extends Response_Model
             $expense_id = $expense_item->expense_id;
             
             // Delete the item and its amount record
-            $this->db->where('expense_item_id', $expense_item_id);
+            $this->db->where('item_id', $expense_item_id);
             $this->db->delete('ip_expense_item_amounts');
             
             parent::delete($expense_item_id);
@@ -163,7 +163,7 @@ class Mdl_Expense_Items extends Response_Model
     public function with_amounts($expense_id)
     {
         $this->db->select('ip_expense_items.*, ip_expense_item_amounts.*');
-        $this->db->join('ip_expense_item_amounts', 'ip_expense_item_amounts.expense_item_id = ip_expense_items.expense_item_id', 'left');
+        $this->db->join('ip_expense_item_amounts', 'ip_expense_item_amounts.item_id = ip_expense_items.item_id', 'left');
         $this->db->where('expense_id', $expense_id);
         
         return $this->get()->result();

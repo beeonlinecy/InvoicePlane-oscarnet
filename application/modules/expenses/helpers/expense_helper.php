@@ -32,7 +32,7 @@ function save_expense_items($expense_id, $items)
     $existing_items = $CI->db->where('expense_id', $expense_id)->get('ip_expense_items')->result();
     $existing_item_ids = [];
     foreach ($existing_items as $item) {
-        $existing_item_ids[] = $item->expense_item_id;
+        $existing_item_ids[] = $item->item_id;
     }
 
     $processed_item_ids = [];

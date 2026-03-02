@@ -46,8 +46,8 @@ class Mdl_Expense_Amounts extends CI_Model
                 SUM(item_tax_total) AS expense_item_tax_total,
                 SUM(item_discount) AS expense_item_discount
         FROM ip_expense_item_amounts
-        WHERE item_amount_id IN (
-            SELECT expense_item_id FROM ip_expense_items WHERE expense_id = " . $this->db->escape($expense_id) . "
+        WHERE item_id IN (
+            SELECT item_id FROM ip_expense_items WHERE expense_id = " . $this->db->escape($expense_id) . "
             )
         ");
 
