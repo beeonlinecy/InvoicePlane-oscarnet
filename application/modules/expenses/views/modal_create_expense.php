@@ -177,11 +177,12 @@
                                 <textarea name="expense_notes" id="expense_notes" class="form-control" rows="3"
                                           placeholder="<?php _trans('expense_notes_placeholder'); ?>"></textarea>
                             </div>
+                            <!--
                             <div class="form-group">
                                 <label for="expense_terms"><?php _trans('terms'); ?></label>
                                 <textarea name="expense_terms" id="expense_terms" class="form-control" rows="3"
                                           placeholder="<?php _trans('expense_terms_placeholder'); ?>"></textarea>
-                            </div>
+                            </div>-->
                         </div>
                     </div>
 

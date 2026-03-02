@@ -11,7 +11,7 @@
 
         <div class="modal-body">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-6">
 
                     <!-- Basic Info -->
                     <div class="panel panel-default">
@@ -19,111 +19,91 @@
                             <h3 class="panel-title"><?php _trans('basic_info'); ?></h3>
                         </div>
                         <div class="panel-body">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="expense_category_id"><?php _trans('expense_category'); ?> *</label>
-                                        <select name="expense_category_id" id="expense_category_id" class="form-control" required>
-                                            <option value=""><?php _trans('select_category'); ?></option>
-                                            <?php foreach ($expense_categories as $category): ?>
-                                            <option value="<?php echo $category->expense_category_id; ?>" 
-                                                    style="color: <?php echo $category->expense_category_color; ?>"
-                                                    <?php echo ($expense->expense_category_id == $category->expense_category_id) ? 'selected' : ''; ?>>
-                                                <i class="<?php echo $category->expense_category_icon; ?>"></i>
-                                                <?php echo $category->expense_category_name; ?>
-                                            </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
+                            <div class="form-group">
+                                <label for="expense_category_id"><?php _trans('expense_category'); ?> *</label>
+                                <select name="expense_category_id" id="expense_category_id" class="form-control" required>
+                                    <option value=""><?php _trans('select_category'); ?></option>
+                                    <?php foreach ($expense_categories as $category): ?>
+                                    <option value="<?php echo $category->expense_category_id; ?>"
+                                            style="color: <?php echo $category->expense_category_color; ?>"
+                                        <?php echo ($expense->expense_category_id == $category->expense_category_id) ? 'selected' : ''; ?>>
+                                        <i class="<?php echo $category->expense_category_icon; ?>"></i>
+                                        <?php echo $category->expense_category_name; ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="user_id"><?php _trans('created_by'); ?> *</label>
+                                <select name="user_id" id="user_id" class="form-control" required>
+                                    <option value=""><?php _trans('select_user'); ?></option>
+                                    <?php foreach ($users as $user): ?>
+                                    <option value="<?php echo $user->user_id; ?>"
+                                        <?php echo ($expense->user_id == $user->user_id) ? 'selected' : ''; ?>>
+                                        <?php echo $user->user_name; ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expense_status_id"><?php _trans('status'); ?></label>
+                                <select name="expense_status_id" id="expense_status_id" class="form-control">
+                                    <?php foreach ($expense_statuses as $status_id => $status): ?>
+                                    <option value="<?php echo $status_id; ?>"
+                                        <?php echo ($expense->expense_status_id == $status_id) ? 'selected' : ''; ?>>
+                                        <?php echo $status['label']; ?>
+                                    </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expense_date_created"><?php _trans('expense_date'); ?> *</label>
+                                <div class="input-group">
+                                    <input type="text" name="expense_date_created" id="expense_date_created"
+                                           class="form-control datepicker" required
+                                           value="<?php echo $expense->expense_date_created; ?>">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
                                 </div>
                             </div>
 
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="user_id"><?php _trans('created_by'); ?> *</label>
-                                        <select name="user_id" id="user_id" class="form-control" required>
-                                            <option value=""><?php _trans('select_user'); ?></option>
-                                            <?php foreach ($users as $user): ?>
-                                            <option value="<?php echo $user->user_id; ?>" 
-                                                    <?php echo ($expense->user_id == $user->user_id) ? 'selected' : ''; ?>>
-                                                <?php echo $user->user_name; ?>
-                                            </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="expense_status_id"><?php _trans('status'); ?></label>
-                                        <select name="expense_status_id" id="expense_status_id" class="form-control">
-                                            <?php foreach ($expense_statuses as $status_id => $status): ?>
-                                            <option value="<?php echo $status_id; ?>" 
-                                                    <?php echo ($expense->expense_status_id == $status_id) ? 'selected' : ''; ?>>
-                                                <?php echo $status['label']; ?>
-                                            </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="expense_date_created"><?php _trans('expense_date'); ?> *</label>
-                                        <div class="input-group">
-                                            <input type="text" name="expense_date_created" id="expense_date_created" 
-                                                   class="form-control datepicker" required
-                                                   value="<?php echo $expense->expense_date_created; ?>">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="form-group">
-                                        <label for="expense_date_due"><?php _trans('due_date'); ?> *</label>
-                                        <div class="input-group">
-                                            <input type="text" name="expense_date_due" id="expense_date_due" 
-                                                   class="form-control datepicker" required
-                                                   value="<?php echo $expense->expense_date_due; ?>">
-                                            <span class="input-group-addon">
-                                                <i class="fa fa-calendar"></i>
-                                            </span>
-                                        </div>
-                                    </div>
+                            <div class="form-group">
+                                <label for="expense_date_due"><?php _trans('due_date'); ?> *</label>
+                                <div class="input-group">
+                                    <input type="text" name="expense_date_due" id="expense_date_due"
+                                           class="form-control datepicker" required
+                                           value="<?php echo $expense->expense_date_due; ?>">
+                                    <span class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </span>
                                 </div>
                             </div>
 
                             <?php $expense_amounts = $this->db->where('expense_id', $expense->expense_id)->get('ip_expense_amounts')->row(); ?>
 
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="expense_total"><?php _trans('total'); ?></label>
-                                        <input type="number" name="expense_total" id="expense_total"
-                                               class="form-control"
-                                               value="<?php echo $expense_amounts ? $expense_amounts->expense_total : '0.00'; ?>"
-                                               step="0.01" min="0">
-                                    </div>
-                                </div>
-                                <div class="col-md-4">
-                                    <div class="form-group">
-                                        <label for="expense_currency_code"><?php _trans('currency'); ?></label>
-                                        <input type="text" name="expense_currency_code" id="expense_currency_code" 
-                                               class="form-control" value="<?php echo $expense->expense_currency_code; ?>" maxlength="3">
-                                    </div>
-                                </div>
-                                <div class="col-md-4" id="exchange-rate-group">
-                                    <div class="form-group">
-                                        <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>
-                                        <input type="number" name="expense_rate" id="expense_rate" 
-                                               class="form-control" value="<?php echo $expense->expense_rate; ?>" 
-                                               step="0.0001" min="0">
-                                    </div>
-                                </div>
+                            <div class="form-group">
+                                <label for="expense_total"><?php _trans('total'); ?></label>
+                                <input type="number" name="expense_total" id="expense_total"
+                                       class="form-control"
+                                       value="<?php echo $expense_amounts ? $expense_amounts->expense_total : '0.00'; ?>"
+                                       step="0.01" min="0">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="expense_currency_code"><?php _trans('currency'); ?></label>
+                                <input type="text" name="expense_currency_code" id="expense_currency_code"
+                                       class="form-control" value="<?php echo $expense->expense_currency_code; ?>" maxlength="3">
+                            </div>
+
+                            <div class="form-group" id="exchange-rate-group">
+                                <label for="expense_rate"><?php _trans('exchange_rate'); ?></label>
+                                <input type="number" name="expense_rate" id="expense_rate"
+                                       class="form-control" value="<?php echo $expense->expense_rate; ?>"
+                                       step="0.0001" min="0">
                             </div>
 
                             <div class="form-group">
@@ -167,15 +147,15 @@
                                         if ($items):
                                             foreach ($items as $item): 
                                             $itemCounter++;
-                                            $itemAmount = $this->db->where('expense_item_id', $item->expense_item_id)->get('ip_expense_item_amounts')->row();
+                                            $itemAmount = $this->db->where('item_id', $item->item_id)->get('ip_expense_item_amounts')->row();
                                         ?>
                                         <tr class="item-row">
                                             <td>
                                                 <input type="text" name="items[<?php echo $itemCounter; ?>][item_name]" 
                                                        class="form-control" required
                                                        value="<?php echo $item->item_name; ?>">
-                                                <input type="hidden" name="items[<?php echo $itemCounter; ?>][expense_item_id]" 
-                                                       value="<?php echo $item->expense_item_id; ?>">
+                                                <input type="hidden" name="items[<?php echo $itemCounter; ?>][expense_item_id]"
+                                                       value="<?php echo $item->item_id; ?>">
                                             </td>
                                             <td>
                                                 <textarea name="items[<?php echo $itemCounter; ?>][item_description]" 
@@ -308,16 +288,17 @@
                                 <textarea name="expense_notes" id="expense_notes" class="form-control" rows="3"
                                           placeholder="<?php _trans('expense_notes_placeholder'); ?>"><?php echo $expense->expense_notes; ?></textarea>
                             </div>
+                            <!--
                             <div class="form-group">
                                 <label for="expense_terms"><?php _trans('terms'); ?></label>
                                 <textarea name="expense_terms" id="expense_terms" class="form-control" rows="3"
                                           placeholder="<?php _trans('expense_terms_placeholder'); ?>"><?php echo $expense->expense_terms; ?></textarea>
-                            </div>
+                            </div> -->
                         </div>
                     </div>
 
                 </div>
-                <div class="col-md-4">
+                <div class="col-md-6">
                     <div class="panel panel-default">
                         <div class="panel-heading">
                             <h3 class="panel-title"><?php _trans('attachment'); ?></h3>
@@ -336,7 +317,7 @@
                                             <img src="<?php echo $file_url . '?t=' . time(); ?>" class="img-responsive img-thumbnail" style="width: 100%;">
                                         </a>
                                     <?php elseif ($is_pdf): ?>
-                                        <iframe src="<?php echo $file_url; ?>" style="width: 100%; height: 400px;" frameborder="0"></iframe>
+                                        <iframe src="<?php echo $file_url; ?>" style="width: 100%; height: 700px;" frameborder="0"></iframe>
                                     <?php else: ?>
                                         <a href="<?php echo base_url('uploads/expenses/' . $expense->photo_url); ?>" target="_blank" class="btn btn-default btn-block">
                                             <i class="fa fa-file-o"></i> <?php echo basename($expense->photo_url); ?>

@@ -240,7 +240,7 @@
                     </div>
                     <?php endif; ?>
 
-                    <!-- Terms Panel -->
+                    <!-- Terms Panel 
                     <?php if (!empty($expense->expense_terms)): ?>
                     <div class="panel panel-default">
                         <div class="panel-heading">
@@ -251,7 +251,7 @@
                         </div>
                     </div>
                     <?php endif; ?>
-
+                      --> 
                 </div>
             </div>
 
