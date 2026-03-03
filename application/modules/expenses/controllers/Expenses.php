@@ -24,6 +24,7 @@ class Expenses extends Admin_Controller
         parent::__construct();
 
         $this->load->model('expenses/mdl_expenses');
+        $this->load->language('expenses');
     }
 
     public function index()
