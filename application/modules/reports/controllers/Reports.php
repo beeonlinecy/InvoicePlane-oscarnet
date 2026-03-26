@@ -67,9 +67,20 @@ class Reports extends Admin_Controller
     public function invoices_by_client()
     {
         if ($this->input->post('btn_submit')) {
+            $results = $this->mdl_reports->invoices_by_client(
+                $this->input->post('client_id'),
+                $this->input->post('from_date'),
+                $this->input->post('to_date')
+            );
+
+            $total_sum = 0;
+            foreach ($results as $result) {
+                $total_sum += $result->invoice_total;
+            }
 
             $data = array(
-                'results' => $this->mdl_reports->invoices_by_client($this->input->post('client_id'), $this->input->post('from_date'), $this->input->post('to_date')),
+                'results' => $results,
+                'total_sum' => $total_sum,
                 'from_date' => $this->input->post('from_date'),
                 'to_date' => $this->input->post('to_date'),
             );

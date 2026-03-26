@@ -28,6 +28,13 @@
                 <td class="amount"><?php echo format_currency($result->invoice_total); ?></td>
             </tr>
     <?php } ?>
+
+    <?php if (!empty($results)) : ?>
+        <tr>
+            <td colspan="2" style="text-align: right;"><b><?php echo trans('total'); ?>:</b></td>
+            <td class="amount"><b><?php echo format_currency($total_sum); ?></b></td>
+        </tr>
+    <?php endif; ?>
 </table>
 
 </body>
