@@ -47,6 +47,7 @@
                         <li><a href="#" class="create-invoice"><?php _trans('create_invoice'); ?></a></li>
                         <li><?php echo anchor('invoices/index', trans('view_invoices')); ?></li>
                         <li><?php echo anchor('invoices/recurring/index', trans('view_recurring_invoices')); ?></li>
+                        <li><?php echo anchor('invoices/bulk_export', trans('bulk_export')); ?></li>
                     </ul>
                 </li>
             <?php if($this->config->item('expenses_enabled')==true){ ?>

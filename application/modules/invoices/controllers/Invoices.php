@@ -339,4 +339,44 @@ class Invoices extends Admin_Controller
             $this->mdl_invoice_amounts->calculate($invoice_id->invoice_id);
         }
     }
+
+    /**
+     * Экспорт инвойсов в ZIP-архив за выбранный период
+     */
+    public function bulk_export()
+    {
+        if ($this->input->post('btn_submit')) {
+            $this->load->model('mdl_invoices');
+            $this->load->helper('pdf');
+            $this->load->library('zip');
+
+            $from_date = date_to_mysql($this->input->post('from_date'));
+            $to_date = date_to_mysql($this->input->post('to_date'));
+
+            // Получаем инвойсы за период
+            $this->db->where('invoice_date_created >=', $from_date);
+            $this->db->where('invoice_date_created <=', $to_date);
+            $this->db->where('invoice_number !=', '');
+            $invoices = $this->mdl_invoices->get()->result();
+
+            if ($invoices) {
+                foreach ($invoices as $invoice) {
+                    // Генерируем PDF (параметр stream = false возвращает содержимое файла)
+                    $pdf_content = generate_invoice_pdf($invoice->invoice_id, false, null);
+                    
+                    $filename = trans('invoice') . '_' . $invoice->invoice_number . '.pdf';
+                    $this->zip->add_data($filename, $pdf_content);
+                }
+
+                $zip_name = 'Invoices_' . $from_date . '_to_' . $to_date . '.zip';
+                $this->zip->download($zip_name);
+            } else {
+                $this->session->set_flashdata('alert_error', trans('no_records_found'));
+                redirect('invoices/bulk_export');
+            }
+        }
+
+        $this->layout->buffer('content', 'invoices/bulk_export');
+        $this->layout->render();
+    }
 }

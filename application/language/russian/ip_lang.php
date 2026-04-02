@@ -42,6 +42,7 @@ $lang = array(
     'bcc_mails_to_admin_hint'                      => 'Учетная запись администратора была создана во время установки системы.',
     'before_amount'                                => 'До суммы',
     'boolean'                                      => 'Двоичный',
+    'bulk_export'                                  => 'Массовый экспорт',
     'bill_to'                                      => 'Bill To',
     'body'                                         => 'Body',
     'change_client'                                => 'Сменить Клиента',
@@ -75,6 +76,7 @@ $lang = array(
     'calendar_year_4'                              => '4 Years',
     'calendar_year_5'                              => '5 Years',
     'cancel'                                       => 'Отменить',
+    'no_records_found'                             => 'Записей не найдено',
     'canceled'                                     => 'Отменено',
     'can_be_changed'                               => 'Может быть измененно',
     'cc'                                           => 'CC',
@@ -734,6 +736,7 @@ $lang = array(
     'user_iban'                                    => 'IBAN',
     'user_subscriber_number'                       => 'Subscriber Number',
     'include_tax'                                  => 'Налог включён в стоимость',
+    'bulk_export'                                  => 'Массовый экспорт',
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 

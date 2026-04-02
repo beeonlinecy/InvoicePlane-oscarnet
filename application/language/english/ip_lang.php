@@ -745,7 +745,7 @@ $lang = [
     'user_subscriber_number'                       => 'Subscriber Number',
 
     'include_tax'                                  => 'Tax is included in total',
-
+    'bulk_export'                                  => 'Bulk Export',
 
     // Clients/Enums/ClientTitleEnum
     'mr'        => 'mr',
