@@ -361,11 +361,14 @@ class Invoices extends Admin_Controller
 
             if ($invoices) {
                 foreach ($invoices as $invoice) {
-                    // Генерируем PDF (параметр stream = false возвращает содержимое файла)
-                    $pdf_content = generate_invoice_pdf($invoice->invoice_id, false, null);
-                    
-                    $filename = trans('invoice') . '_' . $invoice->invoice_number . '.pdf';
-                    $this->zip->add_data($filename, $pdf_content);
+                    // Генерируем PDF. При stream = false функция возвращает путь к файлу в архиве.
+                    $pdf_path = generate_invoice_pdf($invoice->invoice_id, false, null);
+
+                    if (is_file($pdf_path)) {
+                        $filename = trans('invoice') . '_' . $invoice->invoice_number . '.pdf';
+                        // Читаем реальное содержимое файла по ссылке
+                        $this->zip->add_data($filename, file_get_contents($pdf_path));
+                    }
                 }
 
                 $zip_name = 'Invoices_' . $from_date . '_to_' . $to_date . '.zip';
