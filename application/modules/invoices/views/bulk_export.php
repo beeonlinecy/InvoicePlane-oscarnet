@@ -1,3 +1,10 @@
+<script>
+    $(function () {
+        // Enable select2 for client selection
+        $('.simple-select').select2();
+    });
+</script>
+
 <div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('bulk_export'); ?></h1>
     <div class="headerbar-item pull-right">
@@ -35,6 +42,27 @@
                                 <input type="text" name="to_date" id="to_date"
                                        class="form-control datepicker">
                                 <span class="input-group-addon"><i class="fa fa-calendar fa-fw"></i></span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="client_id"><?php _trans('company'); ?></label>
+                            <select name="client_id" id="client_id" class="form-control simple-select">
+                                <option value=""><?php _trans('all_clients'); ?></option>
+                                <?php foreach ($clients as $client) : ?>
+                                    <option value="<?php echo $client->client_id; ?>">
+                                        <?php echo format_client($client); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" name="include_unnumbered" value="1">
+                                    <?php _trans('include_unnumbered_invoices'); ?>
+                                </label>
                             </div>
                         </div>
                     </div>

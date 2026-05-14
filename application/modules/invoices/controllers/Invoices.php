@@ -345,6 +345,9 @@ class Invoices extends Admin_Controller
      */
     public function bulk_export()
     {
+        $this->load->model('clients/mdl_clients');
+        $this->load->helper('client');
+
         if ($this->input->post('btn_submit')) {
             $this->load->model('mdl_invoices');
             $this->load->helper('pdf');
@@ -356,7 +359,15 @@ class Invoices extends Admin_Controller
             // Получаем инвойсы за период
             $this->db->where('invoice_date_created >=', $from_date);
             $this->db->where('invoice_date_created <=', $to_date);
-            $this->db->where('invoice_number !=', '');
+
+            if ($this->input->post('client_id')) {
+                $this->db->where('ip_invoices.client_id', $this->input->post('client_id'));
+            }
+
+            if (!$this->input->post('include_unnumbered')) {
+                $this->db->where('invoice_number !=', '');
+            }
+
             $invoices = $this->mdl_invoices->get()->result();
 
             if ($invoices) {
@@ -365,19 +376,38 @@ class Invoices extends Admin_Controller
                     $pdf_path = generate_invoice_pdf($invoice->invoice_id, false, null);
 
                     if (is_file($pdf_path)) {
-                        $filename = trans('invoice') . '_' . $invoice->invoice_number . '.pdf';
+                        $invoice_identifier = $invoice->invoice_number ? $invoice->invoice_number : $invoice->invoice_id;
+                        $filename = trans('invoice') . '_' . $invoice_identifier . '.pdf';
                         // Читаем реальное содержимое файла по ссылке
                         $this->zip->add_data($filename, file_get_contents($pdf_path));
                     }
                 }
 
-                $zip_name = 'Invoices_' . $from_date . '_to_' . $to_date . '.zip';
+                $prefix = 'Invoices_';
+                if ($this->input->post('client_id')) {
+                    $client = $this->mdl_clients->get_by_id($this->input->post('client_id'));
+                    if ($client) {
+                        $cleaned_name = preg_replace('/[^\p{L}\p{N}_\- ]/u', '', $client->client_name);
+                        $cleaned_name = trim(str_replace(' ', '_', $cleaned_name));
+                        if ($cleaned_name !== '') {
+                            $prefix .= $cleaned_name . '_';
+                        }
+                    }
+                }
+
+                $zip_name = $prefix . $from_date . '_to_' . $to_date . '.zip';
                 $this->zip->download($zip_name);
             } else {
                 $this->session->set_flashdata('alert_error', trans('no_records_found'));
                 redirect('invoices/bulk_export');
             }
         }
+
+        $this->layout->set(
+            [
+                'clients' => $this->mdl_clients->get()->result(),
+            ]
+        );
 
         $this->layout->buffer('content', 'invoices/bulk_export');
         $this->layout->render();

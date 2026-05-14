@@ -737,6 +737,8 @@ $lang = array(
     'user_subscriber_number'                       => 'Subscriber Number',
     'include_tax'                                  => 'Налог включён в стоимость',
     'bulk_export'                                  => 'Массовый экспорт',
+    'all_clients'                                  => 'Все клиенты',
+    'include_unnumbered_invoices'                  => 'Включить инвойсы без номера',
     // Errors
     'validator_fail'                               => 'Unable to process field %s: %s',
 
