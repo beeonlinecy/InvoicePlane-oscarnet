@@ -2,6 +2,15 @@
     $(function () {
         // Enable select2 for client selection
         $('.simple-select').select2();
+
+        // Фикс для CSRF: обновляем токен из куки перед каждой отправкой, 
+        // так как при скачивании файла страница не перезагружается
+        $('#bulk_export_form').on('submit', function () {
+            var csrfToken = Cookies.get('<?php echo $this->config->item('csrf_cookie_name'); ?>');
+            if (csrfToken) {
+                $(this).find('input[name="<?php echo $this->config->item('csrf_token_name'); ?>"]').val(csrfToken);
+            }
+        });
     });
 </script>
 
@@ -21,7 +30,7 @@
         <div class="col-xs-12 col-md-6 col-md-offset-3">
             <?php $this->layout->load_view('layout/alerts'); ?>
 
-            <form method="post">
+            <form method="post" id="bulk_export_form">
                 <?php _csrf_field(); ?>
                 <div class="panel panel-default">
                     <div class="panel-heading">
