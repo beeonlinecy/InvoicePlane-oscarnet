@@ -308,6 +308,7 @@ CREATE TABLE `ip_quote_tax_rates` (
   `quote_id`              INT(11)        NOT NULL,
   `tax_rate_id`           INT(11)        NOT NULL,
   `include_item_tax`      INT(1)         NOT NULL DEFAULT '0',
+  `include_tax`           INT(1)         NOT NULL DEFAULT '0',
   `quote_tax_rate_amount` DECIMAL(10, 2) NOT NULL,
   PRIMARY KEY (`quote_tax_rate_id`),
   KEY `quote_id` (`quote_id`),

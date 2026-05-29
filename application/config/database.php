@@ -98,11 +98,11 @@ $db['default'] = array(
 
 $db['manager'] = array(
     'dsn' => '',
-    'hostname' => '',
+    'hostname' => env('DB_MANAGER_HOSTNAME'),
     'port' => '',
-    'username' => '',
-    'password' => '',
-    'database' => '',
+    'username' => env('DB_MANAGER_USERNAME'),
+    'password' => env('DB_MANAGER_PASSWORD'),
+    'database' => env('DB_MANAGER_DATABASE'),
     'dbdriver' => 'mysqli',
     'dbprefix' => '',
     'pconnect' => FALSE,
