@@ -92,7 +92,14 @@ class Sessions extends Base_Controller
 
     public function logout()
     {
+        $isSsoLogin = (bool) $this->session->userdata('login_via_sso');
+
         $this->session->sess_destroy();
+
+        if ($isSsoLogin) {
+            header('Location: /manager');
+            exit;
+        }
 
         redirect('sessions/login');
     }
