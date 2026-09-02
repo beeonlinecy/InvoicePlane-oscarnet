@@ -188,29 +188,30 @@ class Expenses extends Admin_Controller
                     }
                 }
 
-                if ($has_items) {
-                    save_expense_items($expense_id, $items);
-                } else {
-                    // If quick total entered and no items, save it directly
-                    $quick_total = $this->input->post('expense_total');
-                    if (!empty($quick_total) && $quick_total > 0) {
-                        $this->db->where('expense_id', $expense_id);
-                        $this->db->update('ip_expense_amounts', [
-                            'expense_item_subtotal' => $quick_total,
-                            'expense_total' => $quick_total,
-                            'expense_balance' => $quick_total
-                        ]);
-                    }
+                // Always sync items so deleted rows are removed from DB.
+                save_expense_items($expense_id, $items);
+
+                if (! $has_items) {
+                    // If quick total entered and no items, save it directly.
+                    $quick_total = (float) $this->input->post('expense_total');
+                    $this->db->where('expense_id', $expense_id);
+                    $amount_row = $this->db->get('ip_expense_amounts')->row();
+                    $expense_paid = $amount_row ? (float) $amount_row->expense_paid : 0;
+
+                    $this->db->where('expense_id', $expense_id);
+                    $this->db->update('ip_expense_amounts', [
+                        'expense_item_subtotal' => $quick_total,
+                        'expense_item_tax_total' => 0,
+                        'expense_tax_total' => 0,
+                        'expense_total' => $quick_total,
+                        'expense_balance' => $quick_total - $expense_paid
+                    ]);
                 }
 
-                // Save expense tax rates and recalculate totals with tax
+                // Save expense tax rates.
                 $tax_rates_data = $this->input->post('tax_rates');
                 if (!empty($tax_rates_data)) {
-                    save_expense_tax_rates($expense_id, $tax_rates_data);
-                    
-                    // Recalculate with taxes
-                    $this->load->model('expenses/mdl_expense_amounts');
-                    $this->mdl_expense_amounts->calculate_expense_taxes($expense_id);
+                    save_expense_tax_rates($expense_id, $tax_rates_data, $has_items);
                 }
 
                 // Save custom fields
@@ -339,11 +340,42 @@ class Expenses extends Admin_Controller
 
                 // Save expense items
                 $this->load->helper('expense');
-                save_expense_items($expense_id, $this->input->post('items'));
+                $items = $this->input->post('items');
+                $has_items = false;
+                if (!empty($items)) {
+                    foreach ($items as $item) {
+                        if (!empty($item['item_name'])) {
+                            $has_items = true;
+                            break;
+                        }
+                    }
+                }
 
-                // Save expense tax rates
-                $this->load->helper('expense');
-                save_expense_tax_rates($expense_id, $this->input->post('tax_rates'));
+                // Always sync items so deleted rows are removed from DB.
+                save_expense_items($expense_id, $items);
+
+                if (! $has_items) {
+                    // Preserve manually entered total when expense has no item rows.
+                    $quick_total = (float) $this->input->post('expense_total');
+                    $this->db->where('expense_id', $expense_id);
+                    $amount_row = $this->db->get('ip_expense_amounts')->row();
+                    $expense_paid = $amount_row ? (float) $amount_row->expense_paid : 0;
+
+                    $this->db->where('expense_id', $expense_id);
+                    $this->db->update('ip_expense_amounts', [
+                        'expense_item_subtotal' => $quick_total,
+                        'expense_item_tax_total' => 0,
+                        'expense_tax_total' => 0,
+                        'expense_total' => $quick_total,
+                        'expense_balance' => $quick_total - $expense_paid
+                    ]);
+                }
+
+                // Save expense tax rates.
+                $tax_rates_data = $this->input->post('tax_rates');
+                if (!empty($tax_rates_data)) {
+                    save_expense_tax_rates($expense_id, $tax_rates_data, $has_items);
+                }
 
                 // Save custom fields
                 $custom_fields = $this->input->post('custom');

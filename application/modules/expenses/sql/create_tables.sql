@@ -41,6 +41,7 @@ CREATE TABLE IF NOT EXISTS `ip_expenses` (
   `expense_currency_id` int(11) DEFAULT NULL,
   `expense_currency_code` varchar(3) DEFAULT 'USD',
   `expense_rate` decimal(15,4) DEFAULT '1.0000',
+  `payment_method_id` int(11) DEFAULT NULL,
   `expense_status_id` tinyint(1) DEFAULT 1 COMMENT '1=новый, 2=подтвержденный, 3=оплаченный',
   `expense_is_read_only` tinyint(1) DEFAULT 0,
   `expense_password` varchar(255) DEFAULT NULL,
@@ -53,10 +54,12 @@ CREATE TABLE IF NOT EXISTS `ip_expenses` (
   PRIMARY KEY (`expense_id`),
   KEY `expense_category_id` (`expense_category_id`),
   KEY `user_id` (`user_id`),
+  KEY `payment_method_id` (`payment_method_id`),
   KEY `expense_date_created` (`expense_date_created`),
   KEY `expense_status_id` (`expense_status_id`),
   FOREIGN KEY (`expense_category_id`) REFERENCES `ip_expense_categories` (`expense_category_id`) ON DELETE RESTRICT,
-  FOREIGN KEY (`user_id`) REFERENCES `ip_users` (`user_id`) ON DELETE RESTRICT
+  FOREIGN KEY (`user_id`) REFERENCES `ip_users` (`user_id`) ON DELETE RESTRICT,
+  FOREIGN KEY (`payment_method_id`) REFERENCES `ip_payment_methods` (`payment_method_id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- ==========================================
@@ -123,7 +126,6 @@ CREATE TABLE IF NOT EXISTS `ip_expense_tax_rates` (
   `include_item_tax` tinyint(1) DEFAULT 0,
   `include_tax` tinyint(1) DEFAULT 0,
   `expense_tax_rate_amount` decimal(15,2) DEFAULT '0.00',
-  `expense_tax_rate_percent` decimal(15,2) DEFAULT '0.00',
   PRIMARY KEY (`expense_tax_rate_id`),
   KEY `expense_id` (`expense_id`),
   KEY `tax_rate_id` (`tax_rate_id`),

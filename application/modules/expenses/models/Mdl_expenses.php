@@ -105,6 +105,10 @@ class Mdl_Expenses extends Response_Model
                 'label' => trans('exchange_rate'),
                 'rules' => 'required',
             ],
+            'payment_method_id' => [
+                'field' => 'payment_method_id',
+                'label' => trans('payment_method'),
+            ],
             'user_id' => [
                 'field' => 'user_id',
                 'label' => trans('user'),
@@ -221,7 +225,6 @@ class Mdl_Expenses extends Response_Model
                 'include_item_tax' => $expense_tax_rate->include_item_tax,
                 'include_tax' => $expense_tax_rate->include_tax,
                 'expense_tax_rate_amount' => $expense_tax_rate->expense_tax_rate_amount,
-                'expense_tax_rate_percent' => $expense_tax_rate->expense_tax_rate_percent
             );
 
             $this->mdl_expense_tax_rates->save(null, $db_array);

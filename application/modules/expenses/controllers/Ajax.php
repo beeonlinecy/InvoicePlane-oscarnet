@@ -221,6 +221,12 @@ class Ajax extends Admin_Controller
      */
     public function get_expense_payments($expense_id)
     {
+        if (! $this->db->table_exists('ip_expense_payments')) {
+            header('Content-Type: application/json');
+            echo json_encode([]);
+            return;
+        }
+
         $this->db->where('expense_id', $expense_id);
         $this->db->order_by('payment_date', 'DESC');
         $payments = $this->db->get('ip_expense_payments')->result();

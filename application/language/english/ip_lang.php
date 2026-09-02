@@ -763,4 +763,23 @@ $lang = [
     'year' => 'Year',
     'this_year' => 'This Year',
     'last_year' => 'Last Year',
+
+    //Expenses
+    'expense' => 'Expense',
+    'expenses' => 'Expenses',
+    'new_expense' => 'New Expense',
+    'edit_expense' => 'Edit Expense',
+    'delete_expense' => 'Delete Expense',
+    'expense_date' => 'Expense Date',
+    'expense_amount' => 'Expense Amount',
+    'expense_number' => 'Expense Number',
+    'expense_description' => 'Expense Description',
+    'category' => 'Category',
+    'expense_category' => 'Category',
+    'mark_confirmed' => 'Mark Confirmed',
+    'created_by' => 'Created By',
+    'expense_details' => 'Expense Details',
+    'basic_info' => 'Basic Info',
+    'expense_items' => 'Expense Items',
+    'expense_taxes' => 'Expense Taxes'
 ];

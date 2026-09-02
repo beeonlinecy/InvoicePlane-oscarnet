@@ -456,6 +456,11 @@ function removeTax(button) {
 }
 
 function calculateTotals() {
+    if ($('.item-row').length === 0) {
+        // In manual-total mode (no items), keep the stored value from backend.
+        return;
+    }
+
     var subtotal = 0;
     var itemTaxTotal = 0;
 

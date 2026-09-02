@@ -49,23 +49,6 @@ class Mdl_Expense_Tax_Rates extends Response_Model
         ];
     }
 
-    public function db_array()
-    {
-        $db_array = parent::db_array();
-
-        // Get the tax rate percentage
-        if (!empty($db_array['tax_rate_id'])) {
-            $this->db->where('tax_rate_id', $db_array['tax_rate_id']);
-            $tax_rate = $this->db->get('ip_tax_rates')->row();
-
-            if ($tax_rate) {
-                $db_array['expense_tax_rate_percent'] = $tax_rate->tax_rate_percent;
-            }
-        }
-
-        return $db_array;
-    }
-
     public function save($id = null, $db_array = null)
     {
         $result = parent::save($id, $db_array);

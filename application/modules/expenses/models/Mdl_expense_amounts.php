@@ -17,6 +17,13 @@ if (! defined('BASEPATH')) {
 class Mdl_Expense_Amounts extends CI_Model
 {
     /**
+     * Cache for optional schema table checks.
+     *
+     * @var bool|null
+     */
+    private $has_expense_payments_table = null;
+
+    /**
      * IP_EXPENSE_AMOUNTS
      * expense_amount_id
      * expense_id
@@ -42,9 +49,9 @@ class Mdl_Expense_Amounts extends CI_Model
     {
         // Get the basic totals
         $query = $this->db->query("
-        SELECT  SUM(item_subtotal) AS expense_item_subtotal,
-                SUM(item_tax_total) AS expense_item_tax_total,
-                SUM(item_discount) AS expense_item_discount
+        SELECT  COALESCE(SUM(item_subtotal), 0) AS expense_item_subtotal,
+                COALESCE(SUM(item_tax_total), 0) AS expense_item_tax_total,
+                COALESCE(SUM(item_discount), 0) AS expense_item_discount
         FROM ip_expense_item_amounts
         WHERE item_id IN (
             SELECT item_id FROM ip_expense_items WHERE expense_id = " . $this->db->escape($expense_id) . "
@@ -53,24 +60,29 @@ class Mdl_Expense_Amounts extends CI_Model
 
         $expense_amounts = $query->row();
 
-        $expense_item_subtotal = $expense_amounts->expense_item_subtotal - $expense_amounts->expense_item_discount;
-        $expense_subtotal = $expense_item_subtotal + $expense_amounts->expense_item_tax_total;
+        $expense_item_tax_total = (float) $expense_amounts->expense_item_tax_total;
+        $expense_item_discount = (float) $expense_amounts->expense_item_discount;
+        $expense_item_subtotal = (float) $expense_amounts->expense_item_subtotal - $expense_item_discount;
+        $expense_subtotal = $expense_item_subtotal + $expense_item_tax_total;
         $expense_total = $this->calculate_discount($expense_id, $expense_subtotal);
 
-        // Get the amount already paid
-        $query = $this->db->query("
-          SELECT SUM(payment_amount) AS expense_paid
-          FROM ip_expense_payments
-          WHERE expense_id = " . $this->db->escape($expense_id)
-        );
+        // Get the amount already paid (installations may not yet have this table).
+        $expense_paid = 0;
+        if ($this->has_expense_payments_table()) {
+            $query = $this->db->query("
+                SELECT SUM(payment_amount) AS expense_paid
+                FROM ip_expense_payments
+                WHERE expense_id = " . $this->db->escape($expense_id)
+            );
 
-        $expense_paid = $query->row()->expense_paid ? floatval($query->row()->expense_paid) : 0;
+            $expense_paid = $query->row()->expense_paid ? floatval($query->row()->expense_paid) : 0;
+        }
 
         // Create the database array and insert or update
         $db_array = array(
             'expense_id' => $expense_id,
             'expense_item_subtotal' => $expense_item_subtotal,
-            'expense_item_tax_total' => $expense_amounts->expense_item_tax_total,
+            'expense_item_tax_total' => $expense_item_tax_total,
             'expense_total' => $expense_total,
             'expense_paid' => $expense_paid,
             'expense_balance' => $expense_total - $expense_paid
@@ -132,16 +144,20 @@ class Mdl_Expense_Amounts extends CI_Model
 
             // Loop through the expense taxes and update the amount for each of the applied expense taxes
             foreach ($expense_tax_rates as $expense_tax_rate) {
+                $expense_tax_percent = isset($expense_tax_rate->tax_rate_percent)
+                    ? (float) $expense_tax_rate->tax_rate_percent
+                    : 0.0;
+
                 if ($expense_tax_rate->include_item_tax) {
                     // The expense tax rate should include the applied item tax
-                    $expense_tax_rate_amount = ($expense_amount->expense_item_subtotal + $expense_amount->expense_item_tax_total) * ($expense_tax_rate->expense_tax_rate_percent / 100);
+                    $expense_tax_rate_amount = ($expense_amount->expense_item_subtotal + $expense_amount->expense_item_tax_total) * ($expense_tax_percent / 100);
                 } else {
                     // The expense tax rate should not include the applied item tax
                     if($expense_tax_rate->include_tax){
                         // But expense tax is included in total
-                        $expense_tax_rate_amount = $expense_amount->expense_item_subtotal / ($expense_tax_rate->expense_tax_rate_percent + 100) * $expense_tax_rate->expense_tax_rate_percent;
+                        $expense_tax_rate_amount = $expense_amount->expense_item_subtotal / ($expense_tax_percent + 100) * $expense_tax_percent;
                     } else {
-                        $expense_tax_rate_amount = $expense_amount->expense_item_subtotal * ($expense_tax_rate->expense_tax_rate_percent / 100);
+                        $expense_tax_rate_amount = $expense_amount->expense_item_subtotal * ($expense_tax_percent / 100);
                     }
                 }
 
@@ -451,5 +467,17 @@ class Mdl_Expense_Amounts extends CI_Model
         }
 
         return $results;
+    }
+
+    /**
+     * @return bool
+     */
+    private function has_expense_payments_table()
+    {
+        if ($this->has_expense_payments_table === null) {
+            $this->has_expense_payments_table = $this->db->table_exists('ip_expense_payments');
+        }
+
+        return $this->has_expense_payments_table;
     }
 }

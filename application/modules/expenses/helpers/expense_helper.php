@@ -18,10 +18,6 @@ if (!defined('BASEPATH')) {
  */
 function save_expense_items($expense_id, $items)
 {
-    if (empty($items)) {
-        return;
-    }
-
     $CI = &get_instance();
     
     // Load models
@@ -32,7 +28,19 @@ function save_expense_items($expense_id, $items)
     $existing_items = $CI->db->where('expense_id', $expense_id)->get('ip_expense_items')->result();
     $existing_item_ids = [];
     foreach ($existing_items as $item) {
-        $existing_item_ids[] = $item->item_id;
+        $existing_item_ids[] = $item->expense_item_id;
+    }
+
+    if (empty($items)) {
+        // Sync behavior: if form has no items, remove all existing items.
+        foreach ($existing_item_ids as $existing_id) {
+            $CI->mdl_expense_items->delete($existing_id);
+        }
+
+        // Recalculate expense totals
+        $CI->load->model('expenses/mdl_expense_amounts');
+        $CI->mdl_expense_amounts->calculate($expense_id);
+        return;
     }
 
     $processed_item_ids = [];
@@ -85,72 +93,53 @@ function save_expense_items($expense_id, $items)
 /**
  * Save expense tax rates from form data
  */
-function save_expense_tax_rates($expense_id, $tax_rates)
+function save_expense_tax_rates($expense_id, $tax_rates, $recalculate = true)
 {
-    if (empty($tax_rates)) {
-        return;
-    }
-
     $CI = &get_instance();
-    
+
     // Load model
     $CI->load->model('expenses/mdl_expense_tax_rates');
 
-    // Get existing tax rates
-    $existing_taxes = $CI->db->where('expense_id', $expense_id)->get('ip_expense_tax_rates')->result();
-    $existing_tax_ids = [];
-    foreach ($existing_taxes as $tax) {
-        $existing_tax_ids[] = $tax->expense_tax_rate_id;
-    }
+    // Always synchronize from submitted form state to avoid duplicate growth.
+    $CI->db->where('expense_id', $expense_id);
+    $CI->db->delete('ip_expense_tax_rates');
 
-    $processed_tax_ids = [];
+    if (!empty($tax_rates)) {
+        $seen_rows = [];
 
-    foreach ($tax_rates as $tax_data) {
-        if (empty($tax_data['tax_rate_id'])) {
-            continue;
-        }
+        foreach ($tax_rates as $tax_data) {
+            if (empty($tax_data['tax_rate_id'])) {
+                continue;
+            }
 
-        $tax_data['expense_id'] = $expense_id;
-        
-        // Set defaults for checkboxes
-        if (!isset($tax_data['include_item_tax'])) {
-            $tax_data['include_item_tax'] = 0;
-        }
-        
-        if (!isset($tax_data['include_tax'])) {
-            $tax_data['include_tax'] = 0;
-        }
+            $tax_rate_id = (int) $tax_data['tax_rate_id'];
+            $include_item_tax = isset($tax_data['include_item_tax']) ? 1 : 0;
+            $include_tax = isset($tax_data['include_tax']) ? 1 : 0;
 
-        // Get tax rate percent from ip_tax_rates
-        $tax_rate_row = $CI->db->where('tax_rate_id', $tax_data['tax_rate_id'])->get('ip_tax_rates')->row();
-        if ($tax_rate_row) {
-            $tax_data['expense_tax_rate_percent'] = $tax_rate_row->tax_rate_percent;
-        }
+            // Prevent accidental duplicate rows from repeated DOM fragments.
+            $row_key = $tax_rate_id . ':' . $include_item_tax . ':' . $include_tax;
+            if (isset($seen_rows[$row_key])) {
+                continue;
+            }
+            $seen_rows[$row_key] = true;
 
-        // Update or insert tax rate
-        if (isset($tax_data['expense_tax_rate_id']) && !empty($tax_data['expense_tax_rate_id'])) {
-            // Update existing tax rate
-            $tax_rate_id = $tax_data['expense_tax_rate_id'];
-            unset($tax_data['expense_tax_rate_id']);
-            $CI->mdl_expense_tax_rates->save($tax_rate_id, $tax_data);
-            $processed_tax_ids[] = $tax_rate_id;
-        } else {
-            // Insert new tax rate
-            $tax_rate_id = $CI->mdl_expense_tax_rates->save(null, $tax_data);
-            $processed_tax_ids[] = $tax_rate_id;
+            $db_array = [
+                'expense_id' => $expense_id,
+                'tax_rate_id' => $tax_rate_id,
+                'include_item_tax' => $include_item_tax,
+                'include_tax' => $include_tax,
+            ];
+
+            // Insert directly to avoid model-level auto-recalculation on every row.
+            $CI->db->insert('ip_expense_tax_rates', $db_array);
         }
     }
 
-    // Delete tax rates that are no longer in the form
-    foreach ($existing_tax_ids as $existing_id) {
-        if (!in_array($existing_id, $processed_tax_ids)) {
-            $CI->mdl_expense_tax_rates->delete($existing_id);
-        }
+    if ($recalculate) {
+        // Recalculate expense totals with taxes
+        $CI->load->model('expenses/mdl_expense_amounts');
+        $CI->mdl_expense_amounts->calculate($expense_id);
     }
-
-    // Recalculate expense totals with taxes
-    $CI->load->model('expenses/mdl_expense_amounts');
-    $CI->mdl_expense_amounts->calculate($expense_id);
 }
 
 /**
