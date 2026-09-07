@@ -112,6 +112,21 @@ class Mdl_Setup extends CI_Model
         $this->db->insert('ip_payment_methods', array(
             'payment_method_name' => 'Bank Transfer',
         ));
+
+        // Default tax rates for fresh installations.
+        $default_tax_rates = array(
+            array('tax_rate_name' => 'VAT19', 'tax_rate_percent' => 19.00),
+            array('tax_rate_name' => 'VAT5', 'tax_rate_percent' => 5.00),
+        );
+
+        foreach ($default_tax_rates as $tax_rate) {
+            $this->db->where('tax_rate_name', $tax_rate['tax_rate_name']);
+            $this->db->where('tax_rate_percent', $tax_rate['tax_rate_percent']);
+
+            if (!$this->db->get('ip_tax_rates')->num_rows()) {
+                $this->db->insert('ip_tax_rates', $tax_rate);
+            }
+        }
     }
 
     /**

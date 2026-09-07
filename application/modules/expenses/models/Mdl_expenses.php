@@ -274,6 +274,22 @@ class Mdl_Expenses extends Response_Model
             $db_array['expense_rate'] = '1.0000';
         }
 
+        // Support both modern and legacy payment method column names.
+        if (array_key_exists('payment_method_id', $db_array)) {
+            $payment_method_id = ($db_array['payment_method_id'] === '' || $db_array['payment_method_id'] === null)
+                ? null
+                : (int) $db_array['payment_method_id'];
+
+            if ($this->db->field_exists('payment_method_id', 'ip_expenses')) {
+                $db_array['payment_method_id'] = $payment_method_id;
+            } elseif ($this->db->field_exists('payment_method', 'ip_expenses')) {
+                $db_array['payment_method'] = $payment_method_id ?: 0;
+                unset($db_array['payment_method_id']);
+            } else {
+                unset($db_array['payment_method_id']);
+            }
+        }
+
         // Set due date
         $db_array['expense_date_due'] = $this->get_date_due($db_array['expense_date_created']);
 
