@@ -3,6 +3,10 @@
     
     <div class="headerbar-item pull-right">
         <div class="btn-group">
+            <a href="<?php echo site_url('expenses/index'); ?>" class="btn btn-default btn-sm">
+                <i class="fa fa-arrow-left"></i> <?php _trans('back'); ?>
+            </a>
+
             <?php if ($expense->expense_status_id == 1): ?>
             <a href="<?php echo site_url('expenses/mark_confirmed/' . $expense->expense_id); ?>" 
                class="btn btn-success btn-sm" 
