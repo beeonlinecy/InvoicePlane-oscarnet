@@ -188,7 +188,7 @@ class Mdl_Reports extends CI_Model
         return $this->db->get('ip_clients')->result();
     }
 
-    public function invoices_per_client($from_date = null, $to_date = null)
+    public function invoices_per_client($from_date = null, $to_date = null, $invoice_type = 'all')
     {
         $from_date = date_to_mysql($from_date);
         $to_date = date_to_mysql($to_date);
@@ -202,7 +202,14 @@ class Mdl_Reports extends CI_Model
         $this->db->where('ip_invoices.invoice_date_created >=', $from_date);
         $this->db->where('ip_invoices.invoice_date_created <=', $to_date);
 
+        if ($invoice_type === 'numbered') {
+            $this->db->where('ip_invoices.invoice_status_id !=', 1);
+        } elseif ($invoice_type === 'draft') {
+            $this->db->where('ip_invoices.invoice_status_id', 1);
+        }
+
         $this->db->order_by('ip_clients.client_id');
+        $this->db->order_by('ip_invoices.invoice_date_created');
 
         return $this->db->get()->result();
     }

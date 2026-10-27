@@ -121,8 +121,12 @@ function date_to_mysql($date)
     if ($date == null) {
         return '';
     }
-    $date = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
-    return $date->format('Y-m-d');
+    $parsed = DateTime::createFromFormat($CI->mdl_settings->setting('date_format'), $date);
+    if ($parsed === false) {
+        // Already in MySQL format
+        $parsed = DateTime::createFromFormat('Y-m-d', $date);
+    }
+    return $parsed ? $parsed->format('Y-m-d') : '';
 }
 
 /**

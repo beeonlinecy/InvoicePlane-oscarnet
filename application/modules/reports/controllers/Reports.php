@@ -48,10 +48,16 @@ class Reports extends Admin_Controller
     public function invoices_per_client()
     {
         if ($this->input->post('btn_submit')) {
+            $invoice_type = $this->input->post('invoice_type');
+            if (!in_array($invoice_type, array('numbered', 'draft'), true)) {
+                $invoice_type = 'all';
+            }
+
             $data = array(
-                'results' => $this->mdl_reports->invoices_per_client($this->input->post('from_date'), $this->input->post('to_date')),
+                'results' => $this->mdl_reports->invoices_per_client($this->input->post('from_date'), $this->input->post('to_date'), $invoice_type),
                 'from_date' => $this->input->post('from_date'),
                 'to_date' => $this->input->post('to_date'),
+                'invoice_type' => $invoice_type,
             );
 
             $html = $this->load->view('reports/invoices_per_client', $data, true);

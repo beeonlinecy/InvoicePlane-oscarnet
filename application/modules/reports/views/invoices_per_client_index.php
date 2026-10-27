@@ -1,4 +1,4 @@
-<div id="headerbar">
+﻿<div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('invoices_per_client'); ?></h1>
 </div>
 
@@ -51,6 +51,15 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="invoice_type"><?php _trans('invoice_type_filter'); ?></label>
+                            <select name="invoice_type" id="invoice_type" class="form-control">
+                                <option value="all"><?php _trans('all'); ?></option>
+                                <option value="numbered"><?php _trans('invoices_with_numbers'); ?></option>
+                                <option value="draft"><?php _trans('draft'); ?></option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
                             <label for="year"><?php _trans('year'); ?></label>
                             <select name="year" id="year" class="form-control">
                                 <?php for ($i = 0; $i < 10; $i++) { ?>
@@ -89,77 +98,26 @@
 
 <script>
     $(function () {
-        // Set datepicker format
-        if ($.fn.datepicker) {
-            $('.datepicker').datepicker({format: 'yyyy-mm-dd'});
-        }
-
-        function formatDate(date) {
-            var d = new Date(date),
-                month = '' + (d.getMonth() + 1),
-                day = '' + d.getDate(),
-                year = d.getFullYear();
-
-            if (month.length < 2)
-                month = '0' + month;
-            if (day.length < 2)
-                day = '0' + day;
-
-            return [year, month, day].join('-');
+        function setRange(from_date, to_date) {
+            $('#from_date').datepicker('setDate', from_date);
+            $('#to_date').datepicker('setDate', to_date);
         }
 
         $('#btn-this-year').click(function () {
             var year = $('#year').val();
-            var from_date = new Date(year, 0, 1);
-            var to_date = new Date(year, 11, 31);
-            $('#from_date').val(formatDate(from_date));
-            $('#to_date').val(formatDate(to_date));
-            if ($.fn.datepicker) {
-                $('.datepicker').datepicker('update');
-            }
+            setRange(new Date(year, 0, 1), new Date(year, 11, 31));
         });
 
         $('#btn-last-year').click(function () {
             var year = $('#year').val() - 1;
-            var from_date = new Date(year, 0, 1);
-            var to_date = new Date(year, 11, 31);
-            $('#from_date').val(formatDate(from_date));
-            $('#to_date').val(formatDate(to_date));
-            if ($.fn.datepicker) {
-                $('.datepicker').datepicker('update');
-            }
+            setRange(new Date(year, 0, 1), new Date(year, 11, 31));
         });
 
         $('.btn-quarter').click(function () {
             var year = $('#year').val();
-            var quarter = $(this).data('quarter');
-            var from_date;
-            var to_date;
-
-            switch (quarter) {
-                case 1:
-                    from_date = new Date(year, 0, 1);
-                    to_date = new Date(year, 2, 31);
-                    break;
-                case 2:
-                    from_date = new Date(year, 3, 1);
-                    to_date = new Date(year, 5, 30);
-                    break;
-                case 3:
-                    from_date = new Date(year, 6, 1);
-                    to_date = new Date(year, 8, 30);
-                    break;
-                case 4:
-                    from_date = new Date(year, 9, 1);
-                    to_date = new Date(year, 11, 31);
-                    break;
-            }
-
-            $('#from_date').val(formatDate(from_date));
-            $('#to_date').val(formatDate(to_date));
-            if ($.fn.datepicker) {
-                $('.datepicker').datepicker('update');
-            }
+            var startMonth = ($(this).data('quarter') - 1) * 3;
+            // Day 0 of the next month is the last day of the quarter
+            setRange(new Date(year, startMonth, 1), new Date(year, startMonth + 3, 0));
         });
     });
 </script>
