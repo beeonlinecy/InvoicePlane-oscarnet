@@ -61,6 +61,8 @@ class Reports extends Admin_Controller
             );
 
             $html = $this->load->view('reports/invoices_per_client', $data, true);
+            // Drop invalid UTF-8 bytes (e.g. from legacy client data) that make mPDF throw
+            $html = mb_convert_encoding($html, 'UTF-8', 'UTF-8');
 
             $this->load->helper('mpdf');
 

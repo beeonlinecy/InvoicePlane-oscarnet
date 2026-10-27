@@ -1,4 +1,4 @@
-﻿<div id="headerbar">
+<div id="headerbar">
     <h1 class="headerbar-title"><?php _trans('invoices_per_client'); ?></h1>
 </div>
 

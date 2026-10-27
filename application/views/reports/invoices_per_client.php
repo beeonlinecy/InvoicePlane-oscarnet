@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="<?php echo trans('cldr'); ?>">
 <head>
     <title><?php echo trans('invoices_per_client'); ?></title>
@@ -14,10 +14,10 @@
 <?php
 $client_id = '';
 $client_total = 0;
-$total_row = function ($total) {
+$total_row = function ($total) use ($from_date, $to_date) {
     ?>
     <tr>
-        <th><?php echo trans('total'); ?></th>
+        <th><?php echo trans('total') . ' (' . htmlspecialchars($from_date . ' - ' . $to_date) . ')'; ?></th>
         <th></th>
         <th class="amount"><?php echo format_currency($total); ?></th>
     </tr>
