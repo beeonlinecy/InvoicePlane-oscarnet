@@ -8,6 +8,7 @@
 IP_URL=
 
 # Having problems? Enable debug by changing the value to 'true' to enable advanced logging
+# SMTP debug output is written to the PHP error log and may contain email contents.
 ENABLE_DEBUG=false
 
 X_FRAME_OPTIONS=SAMEORIGIN
